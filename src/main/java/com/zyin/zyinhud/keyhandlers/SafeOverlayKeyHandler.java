@@ -10,13 +10,23 @@ import com.zyin.zyinhud.mods.SafeOverlay;
 import com.zyin.zyinhud.mods.SafeOverlay.Modes;
 import com.zyin.zyinhud.util.Localization;
 
+/**
+ * The type Safe overlay key handler.
+ */
 public class SafeOverlayKeyHandler implements ZyinHUDKeyHandlerBase
 {
+    /**
+     * The constant HotkeyDescription.
+     */
     public static final String HotkeyDescription = "key.zyinhud.safeoverlay";
-    
-	public static void Pressed(KeyInputEvent event) 
-	{
-		if (mc.currentScreen != null)
+
+    /**
+     * Pressed.
+     *
+     * @param event the event
+     */
+    public static void Pressed(KeyInputEvent event) {
+        if (mc.currentScreen != null)
         {
             return;    //don't activate if the user is looking at a GUI
         }

@@ -26,25 +26,28 @@ import com.zyin.zyinhud.keyhandlers.ZyinHUDOptionsKeyHandler;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.mods.TorchAid;
 
+/**
+ * The type Zyin hud key handlers.
+ */
 public class ZyinHUDKeyHandlers
 {
 	private final static Minecraft mc = Minecraft.getMinecraft();
-    /**
-     * An array of all of Zyin's HUD custom key bindings. Don't reorder them since they are referenced by their position in the array.<br><ul>
-     * <li>[0] Animal Info
-     * <li>[1] Coordinates
-     * <li>[2] Distance Measurer
-     * <li>[3] Eating Aid
-     * <li>[4] Ender Pearl Aid
-     * <li>[5] Player Locator
-     * <li>[6] Potion Aid
-     * <li>[7] Quick Deposit
-     * <li>[8] Safe Overlay
-     * <li>[9] Weapon Swapper
-     * <li>[10] Zyin's HUD Options
-     * <li>[11] Item Selector
-     */
-    public static final KeyBinding[] KEY_BINDINGS = 
+	/**
+	 * An array of all of Zyin's HUD custom key bindings. Don't reorder them since they are referenced by their position in the array.<br><ul>
+	 * <li>[0] Animal Info
+	 * <li>[1] Coordinates
+	 * <li>[2] Distance Measurer
+	 * <li>[3] Eating Aid
+	 * <li>[4] Ender Pearl Aid
+	 * <li>[5] Player Locator
+	 * <li>[6] Potion Aid
+	 * <li>[7] Quick Deposit
+	 * <li>[8] Safe Overlay
+	 * <li>[9] Weapon Swapper
+	 * <li>[10] Zyin's HUD Options
+	 * <li>[11] Item Selector
+	 */
+	public static final KeyBinding[] KEY_BINDINGS =
 	{
 		new KeyBinding(AnimalInfoKeyHandler.HotkeyDescription, 		Keyboard.getKeyIndex("O"), 	   ZyinHUD.MODNAME),	//[0]
 	    new KeyBinding(CoordinatesKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F1"),    ZyinHUD.MODNAME),	//[1]
@@ -56,18 +59,29 @@ public class ZyinHUDKeyHandlers
 	    new KeyBinding(QuickDepositKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("X"), 	   ZyinHUD.MODNAME),	//[7]
 	    new KeyBinding(SafeOverlayKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("L"), 	   ZyinHUD.MODNAME),	//[8]
 	    new KeyBinding(WeaponSwapperKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("F"), 	   ZyinHUD.MODNAME),	//[9]
-	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), 	   ZyinHUD.MODNAME),	//[10]
-	    new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("LMENU"), ZyinHUD.MODNAME),	//[11]
+	    new KeyBinding(ZyinHUDOptionsKeyHandler.HotkeyDescription, 	Keyboard.getKeyIndex("Z"), ZyinHUD.MODNAME),    //[10]
+			new KeyBinding(ItemSelectorKeyHandler.HotkeyDescription, Keyboard.getKeyIndex("LMENU"), ZyinHUD.MODNAME),    //[11]
 	};
-    
-    public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
-	
+
+	/**
+	 * The constant instance.
+	 */
+	public static final ZyinHUDKeyHandlers instance = new ZyinHUDKeyHandlers();
+
+	/**
+	 * Instantiates a new Zyin hud key handlers.
+	 */
 	public ZyinHUDKeyHandlers()
 	{
 		for(KeyBinding keyBinding : KEY_BINDINGS)
 			ClientRegistry.registerKeyBinding(keyBinding);
 	}
 
+	/**
+	 * Key input event.
+	 *
+	 * @param event the event
+	 */
 	@SubscribeEvent
 	public void KeyInputEvent(KeyInputEvent event)
 	{
@@ -102,56 +116,58 @@ public class ZyinHUDKeyHandlers
 			ItemSelectorKeyHandler.Pressed(event);
 		else if(Keyboard.getEventKey() == ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode() && !Keyboard.getEventKeyState())	//on key released
 			ItemSelectorKeyHandler.Released(event);
-		
+
 	}
 
-    @SubscribeEvent
-    public void MouseEvent(MouseEvent event)
-    {
+	/**
+	 * Mouse event.
+	 *
+	 * @param event the event
+	 */
+	@SubscribeEvent
+	public void MouseEvent(MouseEvent event) {
     	//event.buttonstate = true if pressed, false if released
     	//event.button = -1 = mouse moved
     	//event.button =  0 = Left click
     	//event.button =  1 = Right click
     	//event.button =  2 = Middle click
     	//event.dwheel =    0 = mouse moved
-    	//event.dwheel =  120 = mouse wheel up
-    	//event.dwheel = -120 = mouse wheel down
-    	
-    	if(event.dx != 0 || event.dy != 0)	//mouse movement event
-    		return;
-    	
-    	//Mouse wheel scroll
-        if(event.dwheel != 0)
-        {
+		//event.dwheel =  120 = mouse wheel up
+		//event.dwheel = -120 = mouse wheel down
+
+		if (event.getDx() != 0 || event.getDy() != 0)    //mouse movement event
+			return;
+
+		//Mouse wheel scroll
+		if(event.getDwheel() != 0) {
         	if(KEY_BINDINGS[11].isKeyDown())
-        		ItemSelectorKeyHandler.OnMouseWheelScroll(event);
-        }
+				ItemSelectorKeyHandler.OnMouseWheelScroll(event);
+		}
 
-        //Mouse side buttons
-        if(event.button == 3 || event.button == 4)
-        {
-	        if(event.buttonstate)
-	        {
-	            ItemSelectorKeyHandler.OnMouseSideButton(event);
-	        }
-	    }
+		//Mouse side buttons
+		if (event.getButton() == 3 || event.getButton() == 4) {
+			if(event.isButtonstate()) {
+				ItemSelectorKeyHandler.OnMouseSideButton(event);
+			}
+		}
 
-        //Middle click
-        if(event.button == 2)
-        {
-        	if(event.buttonstate)
-        	{
-            	Miscellaneous.OnMiddleClick();
-        	}
-        }
-    }
-    
+		//Middle click
+		if (event.getButton() == 2) {
+			if(event.isButtonstate()) {
+				Miscellaneous.OnMiddleClick();
+			}
+		}
+	}
 
-	
-    @SubscribeEvent
-    public void ClientTickEvent(ClientTickEvent event)
-    {
-    	//This tick handler is to overcome the GuiScreen + KeyInputEvent limitation
+
+	/**
+	 * Client tick event.
+	 *
+	 * @param event the event
+	 */
+	@SubscribeEvent
+	public void ClientTickEvent(ClientTickEvent event) {
+		//This tick handler is to overcome the GuiScreen + KeyInputEvent limitation
     	//for Coordinates and QuickDeposit
     	
 		if (Keyboard.getEventKey() == KEY_BINDINGS[1].getKeyCode())

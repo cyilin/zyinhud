@@ -6,16 +6,52 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
+/**
+ * The type Gui number slider with undo.
+ */
 public class GuiNumberSliderWithUndo extends GuiNumberSlider
 {
+	/**
+	 * The Undo symbol.
+	 */
 	String undoSymbol = GuiUtils.UNDO_CHAR;
+	/**
+	 * The Undo symbol x.
+	 */
 	int undoSymbolX;
+	/**
+	 * The Undo symbol y.
+	 */
 	int undoSymbolY;
+	/**
+	 * The Undo symbol width.
+	 */
 	int undoSymbolWidth = 5;
+	/**
+	 * The Undo symbol height.
+	 */
 	int undoSymbolHeight = 7;
-	
+
+	/**
+	 * The Default value.
+	 */
 	float defaultValue;
-	
+
+	/**
+	 * Instantiates a new Gui number slider with undo.
+	 *
+	 * @param id            the id
+	 * @param x             the x
+	 * @param y             the y
+	 * @param width         the width
+	 * @param height        the height
+	 * @param displayString the display string
+	 * @param minValue      the min value
+	 * @param maxValue      the max value
+	 * @param currentValue  the current value
+	 * @param defaultValue  the default value
+	 * @param mode          the mode
+	 */
 	public GuiNumberSliderWithUndo(int id, int x, int y, int width, int height, String displayString, float minValue, float maxValue, float currentValue, float defaultValue, Modes mode)
 	{
 		super(id, x, y, width, height, displayString, minValue, maxValue, currentValue, mode);
@@ -38,13 +74,23 @@ public class GuiNumberSliderWithUndo extends GuiNumberSlider
 		
 		mc.fontRendererObj.drawStringWithShadow(undoSymbol, undoSymbolX, undoSymbolY, undoSymbolColor);	//func_175063_a() is drawStringWithShadow()
 	}
-	
+
+	/**
+	 * Is undo mouseovered boolean.
+	 *
+	 * @param mouseX the mouse x
+	 * @param mouseY the mouse y
+	 * @return the boolean
+	 */
 	protected boolean IsUndoMouseovered(int mouseX, int mouseY)
 	{
 		return mouseX > undoSymbolX && mouseX < undoSymbolX + undoSymbolWidth
 			&& mouseY > undoSymbolY && mouseY < undoSymbolY + undoSymbolHeight;
 	}
-	
+
+	/**
+	 * Undo button clicked.
+	 */
 	protected void UndoButtonClicked()
 	{
 		sliderValue = (defaultValue - minValue) / (maxValue - minValue);

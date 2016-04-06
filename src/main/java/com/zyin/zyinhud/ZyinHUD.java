@@ -46,36 +46,59 @@ import com.zyin.zyinhud.mods.HealthMonitor;
 import com.zyin.zyinhud.mods.Miscellaneous;
 import com.zyin.zyinhud.util.ModCompatibility;
 
+/**
+ * The type Zyin hud.
+ */
 @Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true)
 public class ZyinHUD
 {
-	/**
-	 * Version number must be changed in 3 spots before releasing a build:
-	 * <br><ol>
-	 * <li>VERSION
-	 * <li>src/main/resources/mcmod.info:"version", "mcversion"
-	 * <li>build.gradle:version
-	 * </ol>
-	 * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
-	 */
-	public static final String VERSION = "1.4.8";
+    /**
+     * Version number must be changed in 3 spots before releasing a build:
+     * <br><ol>
+     * <li>VERSION
+     * <li>src/main/resources/mcmod.info:"version", "mcversion"
+     * <li>build.gradle:version
+     * </ol>
+     * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
+     */
+    public static final String VERSION = "1.4.8";
+    /**
+     * The constant MODID.
+     */
     public static final String MODID = "zyinhud";
+    /**
+     * The constant MODNAME.
+     */
     public static final String MODNAME = "Zyin's HUD";
-    
+
+    /**
+     * The constant proxy.
+     */
     @SidedProxy(clientSide = "com.zyin.zyinhud.ClientProxy", serverSide = "com.zyin.zyinhud.CommonProxy")
     public static CommonProxy proxy;
-    
+
+    /**
+     * The constant mc.
+     */
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
     private File configFile;
-    
-    
+
+
+    /**
+     * Instantiates a new Zyin hud.
+     */
     public ZyinHUD()
     {
     	
     }
-    
-    
+
+
+    /**
+     * Pre init.
+     *
+     * @param event the event
+     */
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -83,7 +106,12 @@ public class ZyinHUD
         
         AddVersionChecker();
     }
-	
+
+    /**
+     * Init.
+     *
+     * @param event the event
+     */
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
@@ -105,12 +133,21 @@ public class ZyinHUD
         FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
 
-	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+    /**
+     * Post init.
+     *
+     * @param event the event
+     */
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
 		ModCompatibility.TConstruct.isLoaded = Loader.isModLoaded("TConstruct");
 	}
 
+    /**
+     * Server starting.
+     *
+     * @param event the event
+     */
     @EventHandler
     public void serverStarting(FMLServerStartingEvent event)
     {
@@ -118,10 +155,11 @@ public class ZyinHUD
     	event.registerServerCommand(new CommandFps());
     	event.registerServerCommand(new CommandZyinHUDOptions());
     }
-    
+
     /**
      * Adds support for the Version Checker mod.
-     * @link http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2091981-version-checker-auto-update-mods-and-clean
+     *
+     * @link http ://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2091981-version-checker-auto-update-mods-and-clean
      */
     public void AddVersionChecker()
     {

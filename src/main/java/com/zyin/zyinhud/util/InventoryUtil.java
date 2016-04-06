@@ -5,6 +5,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDirt;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.inventory.GuiBrewingStand;
@@ -12,15 +14,20 @@ import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
 import com.zyin.zyinhud.mods.QuickDeposit;
+
+import static net.minecraft.block.BlockDirt.VARIANT;
 
 /**
  * Utility class to help with inventory management.
@@ -60,25 +67,25 @@ public class InventoryUtil
      */
     private static int suggestedItemSwapDelay;
 
-    /**
-     * Use this instance in order to use the SwapWithDelay() method call.
-     */
-    public static InventoryUtil instance = new InventoryUtil();
+	/**
+	 * Use this instance in order to use the SwapWithDelay() method call.
+	 */
+	public static InventoryUtil instance = new InventoryUtil();
 
     
     
     private InventoryUtil()
     {
     	suggestedItemSwapDelay = GetSuggestedItemSwapDelay();
-    }
+	}
 
-    
 
-    /**
-     * Determines an appropriate duration in milliseconds that should be used as the delay for swapping items
-     * around in the inventory.
-     * @return
-     */
+	/**
+	 * Determines an appropriate duration in milliseconds that should be used as the delay for swapping items
+	 * around in the inventory.
+	 *
+	 * @return int
+	 */
 	public static int GetSuggestedItemSwapDelay()
 	{
     	//on single player there is very little lag, so we can set the delay betwen swapping items around
@@ -89,33 +96,42 @@ public class InventoryUtil
     		return suggestedItemSwapDelay = 450;
 	}
 
+	/**
+	 *
+	 * @param worldIn
+	 * @param pos
+     * @return
+     */
+	public static int getDamageValue(World worldIn, BlockPos pos)
+	{
+		IBlockState iBlockState = worldIn.getBlockState(pos);
+		return iBlockState.getValue(VARIANT).getMetadata(); //FIXME: Potential bugs here :\
 
+	}
 	/**
 	 * Uses an item locaed in your inventory or hotbar.
 	 * <p>
 	 * If it is in your hotbar, it will change the selected hotbar index in order to use it.
 	 * <br>If it is in your inventory, it will swap the item into your hotbar in order to use it.
+	 *
 	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
 	 * @return true if the item was used.
 	 */
 	public static boolean UseItem(Object object)
 	{
 		int hotbarIndex = GetItemIndexFromHotbar(object);
-		if(hotbarIndex < 0)
-		{
+		if (hotbarIndex < 0) {
 			int inventoryIndex = GetItemIndexFromInventory(object);
-			if(inventoryIndex < 0)
-				return false;
-			else
-				return UseItemInInventory(object);
+			return inventoryIndex >= 0 && UseItemInInventory(object);
 		}
 		else
 			return UseItemInHotbar(object);
 	}
 
-	
+
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
+	 *
 	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
 	 * @return true if the item was used.
 	 */
@@ -129,7 +145,8 @@ public class InventoryUtil
 
 	/**
 	 * Uses an item in the players hotbar by changing the selected index, using it, then changing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 *
+	 * @param object        The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
 	 * @param itemSlotIndex 36-44
 	 * @return true if the item was used.
 	 */
@@ -159,9 +176,10 @@ public class InventoryUtil
     	return wasUsedSuccessfully;
 	}
 
-	
+
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
+	 *
 	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
 	 * @return true if the item was used.
 	 */
@@ -172,10 +190,11 @@ public class InventoryUtil
 		return UseItemInInventory(object, itemInventoryIndex);
 	}
 
-	
+
 	/**
 	 * Uses an item in the players inventory by quickly Swap()ing it into the hotbar, using it, then Swap()ing it back.
-	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
+	 *
+	 * @param object        The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
 	 * @param itemSlotIndex 0-35
 	 * @return true if the item was used.
 	 */
@@ -208,43 +227,55 @@ public class InventoryUtil
 
     	return wasUsedSuccessfully;
 	}
-	
+
 	/**
 	 * Makes the player use the Item in their currently selected hotbar slot.
 	 * To use Blocks, use SendUseBlock()
-	 * @return 
+	 *
+	 * @return boolean
 	 */
 	public static boolean SendUseItem()
 	{
 		//Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
-		boolean sendUseItem = mc.playerController.sendUseItem((EntityPlayer)mc.thePlayer, (World)mc.theWorld, mc.thePlayer.getHeldItem());
+		boolean sendUseItem = false;//mc.playerController.sendUseItem((EntityPlayer) mc.thePlayer, (World) mc.theWorld, mc.thePlayer.getHeldItemMainhand());
+		EnumActionResult sendUseItem_result = mc.playerController.processRightClick(mc.thePlayer,mc.theWorld, mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND),EnumHand.MAIN_HAND);
+		//TODO: More expressions!!
+		if (sendUseItem_result == EnumActionResult.SUCCESS){
+			sendUseItem = true;
+		}
 		return sendUseItem;
 	}
-	
+
 	/**
 	 * Makes the player use the Block in their currently selected hotbar slot.
 	 * To use Items, use SendUseItem()
+	 *
+	 * @return the boolean
 	 */
 	public static boolean SendUseBlock()
 	{
 		//Blocks need to use the onPlayerRightClick() function to work properly
 		//return mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(), mc.objectMouseOver.blockX, mc.objectMouseOver.blockY, mc.objectMouseOver.blockZ, mc.objectMouseOver.sideHit, mc.objectMouseOver.hitVec);
 		
-		boolean sendUseBlock = mc.playerController.onPlayerRightClick(mc.thePlayer,
-				mc.theWorld, 
-				mc.thePlayer.getHeldItem(), 
+		//boolean
+		EnumActionResult sendUseBlock_result = mc.playerController.processRightClickBlock(mc.thePlayer,
+				mc.theWorld,
+				mc.thePlayer.getHeldItemMainhand(),
 				new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord), 
 				mc.objectMouseOver.sideHit,
-				mc.objectMouseOver.hitVec);
+				mc.objectMouseOver.hitVec,
+				EnumHand.MAIN_HAND);
 		BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord);
+		boolean sendUseBlock = (sendUseBlock_result == EnumActionResult.SUCCESS);
 		return sendUseBlock;
 	}
-	
+
 	/**
 	 * Swaps 2 items in your inventory after a specified amount of time has passed.
-	 * @param srcIndex
-	 * @param destIndex
-	 * @param delay in milliseconds
+	 *
+	 * @param srcIndex  the src index
+	 * @param destIndex the dest index
+	 * @param delay     in milliseconds
 	 * @return the TimerTask associated with this delayed action. Use it if you want to cancel it later.
 	 */
 	public TimerTask SwapWithDelay(int srcIndex, int destIndex, int delay)
@@ -261,11 +292,12 @@ public class InventoryUtil
 		return swapTimerTask;
 	}
 
-	
+
 	/**
 	 * Swaps 2 items in your inventory GUI.
-	 * @param srcIndex
-	 * @param destIndex
+	 *
+	 * @param srcIndex  the src index
+	 * @param destIndex the dest index
 	 * @return true if the items were successfully swapped
 	 */
 	public static boolean Swap(int srcIndex, int destIndex)
@@ -340,7 +372,7 @@ public class InventoryUtil
 			return true;
 	    }
 	}
-	
+
 	/**
 	 * Deposits all items in the players inventory, including any item being held on the cursor, into the chest
 	 * as long as there is a matching item already in the chest.
@@ -348,8 +380,9 @@ public class InventoryUtil
 	 * <br>Only works with single chest, double chest, donkey/mules, hopper, dropper, and dispenser. For other containers,
 	 * use their specific methods: DepositAllMatchingItemsInMerchant(), DepositAllMatchingItemsInFurance(), and
 	 * DepositAllMatchingItemsInBrewingStand().
+	 *
 	 * @param onlyDepositMatchingItems only deposit an item if another one exists in the chest already
-	 * @param ignoreItemsInHotbar if true, won't deposit items that are in the player's hotbar
+	 * @param ignoreItemsInHotbar      if true, won't deposit items that are in the player's hotbar
 	 * @return true if operation completed successfully, false if some items were left behind (aka there was a full chest)
 	 */
 	public static boolean DepositAllMatchingItemsInContainer(boolean onlyDepositMatchingItems, boolean ignoreItemsInHotbar)
@@ -448,10 +481,11 @@ public class InventoryUtil
 	    }
 	    return true;
 	}
-	
+
 	/**
 	 * Moves an item from the players inventory to a chest or horse inventory. It assumes that no ItemStack is being held on the cursor.
-	 * @param srcIndex player inventory slot: single chest = 28-63, double chest = 55-90
+	 *
+	 * @param srcIndex  player inventory slot: single chest = 28-63, double chest = 55-90
 	 * @param destIndex chest slot: single chest = 0-27, double chest = 0-54
 	 * @return true if an item was successfully moved
 	 */
@@ -486,8 +520,8 @@ public class InventoryUtil
 		if(numContainerSlots == 90-numInventorySlots && (destIndex < 0 || destIndex > 54))
 			return false;
 	    
-	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
-	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+	    ItemStack srcStack = mc.thePlayer.openContainer.inventorySlots.get(srcIndex).getStack();
+	    ItemStack destStack = mc.thePlayer.openContainer.inventorySlots.get(destIndex).getStack();
 	    
 
 	    if(!QuickDeposit.IsAllowedToBeDepositedInContainer(srcStack))
@@ -596,11 +630,12 @@ public class InventoryUtil
 	    	}
 	    }
 	}
-	
+
 	/**
 	 * Deposits all items in the players inventory, including any item being held on the cursor, into the chest
 	 * as long as there is a matching item already in the chest.
-	 * @return
+	 *
+	 * @return boolean
 	 */
 	public static boolean DepositAllMatchingItemsInMerchant()
 	{
@@ -626,7 +661,7 @@ public class InventoryUtil
         //field_70473_e used to work in 1.6.4
         //field_147041_z works in 1.7.2
     	int currentRecipeIndex = ZyinHUDUtil.GetFieldByReflection(GuiMerchant.class, guiMerchant, "currentRecipeIndex","field_70473_e","field_147041_z");
-        MerchantRecipe merchantRecipe = (MerchantRecipe)merchantRecipeList.get(currentRecipeIndex);
+        MerchantRecipe merchantRecipe = merchantRecipeList.get(currentRecipeIndex);
         
         ItemStack buyingItemStack1 = merchantRecipe.getItemToBuy();
         ItemStack buyingItemStack2 = merchantRecipe.getSecondItemToBuy();
@@ -678,8 +713,8 @@ public class InventoryUtil
 		if(srcIndex < 3 || srcIndex > 39)
 			return false;
 		
-	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
-	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+	    ItemStack srcStack = mc.thePlayer.openContainer.inventorySlots.get(srcIndex).getStack();
+	    ItemStack destStack = mc.thePlayer.openContainer.inventorySlots.get(destIndex).getStack();
 		
 		//there are 4 cases we need to handle:
 	    //1: src = null, dest = null
@@ -715,10 +750,15 @@ public class InventoryUtil
 			    return true;
 	    	}
 	    	return false;
-	    }
+		}
 	}
-	
-	
+
+
+	/**
+	 * Deposit all matching items in furance boolean.
+	 *
+	 * @return the boolean
+	 */
 	public static boolean DepositAllMatchingItemsInFurance()
 	{
 	    if(!(mc.currentScreen instanceof GuiFurnace))
@@ -736,9 +776,9 @@ public class InventoryUtil
 	    
 	    List furanceSlots = mc.thePlayer.openContainer.inventorySlots;
 
-	    ItemStack inputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
-	    ItemStack fuelStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
-	    ItemStack outputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+	    ItemStack inputStack = mc.thePlayer.openContainer.inventorySlots.get(0).getStack();
+	    ItemStack fuelStack = mc.thePlayer.openContainer.inventorySlots.get(1).getStack();
+	    ItemStack outputStack = mc.thePlayer.openContainer.inventorySlots.get(2).getStack();
 	    
 	    //check to see if we have an item in our cursor
 	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
@@ -795,8 +835,8 @@ public class InventoryUtil
 			return false;
 		*/
 		
-	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
-	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+	    ItemStack srcStack = mc.thePlayer.openContainer.inventorySlots.get(srcIndex).getStack();
+	    ItemStack destStack = mc.thePlayer.openContainer.inventorySlots.get(destIndex).getStack();
 		
 		//there are 4 cases we need to handle:
 	    //1: src = null, dest = null
@@ -842,10 +882,15 @@ public class InventoryUtil
 			    return true;
 	    	}
 	    	return false;
-	    }
+		}
 	}
 
-	
+
+	/**
+	 * Deposit all matching items in brewing stand boolean.
+	 *
+	 * @return the boolean
+	 */
 	public static boolean DepositAllMatchingItemsInBrewingStand()
 	{
 	    if(!(mc.currentScreen instanceof GuiBrewingStand))
@@ -864,10 +909,10 @@ public class InventoryUtil
 	    
 	    List brewingStandSlots = mc.thePlayer.openContainer.inventorySlots;
 
-	    ItemStack inputStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(3)).getStack();
-	    ItemStack outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
-	    ItemStack outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
-	    ItemStack outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+	    ItemStack inputStack = mc.thePlayer.openContainer.inventorySlots.get(3).getStack();
+	    ItemStack outputStack1 = mc.thePlayer.openContainer.inventorySlots.get(0).getStack();
+	    ItemStack outputStack2 = mc.thePlayer.openContainer.inventorySlots.get(1).getStack();
+	    ItemStack outputStack3 = mc.thePlayer.openContainer.inventorySlots.get(2).getStack();
 	    
 	    //check to see if we have an item in our cursor
 	    ItemStack handStack = mc.thePlayer.inventory.getItemStack();
@@ -884,17 +929,17 @@ public class InventoryUtil
 				if(outputStack1 == null)
 				{
 					LeftClickContainerSlot(0);
-					outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+					outputStack1 = mc.thePlayer.openContainer.inventorySlots.get(0).getStack();
 				}
 				else if(outputStack2 == null)
 				{
 					LeftClickContainerSlot(1);
-					outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+					outputStack2 = mc.thePlayer.openContainer.inventorySlots.get(1).getStack();
 				}
 				else if(outputStack3 == null)
 				{
 					LeftClickContainerSlot(2);
-					outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+					outputStack3 = mc.thePlayer.openContainer.inventorySlots.get(2).getStack();
 				}
 		    }
         }
@@ -920,19 +965,19 @@ public class InventoryUtil
 					if(outputStack1 == null)
 					{
 						DepositItemInBrewingStand(i, 0);
-						outputStack1 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(0)).getStack();
+						outputStack1 = mc.thePlayer.openContainer.inventorySlots.get(0).getStack();
 						continue;
 					}
 					else if(outputStack2 == null)
 					{
 						DepositItemInBrewingStand(i, 1);
-						outputStack2 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(1)).getStack();
+						outputStack2 = mc.thePlayer.openContainer.inventorySlots.get(1).getStack();
 						continue;
 					}
 					else if(outputStack3 == null)
 					{
 						DepositItemInBrewingStand(i, 2);
-						outputStack3 = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(2)).getStack();
+						outputStack3 = mc.thePlayer.openContainer.inventorySlots.get(2).getStack();
 						continue;
 					}
 			    }
@@ -950,8 +995,8 @@ public class InventoryUtil
 		if(srcIndex < 5 || srcIndex > 39)
 			return false;
 		
-	    ItemStack srcStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(srcIndex)).getStack();
-	    ItemStack destStack = ((Slot)mc.thePlayer.openContainer.inventorySlots.get(destIndex)).getStack();
+	    ItemStack srcStack = mc.thePlayer.openContainer.inventorySlots.get(srcIndex).getStack();
+	    ItemStack destStack = mc.thePlayer.openContainer.inventorySlots.get(destIndex).getStack();
 		
 		//there are 4 cases we need to handle:
 	    //1: src = null, dest = null
@@ -1015,7 +1060,7 @@ public class InventoryUtil
             		
             		if(Block.getBlockFromItem(itemStack.getItem()) == blockToFind)
             		{
-                		int blockToFindDamage = blockToFind.getDamageValue(mc.theWorld, (BlockPos)object);
+                		int blockToFindDamage = getDamageValue(mc.theWorld, (BlockPos)object);
                 		int inventoryBlockDamage = itemStack.getItemDamage();
                 		
                     	//check to see if their damage value matches (applicable to blocks such as wood planks)
@@ -1040,22 +1085,24 @@ public class InventoryUtil
 
         return -1;
     }
-	
+
 	/**
 	 * Gets the index of an item class in your inventory.
+	 *
 	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
-	 * @return 9-44, -1 if not found
+	 * @return 9 -44, -1 if not found
 	 */
 	public static int GetItemIndexFromInventory(Object object)
     {
 		return GetItemIndex(object, 9, 35);
-    }
-	
-	
+	}
+
+
 	/**
 	 * Gets the index of an item class in your hotbar.
+	 *
 	 * @param object The type of item being used. E.x.: Blocks.torch, Items.ender_pearl
-	 * @return 36-44, -1 if not found
+	 * @return 36 -44, -1 if not found
 	 */
 	public static int GetItemIndexFromHotbar(Object object)
     {
@@ -1201,7 +1248,7 @@ public class InventoryUtil
 	
 	/**
 	 * Determines if an item exists in a container's (chest, horse, etc) inventory (top section of gui) and returns its location
-	 * @param itemID the item to search for
+	 * @param 'itemID' the item to search for
 	 * @return 0-27,54, -1 if no item found
 	 */
 	private static int GetFirstItemIndexInContainer(ItemStack itemStackToMatch)
@@ -1233,58 +1280,52 @@ public class InventoryUtil
         return -1;
 	}
 
-	
+
 	/**
 	 * Gets the index of whatever the player currently has selected on their hotbar
-	 * @return 36-44
+	 *
+	 * @return 36 -44
 	 */
 	public static int GetCurrentlySelectedItemInventoryIndex()
 	{
 		return TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
 	}
-	
-	
+
+
 	/**
 	 * Moves an armor the player is wearing into their inventory
+	 *
 	 * @param armorSlotIndex index 0-3, 0 = boots, 1 = pants, 2 = armor, 3 = helm (0-3 index will be changed to 5-8 in this method)
-	 * @return
+	 * @return boolean
 	 */
-	public static boolean MoveArmorIntoPlayerInventory(int armorSlotIndex)
-	{
-		armorSlotIndex = (3-armorSlotIndex) + 5;	//parameter comes in as 0-3, we shift it to 5-8
+	public static boolean MoveArmorIntoPlayerInventory(int armorSlotIndex) {
+		armorSlotIndex = (3 - armorSlotIndex) + 5;    //parameter comes in as 0-3, we shift it to 5-8
 		int emptySlotIndex = GetFirstEmptyIndexInInventory();
-		
-		if(emptySlotIndex != -1)
-		{
-			return Swap(armorSlotIndex, emptySlotIndex);
-		}
-		
-		return false;
-	}
-	
-	
-	/**
-	 * Moves an item the player has selected (selected in the hotbar) to their inventory
-	 * @return
-	 */
-	public static boolean MoveHeldItemIntoPlayerInventory()
-	{
-		int heldItemSlotIndex = GetCurrentlySelectedItemInventoryIndex();
-		int emptySlotIndex = GetFirstEmptyIndexInInventory();
-		
-		if(emptySlotIndex != -1)
-		{
-			return Swap(heldItemSlotIndex, emptySlotIndex);
-		}
-		
-		return false;
+
+		return emptySlotIndex != -1 && Swap(armorSlotIndex, emptySlotIndex);
+
 	}
 
-	
+
+	/**
+	 * Moves an item the player has selected (selected in the hotbar) to their inventory
+	 *
+	 * @return boolean
+	 */
+	public static boolean MoveHeldItemIntoPlayerInventory() {
+		int heldItemSlotIndex = GetCurrentlySelectedItemInventoryIndex();
+		int emptySlotIndex = GetFirstEmptyIndexInInventory();
+
+		return emptySlotIndex != -1 && Swap(heldItemSlotIndex, emptySlotIndex);
+
+	}
+
+
 	/**
 	 * Converts hotbar indexes (0-8) to inventory indexes (36-44)
-	 * @param hotbarIndex
-	 * @return 36-44, -1 if not a valid index
+	 *
+	 * @param hotbarIndex the hotbar index
+	 * @return 36 -44, -1 if not a valid index
 	 */
 	public static int TranslateHotbarIndexToInventoryIndex(int hotbarIndex)
 	{
@@ -1293,12 +1334,13 @@ public class InventoryUtil
 
 		return hotbarIndex + 36;
 	}
-	
-	
+
+
 	/**
 	 * Converts inventory indexes (9-35) to hotbar index (0-8)
-	 * @param inventoryIndex
-	 * @return 0-8, -1 if not a valid index
+	 *
+	 * @param inventoryIndex the inventory index
+	 * @return 0 -8, -1 if not a valid index
 	 */
 	public static int TranslateInventoryIndexToHotbarIndex(int inventoryIndex)
 	{
@@ -1340,11 +1382,11 @@ public class InventoryUtil
         
         try
         {
-	        mc.playerController.windowClick(
+	        mc.playerController.func_187098_a(
 	        		mc.thePlayer.inventoryContainer.windowId,
 	        		itemIndex,
 	        		(rightClick) ? 1 : 0,
-					(shiftHold) ? 1 : 0,
+					(shiftHold) ? ClickType.PICKUP_ALL : ClickType.PICKUP, //Former : (ShiftHold) ? 1:0;
 					mc.thePlayer);
         }
         catch (IndexOutOfBoundsException e)
@@ -1369,34 +1411,37 @@ public class InventoryUtil
         
         try
         {
-        	mc.playerController.windowClick(
+        	mc.playerController.func_187098_a( //Former <>.windowClick(
         		mc.thePlayer.openContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
-				(shiftHold) ? 1 : 0,
+				(shiftHold) ? ClickType.PICKUP_ALL : ClickType.PICKUP, //(shiftHold) ? 1 : 0,
 				mc.thePlayer);
         }
         catch(Exception e)
         {
         	//Sometimes netManager in NetClientHandler.addToSendQueue() will throw a null pointer exception for an unknown reason.
         	//catching this seemingly random exception will prevent the game from crashing.
-        }
-    }
-    
-    
-    
-    /**
-     * Helper class whose purpose is to release right click and reselect the player's last selected item.
-     */
-    class SwapTimerTask extends TimerTask
-    {
-    	private int srcIndex;
+		}
+	}
+
+
+	/**
+	 * Helper class whose purpose is to release right click and reselect the player's last selected item.
+	 */
+	class SwapTimerTask extends TimerTask {
+		private int srcIndex;
     	private int destIndex;
 
-    	public SwapTimerTask(int srcIndex, int destIndex)
-    	{
-    		this.srcIndex = srcIndex;
-    		this.destIndex = destIndex;
+		/**
+		 * Instantiates a new Swap timer task.
+		 *
+		 * @param srcIndex  the src index
+		 * @param destIndex the dest index
+		 */
+		public SwapTimerTask(int srcIndex, int destIndex) {
+			this.srcIndex = srcIndex;
+			this.destIndex = destIndex;
     	}
 
     	@Override

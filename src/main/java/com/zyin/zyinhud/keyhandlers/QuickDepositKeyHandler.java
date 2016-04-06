@@ -11,11 +11,22 @@ import com.zyin.zyinhud.mods.QuickDeposit;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
+/**
+ * The type Quick deposit key handler.
+ */
 public class QuickDepositKeyHandler implements ZyinHUDKeyHandlerBase
 {
-    public static final String HotkeyDescription = "key.zyinhud.quickdeposit";
-    
-	public static void Pressed(KeyInputEvent event) 
+	/**
+	 * The constant HotkeyDescription.
+	 */
+	public static final String HotkeyDescription = "key.zyinhud.quickdeposit";
+
+	/**
+	 * Pressed.
+	 *
+	 * @param event the event
+	 */
+	public static void Pressed(KeyInputEvent event)
 	{
 		if (!(mc.currentScreen instanceof GuiContainer))
         {
@@ -34,7 +45,12 @@ public class QuickDepositKeyHandler implements ZyinHUDKeyHandlerBase
     
     
     private static boolean keyDown = false;
-    
+
+	/**
+	 * Client tick event.
+	 *
+	 * @param event the event
+	 */
 	public static void ClientTickEvent(ClientTickEvent event)
     {
     	if(mc.currentScreen instanceof GuiContainer)

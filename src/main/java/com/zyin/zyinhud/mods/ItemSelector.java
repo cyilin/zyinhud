@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
@@ -23,12 +23,14 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class ItemSelector extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
+	/**
+	 * Enables/Disables this Mod
+	 */
 	public static boolean Enabled;
 
 	/**
 	 * Toggles this Mod on or off
-	 * 
+	 *
 	 * @return The state the Mod was changed to
 	 */
 	public static boolean ToggleEnabled()
@@ -36,13 +38,22 @@ public class ItemSelector extends ZyinHUDModBase
 		return Enabled = !Enabled;
 	}
 
-	/** The current mode for this mod */
+	/**
+	 * The current mode for this mod
+	 */
 	public static Modes Mode;
 
-	/** The enum for the different types of Modes this mod can have */
-	public static enum Modes
-	{
+	/**
+	 * The enum for the different types of Modes this mod can have
+	 */
+	public static enum Modes {
+		/**
+		 * All modes.
+		 */
 		ALL(Localization.get("itemselector.mode.all")),
+		/**
+		 * Same column modes.
+		 */
 		SAME_COLUMN(Localization.get("itemselector.mode.column"));
 
 		private String friendlyName;
@@ -52,35 +63,47 @@ public class ItemSelector extends ZyinHUDModBase
 			this.friendlyName = friendlyName;
 		}
 
-        /**
-         * Sets the next availble mode for this mod
-         */
-        public static Modes ToggleMode()
-        {
-        	return ToggleMode(true);
-        }
-        /**
-         * Sets the next availble mode for this mod if forward=true, or previous mode if false
-         */
-        public static Modes ToggleMode(boolean forward)
-        {
-        	if (forward)
+		/**
+		 * Sets the next availble mode for this mod
+		 *
+		 * @return the modes
+		 */
+		public static Modes ToggleMode() {
+			return ToggleMode(true);
+		}
+
+		/**
+		 * Sets the next availble mode for this mod if forward=true, or previous mode if false
+		 *
+		 * @param forward the forward
+		 * @return the modes
+		 */
+		public static Modes ToggleMode(boolean forward) {
+			if (forward)
         		return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         	else
         		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
-        }
-
-		/**
-         * Gets the mode based on its internal name as written in the enum declaration
-		 * @param modeName
-		 * @return
-		 */
-		public static Modes GetMode(String modeName)
-		{
-        	try {return Modes.valueOf(modeName);}
-        	catch (IllegalArgumentException e) {return values()[0];}
 		}
 
+		/**
+		 * Gets the mode based on its internal name as written in the enum declaration
+		 *
+		 * @param modeName the mode name
+		 * @return modes
+		 */
+		public static Modes GetMode(String modeName) {
+			try {
+				return Modes.valueOf(modeName);
+			} catch (IllegalArgumentException e) {
+				return values()[0];
+			}
+		}
+
+		/**
+		 * Get friendly name string.
+		 *
+		 * @return the string
+		 */
 		public String GetFriendlyName()
 		{
 			return friendlyName;
@@ -92,31 +115,67 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	public static boolean UseMouseSideButtons;
 
+	/**
+	 * The constant widgetTexture.
+	 */
 	protected static final ResourceLocation widgetTexture = new ResourceLocation("textures/gui/widgets.png");
 
+	/**
+	 * The constant WHEEL_UP.
+	 */
 	public static final int WHEEL_UP = -1;
+	/**
+	 * The constant WHEEL_DOWN.
+	 */
 	public static final int WHEEL_DOWN = 1;
 
+	/**
+	 * The constant timeout.
+	 */
 	protected static int timeout;
+	/**
+	 * The constant defaultTimeout.
+	 */
 	public static final int defaultTimeout = 200;
+	/**
+	 * The constant minTimeout.
+	 */
 	public static final int minTimeout = 50;
+	/**
+	 * The constant maxTimeout.
+	 */
 	public static final int maxTimeout = 500;
 
 	private static int[] slotMemory = new int[InventoryPlayer.getHotbarSize()];
 
+	/**
+	 * The constant isCurrentlySelecting.
+	 */
 	protected static boolean isCurrentlySelecting = false;
+	/**
+	 * The constant isCurrentlyRendering.
+	 */
 	protected static boolean isCurrentlyRendering = false;
+	/**
+	 * The constant ticksToShow.
+	 */
 	protected static int ticksToShow = 0;
+	/**
+	 * The constant scrollAmount.
+	 */
 	protected static int scrollAmount = 0;
 	private static int previousDir = 0;
 	private static int targetInvSlot = -1;
 	private static int currentHotbarSlot = 0;
+	/**
+	 * The Current inventory.
+	 */
 	protected static ItemStack[] currentInventory = null;
 
 	/**
 	 * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
-	 * @param direction
-	 *            Direction player is scrolling toward
+	 *
+	 * @param direction Direction player is scrolling toward
 	 */
 	public static void Scroll(int direction)
 	{
@@ -139,8 +198,8 @@ public class ItemSelector extends ZyinHUDModBase
 
 	/**
 	 * Swaps the currently selected item by one toward the given direction
-	 * @param direction
-	 *            Direction player is scrolling toward
+	 *
+	 * @param direction Direction player is scrolling toward
 	 */
 	public static void SideButton(int direction)
 	{
@@ -212,6 +271,9 @@ public class ItemSelector extends ZyinHUDModBase
 			return true;
 	}
 
+	/**
+	 * On hotkey pressed.
+	 */
 	public static void OnHotkeyPressed()
 	{
 		if (!ItemSelector.Enabled)
@@ -221,7 +283,10 @@ public class ItemSelector extends ZyinHUDModBase
 		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
 		isCurrentlyRendering = true;
 	}
-	
+
+	/**
+	 * On hotkey released.
+	 */
 	public static void OnHotkeyReleased()
 	{
 		if (!ItemSelector.Enabled)
@@ -235,7 +300,8 @@ public class ItemSelector extends ZyinHUDModBase
 
 	/**
 	 * If selecting an item, this draws the player's inventory on-screen with the current selection.
-	 * @param partialTicks
+	 *
+	 * @param partialTicks the partial ticks
 	 */
 	public static void RenderOntoHUD(float partialTicks)
 	{
@@ -389,22 +455,30 @@ public class ItemSelector extends ZyinHUDModBase
 		isCurrentlySelecting = false;
 	}
 
-	public static int GetTimeout()
-	{
+	/**
+	 * Get timeout int.
+	 *
+	 * @return the int
+	 */
+	public static int GetTimeout() {
 		return timeout;
 	}
 
-	public static void SetTimeout(int value)
-	{
+	/**
+	 * Set timeout.
+	 *
+	 * @param value the value
+	 */
+	public static void SetTimeout(int value) {
 		timeout = MathHelper.clamp_int(value, minTimeout, maxTimeout);
 	}
 
-    /**
-     * Toggles using the mouse forward and back buttons
-     * @return 
-     */
-    public static boolean ToggleUseMouseSideButtons()
-    {
-    	return UseMouseSideButtons = !UseMouseSideButtons;
+	/**
+	 * Toggles using the mouse forward and back buttons
+	 *
+	 * @return boolean
+	 */
+	public static boolean ToggleUseMouseSideButtons() {
+		return UseMouseSideButtons = !UseMouseSideButtons;
     }
 }

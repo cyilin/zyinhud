@@ -7,13 +7,23 @@ import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 
+/**
+ * The type Zyin hud options key handler.
+ */
 public class ZyinHUDOptionsKeyHandler implements ZyinHUDKeyHandlerBase
 {
+    /**
+     * The constant HotkeyDescription.
+     */
     public static final String HotkeyDescription = "key.zyinhud.zyinhudoptions";
-    
-	public static void Pressed(KeyInputEvent event) 
-	{
-		if (mc.currentScreen != null)
+
+    /**
+     * Pressed.
+     *
+     * @param event the event
+     */
+    public static void Pressed(KeyInputEvent event) {
+        if (mc.currentScreen != null)
         {
             return;    //don't activate if the user is looking at a GUI
         }

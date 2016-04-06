@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.Vec3d;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
@@ -60,8 +60,8 @@ public class HUDEntityTrackerHelper {
     /**
      * Calculates the on-screen (x,y) positions of entities and renders various
      * overlays over them.
-     * 
-     * @param partialTickTime
+     *
+     * @param partialTickTime the partial tick time
      */
     public static void RenderEntityInfo(float partialTickTime)
     {
@@ -80,12 +80,12 @@ public class HUDEntityTrackerHelper {
             double yaw  = ((me.rotationYaw + 90)  * Math.PI) / 180;
             
             // direction the player is facing
-            Vec3 lookDir = new Vec3(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
+            Vec3d lookDir = new Vec3d(Math.sin(pitch) * Math.cos(yaw), Math.cos(pitch), Math.sin(pitch) * Math.sin(yaw));
             
             if (mc.gameSettings.thirdPersonView == 2)
             {
                 // reversed 3rd-person view; flip the look direction
-                lookDir = new Vec3(lookDir.xCoord * -1, lookDir.yCoord * -1, lookDir.zCoord * -1);
+                lookDir = new Vec3d(lookDir.xCoord * -1, lookDir.yCoord * -1, lookDir.zCoord * -1);
             }
             
             ScaledResolution res = new ScaledResolution(mc);
@@ -116,7 +116,7 @@ public class HUDEntityTrackerHelper {
                 double entityZ = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTickTime;
                 
                 // direction to target entity
-                Vec3 toEntity = new Vec3(entityX - meX, entityY - meY, entityZ - meZ);
+                Vec3d toEntity = new Vec3d(entityX - meX, entityY - meY, entityZ - meZ);
                 
                 float x = (float)toEntity.xCoord;
                 float y = (float)toEntity.yCoord;
@@ -134,8 +134,8 @@ public class HUDEntityTrackerHelper {
                     final double angle = 89.0 * pi / 180;
                     final double sin = Math.sin(angle);
                     final double cos = Math.cos(angle);
-                    
-                    Vec3 ortho = lookDir.crossProduct(toEntity); // vector orthogonal to look direction and direction to target entity
+
+                    Vec3d ortho = lookDir.crossProduct(toEntity); // vector orthogonal to look direction and direction to target entity
                     double ox = ortho.xCoord;
                     double oy = ortho.yCoord;
                     double oz = ortho.zCoord;

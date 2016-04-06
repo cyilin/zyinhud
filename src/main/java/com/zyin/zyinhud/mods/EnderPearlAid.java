@@ -11,18 +11,21 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class EnderPearlAid extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
+
     /**
      * Makes the player throw an ender pearl if they have one.
      */

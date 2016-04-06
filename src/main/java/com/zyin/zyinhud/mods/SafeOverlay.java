@@ -35,12 +35,14 @@ import net.minecraft.block.BlockStainedGlass;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockWall;
 import net.minecraft.block.BlockWeb;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.EnumSkyBlock;
-
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.state.BlockStateBase;
 import org.lwjgl.opengl.GL11;
 
 import com.zyin.zyinhud.util.Localization;
@@ -53,25 +55,38 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public class SafeOverlay extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Off modes.
+         */
         OFF(Localization.get("safeoverlay.mode.off")),
+        /**
+         * On modes.
+         */
         ON(Localization.get("safeoverlay.mode.on"));
         
         private String friendlyName;
@@ -83,23 +98,31 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[0];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
@@ -122,8 +145,17 @@ public class SafeOverlay extends ZyinHUDModBase
      * drawDistance = 175 = 42,875,000 blocks (max)
      */
     protected int drawDistance = 20;
+    /**
+     * The constant defaultDrawDistance.
+     */
     public static final int defaultDrawDistance = 20;
+    /**
+     * The constant minDrawDistance.
+     */
     public static final int minDrawDistance = 2;	//can't go lower than 2. setting this to 1 dispays nothing
+    /**
+     * The constant maxDrawDistance.
+     */
     public static final int maxDrawDistance = 175;	//175 is the edge of the visible map on far
 
     /**
@@ -148,7 +180,10 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     public static SafeOverlay instance = new SafeOverlay();
 
-    
+
+    /**
+     * Instantiates a new Safe overlay.
+     */
     protected SafeOverlay()
     {
         playerPosition = new Position();
@@ -173,8 +208,16 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     class SafeCalculatorThread extends Thread
     {
-    	Position cachedPlayerPosition;
-    	
+        /**
+         * The Cached player position.
+         */
+        Position cachedPlayerPosition;
+
+        /**
+         * Instantiates a new Safe calculator thread.
+         *
+         * @param playerPosition the player position
+         */
         SafeCalculatorThread(Position playerPosition)
         {
             super("Safe Overlay Calculator Thread");
@@ -218,13 +261,14 @@ public class SafeOverlay extends ZyinHUDModBase
 			}
         }
     }
-    
-    
+
+
     /**
      * Determines if any mob can spawn at a position. Works very well at detecting
      * if bipeds or spiders can spawn there.
+     *
      * @param pos Position of the block whos surface gets checked
-     * @return
+     * @return boolean
      */
     public static boolean CanMobsSpawnAtPosition(Position pos)
     {
@@ -270,12 +314,13 @@ public class SafeOverlay extends ZyinHUDModBase
     	
     	return false;
     }
-    
+
 
     /**
      * Renders all unsafe areas around the player.
      * It will only recalculate the unsafe areas once every [updateFrequency] milliseconds
-     * @param partialTickTime
+     *
+     * @param partialTickTime the partial tick time
      */
     public void RenderAllUnsafePositionsMultithreaded(float partialTickTime)
     {
@@ -344,10 +389,11 @@ public class SafeOverlay extends ZyinHUDModBase
         GL11.glDisable(GL11.GL_BLEND);	//fixes [Journeymap] beacons being x-rayed as well
         GL11.glPopMatrix();
     }
-    
+
     /**
      * Renders an unsafe marker ("X" icon) at the position with colors depending on the Positions light levels.
      * It also takes into account the block above this position and relocates the mark vertically if needed.
+     *
      * @param position A position defined by (x,y,z) coordinates
      */
     protected void RenderUnsafeMarker(Position position)
@@ -364,7 +410,7 @@ public class SafeOverlay extends ZyinHUDModBase
         //some blocks, like farmland, have a different vertical (Y) bound
         double boundingBoxMinX = 0.0;
         double boundingBoxMaxX = 1.0;
-        double boundingBoxMaxY = block.getBlockBoundsMaxY();	//almost always 1, but farmland is 0.9375
+        double boundingBoxMaxY = block.FULL_BLOCK_AABB.maxY;//Former <>.getBlockBoundsMaxY();	//almost always 1, but farmland is 0.9375
         double boundingBoxMinZ = 0.0;
         double boundingBoxMaxZ = 1.0;
         float r, g, b, alpha;
@@ -409,7 +455,7 @@ public class SafeOverlay extends ZyinHUDModBase
             {
                 //is there a spawnable block on top of this one?
                 //if so, then render the mark higher up to match its height
-                boundingBoxMaxY = 1 + blockAbove.getBlockBoundsMaxY();
+                boundingBoxMaxY = 1 + blockAbove.FULL_BLOCK_AABB.maxY; //Former <>.getBlockBoundsMaxY();
             }
             else if (blockAbove instanceof BlockSnow)
             {
@@ -445,6 +491,7 @@ public class SafeOverlay extends ZyinHUDModBase
 
     /**
      * Gets the status of the Safe Overlay
+     *
      * @return the string "safe" if the Safe Overlay is enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
@@ -455,16 +502,17 @@ public class SafeOverlay extends ZyinHUDModBase
         }
         else if (Mode == Modes.ON)
         {
-            return EnumChatFormatting.WHITE + Localization.get("safeoverlay.infoline");
+            return TextFormatting.WHITE + Localization.get("safeoverlay.infoline");
         }
         else
         {
-            return EnumChatFormatting.WHITE + "???";
+            return TextFormatting.WHITE + "???";
         }
     }
 
     /**
      * Gets the current draw distance.
+     *
      * @return the draw distance radius
      */
     public int GetDrawDistance()
@@ -474,6 +522,7 @@ public class SafeOverlay extends ZyinHUDModBase
 
     /**
      * Sets the current draw distance.
+     *
      * @param newDrawDistance the new draw distance
      * @return the updated draw distance
      */
@@ -485,22 +534,27 @@ public class SafeOverlay extends ZyinHUDModBase
 
     /**
      * Increases the current draw distance by 3 blocks.
+     *
      * @return the updated draw distance
      */
     public int IncreaseDrawDistance()
     {
         return SetDrawDistance(drawDistance + 3);
     }
+
     /**
      * Decreases the current draw distance by 3 blocks.
+     *
      * @return the updated draw distance
      */
     public int DecreaseDrawDistance()
     {
         return SetDrawDistance(drawDistance - 3);
     }
+
     /**
      * Increases the current draw distance.
+     *
      * @param amount how much to increase the draw distance by
      * @return the updated draw distance
      */
@@ -508,8 +562,10 @@ public class SafeOverlay extends ZyinHUDModBase
     {
         return SetDrawDistance(drawDistance + amount);
     }
+
     /**
      * Decreases the current draw distance.
+     *
      * @param amount how much to increase the draw distance by
      * @return the updated draw distance
      */
@@ -520,14 +576,17 @@ public class SafeOverlay extends ZyinHUDModBase
 
     /**
      * Checks if see through walls mode is enabled.
-     * @return
+     *
+     * @return boolean
      */
     public boolean GetSeeUnsafePositionsThroughWalls()
     {
         return renderUnsafePositionsThroughWalls;
     }
+
     /**
      * Sets seeing unsafe areas in the Nether
+     *
      * @param displayInUnsafeAreasInNether true or false
      * @return the updated see Nether viewing mode
      */
@@ -535,24 +594,30 @@ public class SafeOverlay extends ZyinHUDModBase
     {
         return displayInNether = displayInUnsafeAreasInNether;
     }
+
     /**
      * Gets if you can see unsafe areas in the Nether
+     *
      * @return the Nether viewing mode
      */
     public boolean GetDisplayInNether()
     {
         return displayInNether;
     }
+
     /**
      * Toggles the current display in Nether mode
+     *
      * @return the updated see display in Nether mode
      */
     public boolean ToggleDisplayInNether()
     {
         return SetDisplayInNether(!displayInNether);
     }
+
     /**
      * Sets the see through wall mode
+     *
      * @param safeOverlaySeeThroughWalls true or false
      * @return the updated see through wall mode
      */
@@ -560,16 +625,20 @@ public class SafeOverlay extends ZyinHUDModBase
     {
         return renderUnsafePositionsThroughWalls = safeOverlaySeeThroughWalls;
     }
+
     /**
      * Toggles the current see through wall mode
+     *
      * @return the udpated see through wall mode
      */
     public boolean ToggleSeeUnsafePositionsThroughWalls()
     {
         return SetSeeUnsafePositionsThroughWalls(!renderUnsafePositionsThroughWalls);
     }
+
     /**
      * Sets the alpha value of the unsafe marks
+     *
      * @param alpha the alpha value of the unsafe marks, must be between (0.101, 1]
      * @return the updated alpha value
      */
@@ -577,32 +646,38 @@ public class SafeOverlay extends ZyinHUDModBase
     {
         return unsafeOverlayTransparency = MathHelper.clamp_float(alpha, unsafeOverlayMinTransparency, unsafeOverlayMaxTransparency);
     }
+
     /**
      * gets the alpha value of the unsafe marks
+     *
      * @return the alpha value
      */
     public float GetUnsafeOverlayTransparency()
     {
         return unsafeOverlayTransparency;
     }
+
     /**
      * gets the smallest allowed alpha value of the unsafe marks
+     *
      * @return the alpha value
      */
     public float GetUnsafeOverlayMinTransparency()
     {
         return unsafeOverlayMinTransparency;
     }
+
     /**
      * gets the largest allowed alpha value of the unsafe marks
+     *
      * @return the alpha value
      */
     public float GetUnsafeOverlayMaxTransparency()
     {
         return unsafeOverlayMaxTransparency;
     }
-    
-    
+
+
     /**
      * Helper class to storing information about a location in the world.
      * <p>
@@ -611,12 +686,31 @@ public class SafeOverlay extends ZyinHUDModBase
      */
     class Position
     {
+        /**
+         * The X.
+         */
         public int x;
+        /**
+         * The Y.
+         */
         public int y;
+        /**
+         * The Z.
+         */
         public int z;
 
+        /**
+         * Instantiates a new Position.
+         */
         public Position() {}
 
+        /**
+         * Instantiates a new Position.
+         *
+         * @param x the x
+         * @param y the y
+         * @param z the z
+         */
         public Position(int x, int y, int z)
         {
             this.x = x;
@@ -624,11 +718,24 @@ public class SafeOverlay extends ZyinHUDModBase
             this.z = z;
         }
 
+        /**
+         * Instantiates a new Position.
+         *
+         * @param o the o
+         */
         public Position(Position o)
         {
             this(o.x, o.y, o.z);
         }
 
+        /**
+         * Instantiates a new Position.
+         *
+         * @param o  the o
+         * @param dx the dx
+         * @param dy the dy
+         * @param dz the dz
+         */
         public Position(Position o, int dx, int dy, int dz)
         {
             this(o.x + dx, o.y + dy, o.z + dz);
@@ -636,10 +743,11 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Gets the ID of a block relative to this block.
+         *
          * @param dx x location relative to this block
          * @param dy y location relative to this block
          * @param dz z location relative to this block
-         * @return
+         * @return block
          */
         public Block GetBlock(int dx, int dy, int dz)
         {
@@ -648,6 +756,7 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Checks if mobs can spawn ON the block at a location.
+         *
          * @param dx x location relative to this block
          * @param dy y location relative to this block
          * @param dz z location relative to this block
@@ -664,10 +773,10 @@ public class SafeOverlay extends ZyinHUDModBase
             {
                 return false;
             }
-            
-            if (block.isOpaqueCube()
-            	|| mc.theWorld.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
-            	|| block instanceof BlockFarmland)	//the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
+
+            if (block.getBlockState().getBaseState().isOpaqueCube()
+                    || mc.theWorld.isBlockFullCube(new BlockPos(x + dx, y + dy, z + dz))// FIXME: Temporary fix for former <>.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
+                    || block instanceof BlockFarmland)	//the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
             {
                 return true;
             }
@@ -677,6 +786,7 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Checks if mobs can spawn IN the block at a location.
+         *
          * @param dx x location relative to this block
          * @param dy y location relative to this block
          * @param dz z location relative to this block
@@ -691,7 +801,7 @@ public class SafeOverlay extends ZyinHUDModBase
                 return true;
             }
 
-            if (block.isOpaqueCube())	//majority of blocks: dirt, stone, etc.
+            if (block.getBlockState().getBaseState().isOpaqueCube()) //majority of blocks: dirt, stone, etc.
             {
                 return false;
             }
@@ -726,9 +836,10 @@ public class SafeOverlay extends ZyinHUDModBase
                     || block instanceof BlockWall
                     || block instanceof BlockWeb);
         }
-        
+
         /**
          * Checks if a block is an opqaue cube.
+         *
          * @param dx x location relative to this block
          * @param dy y location relative to this block
          * @param dz z location relative to this block
@@ -743,11 +854,12 @@ public class SafeOverlay extends ZyinHUDModBase
                 return false;
             }
 
-            return block.isOpaqueCube();
+            return block.getBlockState().getBaseState().isOpaqueCube();
         }
 
         /**
          * Checks if a block is air.
+         *
          * @param dx x location relative to this block
          * @param dy y location relative to this block
          * @param dz z location relative to this block
@@ -767,7 +879,8 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Gets the light level of the spot above this block. Does not take into account sunlight.
-         * @return 0-15
+         *
+         * @return 0 -15
          */
         public int GetLightLevelWithoutSky()
         {
@@ -776,7 +889,8 @@ public class SafeOverlay extends ZyinHUDModBase
 
         /**
          * Gets the light level of the spot above this block. Take into account sunlight.
-         * @return 0-15
+         *
+         * @return 0 -15
          */
         public int GetLightLevelWithSky()
         {

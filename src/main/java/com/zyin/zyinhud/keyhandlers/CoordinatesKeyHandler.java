@@ -10,11 +10,22 @@ import com.zyin.zyinhud.mods.Coordinates;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 
+/**
+ * The type Coordinates key handler.
+ */
 public class CoordinatesKeyHandler implements ZyinHUDKeyHandlerBase
 {
-    public static final String HotkeyDescription = "key.zyinhud.coordinates";
-    
-	public static void Pressed(KeyInputEvent event) 
+	/**
+	 * The constant HotkeyDescription.
+	 */
+	public static final String HotkeyDescription = "key.zyinhud.coordinates";
+
+	/**
+	 * Pressed.
+	 *
+	 * @param event the event
+	 */
+	public static void Pressed(KeyInputEvent event)
 	{
 		Coordinates.PasteCoordinatesIntoChat();
 	}
@@ -22,7 +33,12 @@ public class CoordinatesKeyHandler implements ZyinHUDKeyHandlerBase
 
     
     private static boolean keyDown = false;
-    
+
+	/**
+	 * Client tick event.
+	 *
+	 * @param event the event
+	 */
 	public static void ClientTickEvent(ClientTickEvent event)
     {
 		if(mc.currentScreen != null && mc.currentScreen instanceof GuiChat)

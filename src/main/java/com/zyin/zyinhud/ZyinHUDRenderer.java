@@ -4,12 +4,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -28,34 +28,36 @@ import com.zyin.zyinhud.mods.InfoLine;
 import com.zyin.zyinhud.mods.ItemSelector;
 import com.zyin.zyinhud.mods.PotionTimers;
 import com.zyin.zyinhud.mods.SafeOverlay;
+
 /**
  * This class is in charge of rendering things onto the HUD and into the game world.
  */
 public class ZyinHUDRenderer
 {
-	public static final ZyinHUDRenderer instance = new ZyinHUDRenderer();
-	private static Minecraft mc = Minecraft.getMinecraft();
-	
-	/**
-	 * Event fired at various points during the GUI rendering process.
-	 * We render anything that need to be rendered onto the HUD in this method.
-	 * @param event
-	 */
+    /**
+     * The constant instance.
+     */
+    public static final ZyinHUDRenderer instance = new ZyinHUDRenderer();
+    private static Minecraft mc = Minecraft.getMinecraft();
+
+    /**
+     * Event fired at various points during the GUI rendering process.
+     * We render anything that need to be rendered onto the HUD in this method.
+     *
+     * @param event the event
+     */
     @SubscribeEvent
     public void RenderGameOverlayEvent(RenderGameOverlayEvent event)
     {
     	//render everything onto the screen
-    	if(event.type == RenderGameOverlayEvent.ElementType.TEXT)
-    	{
-    		InfoLine.RenderOntoHUD();
+        if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT) {
+            InfoLine.RenderOntoHUD();
     		DistanceMeasurer.RenderOntoHUD();
             DurabilityInfo.RenderOntoHUD();
             PotionTimers.RenderOntoHUD();
-            HUDEntityTrackerHelper.RenderEntityInfo(event.partialTicks);	//calls other mods that need to render things on the HUD near entities
-            ItemSelector.RenderOntoHUD(event.partialTicks);
-    	}
-    	else if(event.type == RenderGameOverlayEvent.ElementType.DEBUG)
-    	{
+            HUDEntityTrackerHelper.RenderEntityInfo(event.getPartialTicks());    //calls other mods that need to render things on the HUD near entities
+            ItemSelector.RenderOntoHUD(event.getPartialTicks());
+        } else if (event.getType() == RenderGameOverlayEvent.ElementType.DEBUG) {
             AnimalInfo.RenderOntoDebugMenu();
     	}
     	
@@ -66,38 +68,38 @@ public class ZyinHUDRenderer
     		PotionTimers.DisableInventoryPotionEffects((InventoryEffectRenderer)mc.currentScreen);
     	}
     }
-    
+
 
     /**
      * Event fired when the world gets rendered.
      * We render anything that need to be rendered into the game world in this method.
-     * @param event
+     *
+     * @param event the event
      */
     @SubscribeEvent
     public void RenderWorldLastEvent(RenderWorldLastEvent event)
     {
         //render unsafe positions (cache calculations are done from this render method)
-        SafeOverlay.instance.RenderAllUnsafePositionsMultithreaded(event.partialTicks);
-    	
+        SafeOverlay.instance.RenderAllUnsafePositionsMultithreaded(event.getPartialTicks());
+
         //calls other mods that need to render things in the game world nearby other entities
-        RenderEntityTrackerHelper.RenderEntityInfo(event.partialTicks);
+        RenderEntityTrackerHelper.RenderEntityInfo(event.getPartialTicks());
         
         //store world render transform matrices for later use when rendering HUD
         HUDEntityTrackerHelper.StoreMatrices();
     }
-    
-    
-    
 
-	/**
-	 * Renders an Item icon in the 3D world at the specified coordinates
-	 * @param item
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param partialTickTime
-	 */
-	public static void RenderFloatingItemIcon(float x, float y, float z, Item item, float partialTickTime)
+
+    /**
+     * Renders an Item icon in the 3D world at the specified coordinates
+     *
+     * @param x               the x
+     * @param y               the y
+     * @param z               the z
+     * @param item            the item
+     * @param partialTickTime the partial tick time
+     */
+    public static void RenderFloatingItemIcon(float x, float y, float z, Item item, float partialTickTime)
     {
     	RenderManager renderManager = mc.getRenderManager();
         
@@ -129,20 +131,21 @@ public class ZyinHUDRenderer
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glPopMatrix();
     }
-	
-	/**
-	 * Renders a texture at the specified location
-	 * Copy/pasted static version of Gui.func_175175_a()
-	 * @param x
-	 * @param y
-	 * @param item
-	 * @param width
-	 * @param height
-	 */
+
+    /**
+     * Renders a texture at the specified location
+     * Copy/pasted static version of Gui.func_175175_a()
+     *
+     * @param x      the x
+     * @param y      the y
+     * @param item   the item
+     * @param width  the width
+     * @param height the height
+     */
     public static void RenderItemTexture(int x, int y, Item item, int width, int height)
     {
         IBakedModel iBakedModel = mc.getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item));
-        TextureAtlasSprite textureAtlasSprite = mc.getTextureMapBlocks().getAtlasSprite(iBakedModel.getTexture().getIconName());
+        TextureAtlasSprite textureAtlasSprite = mc.getTextureMapBlocks().getAtlasSprite(iBakedModel.getParticleTexture().getIconName());
         mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
         
         RenderTexture(x, y, textureAtlasSprite, width, height, 0);
@@ -163,19 +166,19 @@ public class ZyinHUDRenderer
         
         RenderTexture(x, y, textureAtlasSprite, width, height, 0);
     }*/
-	
-    
+
 
     /**
      * Draws a texture at the specified 2D coordinates
-     * @param x X coordinate
-     * @param y Y coordinate
-     * @param u X coordinate of the texture inside of the .png
-     * @param v Y coordinate of the texture inside of the .png
-     * @param width width of the texture
-     * @param height height of the texture
+     *
+     * @param x                X coordinate
+     * @param y                Y coordinate
+     * @param u                X coordinate of the texture inside of the .png
+     * @param v                Y coordinate of the texture inside of the .png
+     * @param width            width of the texture
+     * @param height           height of the texture
      * @param resourceLocation A reference to the texture's ResourceLocation. If null, it'll use the last used resource.
-     * @param scale How much to scale the texture by when rendering it
+     * @param scale            How much to scale the texture by when rendering it
      */
     public static void RenderCustomTexture(int x, int y, int u, int v, int width, int height, ResourceLocation resourceLocation, float scale)
     {
@@ -206,16 +209,16 @@ public class ZyinHUDRenderer
 	private static void RenderTexture(int x, int y, TextureAtlasSprite textureAtlasSprite, int width, int height, double zLevel)
 	{
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        VertexBuffer worldrenderer = tessellator.getBuffer();
         
         //worldrenderer.startDrawingQuads();
-        worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181707_g);	//I have no clue what the DefaultVertexFormats are, but field_181707_g works
-        
-        worldrenderer.func_181662_b((double)(x), 			(double)(y + height), 	(double)zLevel).func_181673_a((double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMaxV()).func_181675_d();
-        worldrenderer.func_181662_b((double)(x + width), 	(double)(y + height), 	(double)zLevel).func_181673_a((double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMaxV()).func_181675_d();
-        worldrenderer.func_181662_b((double)(x + width), 	(double)(y), 			(double)zLevel).func_181673_a((double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMinV()).func_181675_d();
-        worldrenderer.func_181662_b((double)(x), 			(double)(y), 			(double)zLevel).func_181673_a((double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMinV()).func_181675_d();
-        
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);    //I have no clue what the DefaultVertexFormats are, but field_181707_g works
+
+        worldrenderer.pos((double) (x), (double) (y + height), (double) zLevel).tex((double) textureAtlasSprite.getMaxU(), (double) textureAtlasSprite.getMaxV()).endVertex();
+        worldrenderer.pos((double) (x + width), (double) (y + height), (double) zLevel).tex((double) textureAtlasSprite.getMinU(), (double) textureAtlasSprite.getMaxV()).endVertex();
+        worldrenderer.pos((double) (x + width), (double) (y), (double) zLevel).tex((double) textureAtlasSprite.getMinU(), (double) textureAtlasSprite.getMinV()).endVertex();
+        worldrenderer.pos((double) (x), (double) (y), (double) zLevel).tex((double) textureAtlasSprite.getMaxU(), (double) textureAtlasSprite.getMinV()).endVertex();
+        //Former `func_181673_a` -> `tex`                                     former `func_181675_d`
         /* code from 1.8
         worldrenderer.addVertexWithUV((double)(x), 			(double)(y + height), 	(double)zLevel, (double)textureAtlasSprite.getMinU(), (double)textureAtlasSprite.getMaxV());
         worldrenderer.addVertexWithUV((double)(x + width), 	(double)(y + height), 	(double)zLevel, (double)textureAtlasSprite.getMaxU(), (double)textureAtlasSprite.getMaxV());
@@ -225,35 +228,36 @@ public class ZyinHUDRenderer
         
         tessellator.draw();
 	}
-	
-	
-	
-	/**
-	 * Renders floating text in the 3D world at a specific position.
-	 * @param text The text to render
-	 * @param x X coordinate in the game world
-	 * @param y Y coordinate in the game world
-	 * @param z Z coordinate in the game world
-	 * @param color 0xRRGGBB text color
-	 * @param renderBlackBackground render a pretty black border behind the text?
-	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
-	 */
+
+
+    /**
+     * Renders floating text in the 3D world at a specific position.
+     *
+     * @param text                  The text to render
+     * @param x                     X coordinate in the game world
+     * @param y                     Y coordinate in the game world
+     * @param z                     Z coordinate in the game world
+     * @param color                 0xRRGGBB text color
+     * @param renderBlackBackground render a pretty black border behind the text?
+     * @param partialTickTime       Usually taken from RenderWorldLastEvent.partialTicks variable
+     */
     public static void RenderFloatingText(String text, float x, float y, float z, int color, boolean renderBlackBackground, float partialTickTime)
     {
     	String textArray[] = {text};
     	RenderFloatingText(textArray, x, y, z, color, renderBlackBackground, partialTickTime);
     }
-    
+
     /**
-	 * Renders floating lines of text in the 3D world at a specific position.
-	 * @param text The string array of text to render
-	 * @param x X coordinate in the game world
-	 * @param y Y coordinate in the game world
-	 * @param z Z coordinate in the game world
-	 * @param color 0xRRGGBB text color
-	 * @param renderBlackBackground render a pretty black border behind the text?
-	 * @param partialTickTime Usually taken from RenderWorldLastEvent.partialTicks variable
-	 */
+     * Renders floating lines of text in the 3D world at a specific position.
+     *
+     * @param text                  The string array of text to render
+     * @param x                     X coordinate in the game world
+     * @param y                     Y coordinate in the game world
+     * @param z                     Z coordinate in the game world
+     * @param color                 0xRRGGBB text color
+     * @param renderBlackBackground render a pretty black border behind the text?
+     * @param partialTickTime       Usually taken from RenderWorldLastEvent.partialTicks variable
+     */
     public static void RenderFloatingText(String[] text, float x, float y, float z, int color, boolean renderBlackBackground, float partialTickTime)
     {
     	//Thanks to Electric-Expansion mod for the majority of this code
@@ -299,8 +303,8 @@ public class ZyinHUDRenderer
             int stringMiddle = textWidth / 2;
             
             Tessellator tessellator = Tessellator.getInstance();
-            WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-        	
+            VertexBuffer worldrenderer = tessellator.getBuffer();
+
             //GL11.glDisable(GL11.GL_TEXTURE_2D);
             GlStateManager.disableTexture2D();
             
@@ -316,12 +320,12 @@ public class ZyinHUDRenderer
             */
             
             //This code taken from 1.8.8 net.minecraft.client.renderer.entity.Render.renderLivingLabel()
-            worldrenderer.func_181668_a(7, DefaultVertexFormats.field_181706_f);
-            worldrenderer.func_181662_b(-stringMiddle - 1, -1 + 0, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
-            worldrenderer.func_181662_b(-stringMiddle - 1, 8 + lineHeight*text.length-lineHeight, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
-            worldrenderer.func_181662_b(stringMiddle + 1, 8 + lineHeight*text.length-lineHeight, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
-            worldrenderer.func_181662_b(stringMiddle + 1, -1 + 0, 0.0D).func_181666_a(0.0F, 0.0F, 0.0F, 0.25F).func_181675_d();
-            
+            worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+            worldrenderer.pos((double) (-stringMiddle - 1), (double) (-1 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (-stringMiddle - 1), (double) (8 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (stringMiddle + 1), (double) (8 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (stringMiddle + 1), (double) (-1 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+
             tessellator.draw();
             //GL11.glEnable(GL11.GL_TEXTURE_2D);
             GlStateManager.enableTexture2D();
@@ -339,10 +343,11 @@ public class ZyinHUDRenderer
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         GL11.glPopMatrix();
     }
-    
+
 
     /**
      * Displays a short notification to the user. Uses the Minecraft code to display messages.
+     *
      * @param message the message to be displayed
      */
     public static void DisplayNotification(String message)

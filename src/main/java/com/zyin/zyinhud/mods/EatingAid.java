@@ -30,25 +30,38 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public class EatingAid extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Basic modes.
+         */
         BASIC(Localization.get("eatingaid.mode.basic")),
+        /**
+         * Intelligent modes.
+         */
         INTELLIGENT(Localization.get("eatingaid.mode.intelligent"));
         
         private String friendlyName;
@@ -60,13 +73,19 @@ public class EatingAid extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return ToggleMode(true);
         }
+
         /**
          * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         *
+         * @param forward the forward
+         * @return the modes
          */
         public static Modes ToggleMode(boolean forward)
         {
@@ -75,31 +94,45 @@ public class EatingAid extends ZyinHUDModBase
         	else
         		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[0];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
-    
-    /** Such as golden carrots, golden apples */
+
+    /**
+     * Such as golden carrots, golden apples
+     */
     public static boolean EatGoldenFood;
-    /** Such as raw chicken/porkchop/beef */
+    /**
+     * Such as raw chicken/porkchop/beef
+     */
     public static boolean EatRawFood;
-    /** Food found on the hotbar will be chosen over food found in the inventory */
+    /**
+     * Food found on the hotbar will be chosen over food found in the inventory
+     */
     public static boolean PrioritizeFoodInHotbar;
-    /** Treat mushroom stew as instant-eat */
+    /**
+     * Treat mushroom stew as instant-eat
+     */
     public static boolean UsePvPSoup;
     
     private Timer timer = new Timer();
@@ -113,8 +146,8 @@ public class EatingAid extends ZyinHUDModBase
     private int foodItemIndex;
     private int currentItemInventoryIndex;
     private int currentItemHotbarIndex;
-    
-    
+
+
     /**
      * Use this instance for all method calls.
      */
@@ -214,10 +247,10 @@ public class EatingAid extends ZyinHUDModBase
             r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
             isCurrentlyEating = true;
             previousEatFromHotbar = true;
-            
-        	ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-        	ItemFood currentFood = (ItemFood)currentItemStack.getItem();
-        	
+
+            ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
+            ItemFood currentFood = (ItemFood) currentItemStack.getItem();
+
             int eatingDurationInMilliseconds = 1000*currentFood.itemUseDuration / 20;
             
             //after this timer runs out we'll release right click to stop eating and select the previously selected item
@@ -247,8 +280,8 @@ public class EatingAid extends ZyinHUDModBase
         
         r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
         previousEatFromHotbar = false;
-        
-        ItemStack currentItemStack = mc.thePlayer.getHeldItem();
+
+        ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
         ItemFood currentFood = (ItemFood)currentItemStack.getItem();
         
         int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 20;
@@ -280,8 +313,7 @@ public class EatingAid extends ZyinHUDModBase
         		eatingDurationInMilliseconds + InventoryUtil.GetSuggestedItemSwapDelay());
         
     }
-    
-    
+
 
     /**
      * Stops eating by releasing right click and moving the food back to its original position.
@@ -312,15 +344,20 @@ public class EatingAid extends ZyinHUDModBase
 
     /**
      * Are we currently eating food?
-     * @return
+     *
+     * @return boolean
      */
     public boolean isEating()
     {
         return isCurrentlyEating;
     }
-    
-    
-    
+
+
+    /**
+     * Get food item index from inventory int.
+     *
+     * @return the int
+     */
     public int GetFoodItemIndexFromInventory()
     {
     	if(Mode == Modes.BASIC)
@@ -330,10 +367,11 @@ public class EatingAid extends ZyinHUDModBase
     	else
     		return -2;
     }
-    
+
     /**
      * Finds the food with the highest saturation value and returns its index in your inventory.
-     * @return
+     *
+     * @return int
      */
     public int GetStrongestFoodItemIndexFromInventory()
     {
@@ -371,9 +409,9 @@ public class EatingAid extends ZyinHUDModBase
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	saturationModifier = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
-                }
-                else if (potionId == Potion.saturation.id
-                		|| potionId == Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
+                } else if (potionId == 16262179    //Former known as `Potion.saturation.id`
+                        || potionId == 16262179) //Potion.heal.id
+                // modded foods like [Botania] Mana Cookie may have these effects
                 {
                 	saturationModifier = 999;	//setting the saturation value very high will make it appealing to the food selection algorithm
                 }
@@ -401,10 +439,9 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     saturationModifier = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
-                }
-                else if (potionId == Potion.poison.id
-                		|| potionId == Potion.hunger.id
-                        || potionId == Potion.confusion.id
+                } else if (potionId == 5149489   //Potion.poison.id
+                        || potionId == 5797459 //Potion.hunger.id
+                        || potionId == 5578058 //Potion.confusion.id
                         || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                 	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
@@ -424,11 +461,12 @@ public class EatingAid extends ZyinHUDModBase
         else
             return -1;
     }
-    
-    
+
+
     /**
      * Determines the best food that you can eat and returns its index in your inventory.
      * The best food is defined by not over eating (not wasting food), but still healing the most hunger.
+     *
      * @return the index in your inventory that has the best food to eat (9-34), or -1 if no food found.
      */
     public int GetBestFoodItemIndexFromInventory()
@@ -471,9 +509,8 @@ public class EatingAid extends ZyinHUDModBase
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	overeat = -1000;	//setting the overeat value very low will make it appealing to the food selection algorithm
-                }
-                else if (potionId == Potion.saturation.id
-                		|| potionId == Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
+                } else if (potionId == 16262179     //Potion.saturation.id
+                        || potionId == 16262179)   //Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
                 {
                 	overeat = -999;	//setting the overeat value very low will make it appealing to the food selection algorithm
                 }
@@ -501,10 +538,9 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     overeat = 997;	//setting the overeat value high will make it unappealing to the food selection algorithm
-                }
-                else if (potionId == Potion.poison.id
-                		|| potionId == Potion.hunger.id
-                        || potionId == Potion.confusion.id
+                } else if (potionId == 5149489   //Potion.poison.id
+                        || potionId == 5797459 //Potion.hunger.id
+                        || potionId == 5578058 //Potion.confusion.id
                         || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm
@@ -540,33 +576,32 @@ public class EatingAid extends ZyinHUDModBase
         Map smeltingList = FurnaceRecipes.instance().getSmeltingList();
         
         //if(smeltingList.containsKey(itemStack)) ... ;	//this doesn't work since the meta values for the item stacks are different
-        
-        Iterator it = smeltingList.entrySet().iterator();
-        while(it.hasNext())
-        {
-        	Entry entry = (Entry)it.next();
-        	ItemStack furnaceRecipeItemStack = (ItemStack)entry.getKey();
-        	
-        	if(furnaceRecipeItemStack.getItem().equals(itemStack.getItem()))
-        	{
-        		return true;
-        	}
+
+        for (Object o : smeltingList.entrySet()) {
+            Entry entry = (Entry) o;
+            ItemStack furnaceRecipeItemStack = (ItemStack) entry.getKey();
+
+            if (furnaceRecipeItemStack.getItem().equals(itemStack.getItem())) {
+                return true;
+            }
         }
         return false;
     }
-    
+
 
     /**
      * Toggles the whether you eat golden food or not
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleEatingGoldenFood()
     {
     	return EatGoldenFood = !EatGoldenFood;
     }
-    
+
     /**
      * Toggles the whether you eat raw (uncooked) food or not
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleEatingRawFood()
@@ -576,15 +611,17 @@ public class EatingAid extends ZyinHUDModBase
 
     /**
      * Toggles the prioritizing food in hotbar
+     *
      * @return The state it was changed to
      */
     public static boolean TogglePrioritizeFoodInHotbar()
     {
     	return PrioritizeFoodInHotbar = !PrioritizeFoodInHotbar;
     }
-    
+
     /**
      * Toggles enabling using PvP Soup
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleUsePvPSoup()
@@ -600,13 +637,19 @@ public class EatingAid extends ZyinHUDModBase
 
         /**
          * Helper class whose purpose is to release right click and set our status to not eating.
+         *
+         * @param r the r
          */
         StopEatingTimerTask(Robot r)
         {
             this.r = r;
         }
+
         /**
          * Helper class whose purpose is to release right click, set our status to not eating, and select a hotbar index.
+         *
+         * @param r                       the r
+         * @param hotbarIndexToBeSelected the hotbar index to be selected
          */
         StopEatingTimerTask(Robot r, int hotbarIndexToBeSelected)
         {

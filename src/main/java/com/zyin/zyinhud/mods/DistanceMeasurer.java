@@ -2,9 +2,10 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.RayTraceResult;
+//import net.minecraft;
 
 import com.zyin.zyinhud.util.Localization;
 
@@ -14,26 +15,42 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class DistanceMeasurer extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Off modes.
+         */
         OFF(Localization.get("distancemeasurer.mode.off")),
+        /**
+         * Simple modes.
+         */
         SIMPLE(Localization.get("distancemeasurer.mode.simple")),
+        /**
+         * Coordinate modes.
+         */
         COORDINATE(Localization.get("distancemeasurer.mode.complex"));
         
         private String friendlyName;
@@ -45,30 +62,41 @@ public class DistanceMeasurer extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[0];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
-    
 
+
+    /**
+     * Render onto hud.
+     */
     public static void RenderOntoHUD()
     {
         //if the player is in the world
@@ -88,18 +116,18 @@ public class DistanceMeasurer extends ZyinHUDModBase
             mc.fontRendererObj.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
         }
     }
-    
-    
+
 
     /**
      * Calculates the distance of the block the player is pointing at
+     *
      * @return the distance to a block if Distance Measurer is enabled, otherwise "".
      */
     protected static String CalculateDistanceString()
     {
-    	MovingObjectPosition objectMouseOver = mc.thePlayer.rayTrace(300, 1);
-    	
-        if (objectMouseOver != null && objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+        RayTraceResult objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+
+        if (objectMouseOver != null && objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
         {
             if (Mode == Modes.SIMPLE)
             {
@@ -138,23 +166,23 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 
             	double farthestHorizontalDistance = Math.max(Math.abs(deltaX), Math.abs(deltaZ));
                 double farthestDistance = Math.max(Math.abs(deltaY), farthestHorizontalDistance);
-                
-                return EnumChatFormatting.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
+
+                return TextFormatting.GOLD + "[" + String.format("%1$,.1f", farthestDistance) + "]";
             }
             else if (Mode == Modes.COORDINATE)
             {
             	BlockPos pos = objectMouseOver.getBlockPos();
-            	
-                return EnumChatFormatting.GOLD + "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
+
+                return TextFormatting.GOLD + "[" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + "]";
             }
             else
             {
-            	return EnumChatFormatting.GOLD + "[???]";
+                return TextFormatting.GOLD + "[???]";
             }
         }
         else
         {
-        	return EnumChatFormatting.GOLD + "["+Localization.get("distancemeasurer.far")+"]";
+            return TextFormatting.GOLD + "[" + Localization.get("distancemeasurer.far") + "]";
         }
     }
 }

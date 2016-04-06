@@ -12,7 +12,7 @@ import net.minecraft.item.ItemShears;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.item.ItemTool;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -30,26 +30,42 @@ import com.zyin.zyinhud.util.ModCompatibility;
  */
 public class DurabilityInfo extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-    /** The current mode for this mod */
-	public static TextModes TextMode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static TextModes TextMode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum TextModes
     {
+        /**
+         * None text modes.
+         */
         NONE(Localization.get("durabilityinfo.textmode.none")),
+        /**
+         * Text text modes.
+         */
         TEXT(Localization.get("durabilityinfo.textmode.text")),
+        /**
+         * Percentage text modes.
+         */
         PERCENTAGE(Localization.get("durabilityinfo.textmode.percentage"));
         
         private String friendlyName;
@@ -61,13 +77,19 @@ public class DurabilityInfo extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for text display
+         *
+         * @return the text modes
          */
         public static TextModes ToggleMode()
         {
         	return ToggleMode(true);
         }
+
         /**
          * Sets the next availble mode for text display if forward=true, or previous mode if false
+         *
+         * @param forward the forward
+         * @return the text modes
          */
         public static TextModes ToggleMode(boolean forward)
         {
@@ -76,55 +98,121 @@ public class DurabilityInfo extends ZyinHUDModBase
         	else
         		return TextMode = TextMode.ordinal() > 0 ? TextModes.values()[TextMode.ordinal() - 1] : TextModes.values()[TextModes.values().length - 1];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return text modes
          */
         public static TextModes GetMode(String modeName)
         {
         	try {return TextModes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[1];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
-    
-	protected static final ResourceLocation durabilityIconsResourceLocation = new ResourceLocation("zyinhud:textures/durability_icons.png");
-    
+
+    /**
+     * The constant durabilityIconsResourceLocation.
+     */
+    protected static final ResourceLocation durabilityIconsResourceLocation = new ResourceLocation("zyinhud:textures/durability_icons.png");
+
+    /**
+     * The constant ShowArmorDurability.
+     */
     public static boolean ShowArmorDurability;
+    /**
+     * The constant ShowItemDurability.
+     */
     public static boolean ShowItemDurability;
-	public static boolean ShowIndividualArmorIcons;
-    //public static boolean ShowDamageAsPercentage;
+    /**
+     * The constant ShowIndividualArmorIcons.
+     */
+    public static boolean ShowIndividualArmorIcons;
+    /**
+     * The constant AutoUnequipArmor.
+     */
+//public static boolean ShowDamageAsPercentage;
     public static boolean AutoUnequipArmor;
+    /**
+     * The constant AutoUnequipTools.
+     */
     public static boolean AutoUnequipTools;
+    /**
+     * The constant UseColoredNumbers.
+     */
     public static boolean UseColoredNumbers;
+    /**
+     * The constant DurabilityScale.
+     */
     public static float DurabilityScale = 1f;
 
+    /**
+     * The constant durabilityUpdateFrequency.
+     */
     public static final int durabilityUpdateFrequency = 600;
 
-    //U and V is the top left part of the image
+    /**
+     * The constant armorDurabilityScaler.
+     */
+//U and V is the top left part of the image
     //X and Y is the width and height of the image
     protected static float armorDurabilityScaler = 1/5f;
+    /**
+     * The constant armorDurabilityIconU.
+     */
     protected static int armorDurabilityIconU = 0;
+    /**
+     * The constant armorDurabilityIconV.
+     */
     protected static int armorDurabilityIconV = 0;
+    /**
+     * The constant armorDurabilityIconX.
+     */
     protected static int armorDurabilityIconX = (int)(5*16 * armorDurabilityScaler);
+    /**
+     * The constant armorDurabilityIconY.
+     */
     protected static int armorDurabilityIconY = (int)(7.5*16 * armorDurabilityScaler);
 
-    //the height/width of the tools being rendered
+    /**
+     * The constant toolX.
+     */
+//the height/width of the tools being rendered
     public static int toolX = 1 * 16;
+    /**
+     * The constant toolY.
+     */
     public static int toolY = 1 * 16;
 
-    //where the armor icon is rendered (these values replaced by the config settings)
+    /**
+     * The constant durabalityLocX.
+     */
+//where the armor icon is rendered (these values replaced by the config settings)
     public static int durabalityLocX = 30;
+    /**
+     * The constant durabalityLocY.
+     */
     public static int durabalityLocY = 20;
 
-    //where the tool icons are rendered (these values replaced by the config settings)
+    /**
+     * The constant equipmentLocX.
+     */
+//where the tool icons are rendered (these values replaced by the config settings)
     protected static int equipmentLocX = 20 + armorDurabilityIconX;
+    /**
+     * The constant equipmentLocY.
+     */
     protected static int equipmentLocY = 20;
 
     private static float durabilityDisplayThresholdForArmor;
@@ -225,16 +313,16 @@ public class DurabilityInfo extends ZyinHUDModBase
             }
         }
     }
-    
+
     /**
      * Draws an ItemStack at the specified location on screen with its durability bar and number.
-     * @param itemStack
-     * @param x
-     * @param y
+     *
+     * @param itemStack the item stack
+     * @param x         the x
+     * @param y         the y
      */
-	protected static void RenderItemIcon(ItemStack itemStack, int x, int y)
-	{
-		GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
+    protected static void RenderItemIcon(ItemStack itemStack, int x, int y) {
+        GL11.glEnable(GL11.GL_DEPTH_TEST);	//so the enchanted item effect is rendered properly
 		
 		//render the item with enchant effect
 		itemRenderer.renderItemAndEffectIntoGUI(itemStack, x, y);
@@ -299,32 +387,32 @@ public class DurabilityInfo extends ZyinHUDModBase
 			}
 		}
 	}
-	
-	/**
-	 * Returns a green/yellow/red color spectrum based on the different between currentDamage and maxDamage.
-	 * @param currentDamage
-	 * @param maxDamage
-	 * @return
-	 */
-	protected static int GetDamageColor(int currentDamage, int maxDamage)
-	{
-		float percent = 100 - (int)((double)currentDamage / maxDamage * 100);
+
+    /**
+     * Returns a green/yellow/red color spectrum based on the different between currentDamage and maxDamage.
+     *
+     * @param currentDamage the current damage
+     * @param maxDamage     the max damage
+     * @return int
+     */
+    protected static int GetDamageColor(int currentDamage, int maxDamage) {
+        float percent = 100 - (int)((double)currentDamage / maxDamage * 100);
 		
 		if(percent < 50)
 			return (int)(0xff0000 + ((int)(0xff * percent/50) << 8));
 		else
 			return (int)(0x00ff00 + ((int)(0xff * (100 - (percent-50)*2)/100) << 16));
 	}
-	
-    
+
+
     /**
      * Draws the broken durability image
-     * @param x
-     * @param y
+     *
+     * @param x the x
+     * @param y the y
      */
-	protected static void DrawBrokenArmorTexture(int x, int y)
-	{
-		GL11.glEnable(GL11.GL_BLEND);	//for a transparent texture
+    protected static void DrawBrokenArmorTexture(int x, int y) {
+        GL11.glEnable(GL11.GL_BLEND);	//for a transparent texture
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
 		GL11.glColor4f(255f, 255f, 255f, 255f);	//fixes transparency issue when a InfoLine Notification is displayed
@@ -336,7 +424,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 		
 		//GL11.glDisable(GL11.GL_BLEND);	//this turned the screen dark in the options menu
 	}
-    
+
     /**
      * Finds items in the players hot bar and equipped armor that is damaged and adds them to the damagedItemsList list.
      */
@@ -509,41 +597,61 @@ public class DurabilityInfo extends ZyinHUDModBase
     	return mc.currentScreen instanceof GuiZyinHUDOptions &&
     		(((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("durabilityinfo.name")));
     }
-    
+
+    /**
+     * Get durability display threshold for armor float.
+     *
+     * @return the float
+     */
     public static float GetDurabilityDisplayThresholdForArmor()
     {
 		return durabilityDisplayThresholdForArmor;
 	}
 
-	public static void SetDurabilityDisplayThresholdForArmor(float durabilityDisplayThreshold)
-	{
-		durabilityDisplayThresholdForArmor = durabilityDisplayThreshold;
+    /**
+     * Set durability display threshold for armor.
+     *
+     * @param durabilityDisplayThreshold the durability display threshold
+     */
+    public static void SetDurabilityDisplayThresholdForArmor(float durabilityDisplayThreshold) {
+        durabilityDisplayThresholdForArmor = durabilityDisplayThreshold;
 		CalculateDurabilityIcons();
 	}
 
+    /**
+     * Get durability display threshold for item float.
+     *
+     * @return the float
+     */
     public static float GetDurabilityDisplayThresholdForItem()
     {
 		return durabilityDisplayThresholdForItem;
 	}
 
-	public static void SetDurabilityDisplayThresholdForItem(float durabilityDisplayThreshold)
-	{
-		durabilityDisplayThresholdForItem = durabilityDisplayThreshold;
+    /**
+     * Set durability display threshold for item.
+     *
+     * @param durabilityDisplayThreshold the durability display threshold
+     */
+    public static void SetDurabilityDisplayThresholdForItem(float durabilityDisplayThreshold) {
+        durabilityDisplayThresholdForItem = durabilityDisplayThreshold;
 		CalculateDurabilityIcons();
 	}
 
     /**
      * Gets the horizontal location where the durability icons are rendered.
-     * @return
+     *
+     * @return int
      */
     public static int GetHorizontalLocation()
     {
     	return durabalityLocX;
     }
-    
+
     /**
      * Sets the horizontal location where the durability icons are rendered.
-     * @param x
+     *
+     * @param x the x
      * @return the new x location
      */
     public static int SetHorizontalLocation(int x)
@@ -552,10 +660,11 @@ public class DurabilityInfo extends ZyinHUDModBase
     	equipmentLocX = durabalityLocX + armorDurabilityIconX;
     	return durabalityLocX;
     }
-    
+
     /**
      * Gets the vertical location where the durability icons are rendered.
-     * @return
+     *
+     * @return int
      */
     public static int GetVerticalLocation()
     {
@@ -564,7 +673,8 @@ public class DurabilityInfo extends ZyinHUDModBase
 
     /**
      * Sets the vertical location where the durability icons are rendered.
-     * @param y
+     *
+     * @param y the y
      * @return the new y location
      */
     public static int SetVerticalLocation(int y)
@@ -573,50 +683,61 @@ public class DurabilityInfo extends ZyinHUDModBase
     	equipmentLocY = durabalityLocY;
     	return durabalityLocY;
     }
-    
+
     /**
      * Toggles showing durability for armor
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleShowArmorDurability()
     {
     	return ShowArmorDurability = !ShowArmorDurability;
     }
+
     /**
      * Toggles showing durability for items
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleShowItemDurability()
     {
     	return ShowItemDurability = !ShowItemDurability;
     }
+
     /**
      * Toggles showing icons or an image for broken armor
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleShowIndividualArmorIcons()
     {
     	return ShowIndividualArmorIcons = !ShowIndividualArmorIcons;
     }
+
     /**
      * Toggles unequipping breaking armor
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleAutoUnequipArmor()
     {
     	return AutoUnequipArmor = !AutoUnequipArmor;
     }
+
     /**
      * Toggles unequipping breaking tools
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleAutoUnequipTools()
     {
     	return AutoUnequipTools = !AutoUnequipTools;
     }
+
     /**
      * Toggles using color
-     * @return 
+     *
+     * @return boolean
      */
     public static boolean ToggleUseColoredNumbers()
     {
