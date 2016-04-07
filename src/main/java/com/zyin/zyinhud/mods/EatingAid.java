@@ -18,6 +18,7 @@ import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.mods.Coordinates.Modes;
@@ -284,8 +285,8 @@ public class EatingAid extends ZyinHUDModBase
         ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
         ItemFood currentFood = (ItemFood)currentItemStack.getItem();
         
-        int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 20;
-        
+        int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 17; //I think 17 is better, for 20 can only be reached by fast computers
+        //Alternatively, may be we can introduce tps dectection in the future.
         if(UsePvPSoup && food.equals(Items.mushroom_stew) &&
     			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))	//for PvP Soup eating
         {
@@ -403,14 +404,19 @@ public class EatingAid extends ZyinHUDModBase
                 ItemFood food = (ItemFood)item;
                 float saturationModifier = food.getSaturationModifier(itemStack);
                 
-                Integer potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "aaaaaa");
-                if (potionId == null) potionId = -1;
+                PotionEffect potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "field_77851_ca"); //Former "aaaaa"
+                String potionName;
+                if (potionId == null) {
+                    potionName = "";
+                }else{
+                    potionName = potionId.getEffectName();
+                }
                 
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	saturationModifier = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
-                } else if (potionId == 16262179    //Former known as `Potion.saturation.id`
-                        || potionId == 16262179) //Potion.heal.id
+                } else if (potionName.equals("effect.saturation")    //Former known as `Potion.saturation.id`
+                        || potionName.equals("effect.heal")) //Potion.heal.id
                 // modded foods like [Botania] Mana Cookie may have these effects
                 {
                 	saturationModifier = 999;	//setting the saturation value very high will make it appealing to the food selection algorithm
@@ -439,9 +445,9 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     saturationModifier = 0.0003f;	//setting the saturation value low will make it unappealing to the food selection algorithm
-                } else if (potionId == 5149489   //Potion.poison.id
-                        || potionId == 5797459 //Potion.hunger.id
-                        || potionId == 5578058 //Potion.confusion.id
+                } else if (potionName.equals("effect.poison")   //Potion.poison.id
+                        || potionName.equals("effect.hunger") //Potion.hunger.id
+                        || potionName.equals("effect.confusion") //Potion.confusion.id
                         || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                 	saturationModifier = 0.0002f;	//setting the saturation value low will make it unappealing to the food selection algorithm
@@ -503,14 +509,20 @@ public class EatingAid extends ZyinHUDModBase
                 int overeat = foodNeeded - heal;
                 overeat = (overeat > 0) ? 0 : Math.abs(overeat);	//positive number, amount we would overeat by eating this food
                 
-                Integer potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "field_77851_ca");
-                if (potionId == null) potionId = -1;
+                //Integer potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "field_77851_ca");
+                PotionEffect potionId = ZyinHUDUtil.GetFieldByReflection(ItemFood.class, food, "potionId", "field_77851_ca");
+                String potionName;
+                if (potionId == null) {
+                    potionName = "";
+                }else{
+                    potionName = potionId.getEffectName();
+                }
 
                 if (UsePvPSoup && item.equals(Items.mushroom_stew))
                 {
                 	overeat = -1000;	//setting the overeat value very low will make it appealing to the food selection algorithm
-                } else if (potionId == 16262179     //Potion.saturation.id
-                        || potionId == 16262179)   //Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
+                } else if (potionName.equals("effect.saturation")     //Potion.saturation.id
+                        || potionName.equals("effect.heal"))   //Potion.heal.id)	//modded foods like [Botania] Mana Cookie may have these effects
                 {
                 	overeat = -999;	//setting the overeat value very low will make it appealing to the food selection algorithm
                 }
@@ -538,9 +550,9 @@ public class EatingAid extends ZyinHUDModBase
                     }
 
                     overeat = 997;	//setting the overeat value high will make it unappealing to the food selection algorithm
-                } else if (potionId == 5149489   //Potion.poison.id
-                        || potionId == 5797459 //Potion.hunger.id
-                        || potionId == 5578058 //Potion.confusion.id
+                } else if (potionName.equals("effect.poison")  //Potion.poison.id
+                        || potionName.equals("effect.hunger")  //Potion.hunger.id
+                        || potionName.equals("effect.confusion") //Potion.confusion.id
                         || FishType.byItemStack(itemStack) == FishType.PUFFERFISH)
                 {
                     overeat = 998;	//setting the overeat value high will make it unappealing to the food selection algorithm

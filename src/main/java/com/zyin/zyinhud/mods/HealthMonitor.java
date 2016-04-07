@@ -79,7 +79,7 @@ public class HealthMonitor extends ZyinHUDModBase
 		}
 
 		/**
-		 * Sets the next availble mode for this mod
+		 * Sets the next available mode for this mod
 		 *
 		 * @return the modes
 		 */
@@ -88,7 +88,7 @@ public class HealthMonitor extends ZyinHUDModBase
 		}
 
 		/**
-		 * Sets the next availble mode for this mod if forward=true, or previous mode if false
+		 * Sets the next available mode for this mod if forward=true, or previous mode if false
 		 *
 		 * @param forward the forward
 		 * @return the modes

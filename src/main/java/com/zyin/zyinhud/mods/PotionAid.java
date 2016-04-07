@@ -252,6 +252,9 @@ public class PotionAid extends ZyinHUDModBase
                     continue;
                 }
                 List potionEffects = PotionUtils.getEffectsFromStack(itemStack); //FIXME: Temporary fix
+                if (potionEffects.isEmpty()) {
+                    continue;
+                }
                 PotionEffect potionEffect = (PotionEffect) potionEffects.get(0);
                 String potionEffectName = potionEffect.getEffectName();
                 

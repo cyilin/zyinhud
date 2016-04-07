@@ -1382,7 +1382,7 @@ public class InventoryUtil
         
         try
         {
-	        mc.playerController.func_187098_a(
+	        mc.playerController.windowClick(
 	        		mc.thePlayer.inventoryContainer.windowId,
 	        		itemIndex,
 	        		(rightClick) ? 1 : 0,
@@ -1411,7 +1411,7 @@ public class InventoryUtil
         
         try
         {
-        	mc.playerController.func_187098_a( //Former <>.windowClick(
+        	mc.playerController.windowClick(
         		mc.thePlayer.openContainer.windowId,
         		itemIndex,
         		(rightClick) ? 1 : 0,
