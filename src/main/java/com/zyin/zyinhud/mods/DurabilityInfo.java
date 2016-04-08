@@ -3,15 +3,7 @@ package com.zyin.zyinhud.mods;
 import java.util.ArrayList;
 
 import net.minecraft.client.gui.GuiChat;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShears;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -453,10 +445,18 @@ public class DurabilityInfo extends ZyinHUDModBase
     private static void CalculateDurabilityIconsForTools()
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        ItemStack[] offhanditems = mc.thePlayer.inventory.offHandInventory;
 
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 10; i++)
         {
-            ItemStack itemStack = items[i];
+            ItemStack itemStack;
+            if (i < 9)
+            {
+                itemStack = items[i];
+            }else{
+                itemStack = offhanditems[0];//There will be only one item here
+            }
+
 
             if (itemStack != null)
             {
@@ -465,7 +465,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
-
+                    
                     if (maxDamage != 0 &&
                     		(1-(double)itemDamage / maxDamage) <= durabilityDisplayThresholdForItem)
                     {
@@ -515,6 +515,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 	    	|| item instanceof ItemHoe
 	        || item instanceof ItemShears
 	        || item instanceof ItemFishingRod
+                || item instanceof ItemShield
 	        || ModCompatibility.TConstruct.IsTConstructHarvestTool(item)
 	        || ModCompatibility.TConstruct.IsTConstructWeapon(item)
 	        || ModCompatibility.TConstruct.IsTConstructBow(item);
