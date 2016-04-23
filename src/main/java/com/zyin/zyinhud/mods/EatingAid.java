@@ -1,15 +1,9 @@
 package com.zyin.zyinhud.mods;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.InputEvent;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -17,14 +11,15 @@ import net.minecraft.item.ItemFishFood.FishType;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
-import com.zyin.zyinhud.mods.Coordinates.Modes;
-import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Eating Helper allows the player to eat food in their inventory by calling its Eat() method.
@@ -227,7 +222,7 @@ public class EatingAid extends ZyinHUDModBase
 		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(foodHotbarIndex);
 		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
 		
-    	if(UsePvPSoup && food.equals(Items.mushroom_stew) &&
+    	if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) &&
     			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))
     	{
     		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
@@ -273,7 +268,7 @@ public class EatingAid extends ZyinHUDModBase
 		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
 		
 		//if PvP Soup is on and we don't need eat it, then return
-    	if(UsePvPSoup && food.equals(Items.mushroom_stew) && mc.thePlayer.getHealth() >= 20 && !mc.thePlayer.getFoodStats().needFood())
+    	if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) && mc.thePlayer.getHealth() >= 20 && !mc.thePlayer.getFoodStats().needFood())
     		return;
     	
         currentItemInventoryIndex = InventoryUtil.GetCurrentlySelectedItemInventoryIndex();
@@ -287,7 +282,7 @@ public class EatingAid extends ZyinHUDModBase
         
         int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 17; //I think 17 is better, for 20 can only be reached by fast computers
         //Alternatively, may be we can introduce tps dectection in the future.
-        if(UsePvPSoup && food.equals(Items.mushroom_stew) &&
+        if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) &&
     			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))	//for PvP Soup eating
         {
             isCurrentlyEating = false;
@@ -412,7 +407,7 @@ public class EatingAid extends ZyinHUDModBase
                     potionName = potionId.getEffectName();
                 }
                 
-                if (UsePvPSoup && item.equals(Items.mushroom_stew))
+                if (UsePvPSoup && item.equals(Items.MUSHROOM_STEW))
                 {
                 	saturationModifier = 1000f;	//setting the saturation value very high will make it appealing to the food selection algorithm
                 } else if (potionName.equals("effect.saturation")    //Former known as `Potion.saturation.id`
@@ -421,8 +416,8 @@ public class EatingAid extends ZyinHUDModBase
                 {
                 	saturationModifier = 999;	//setting the saturation value very high will make it appealing to the food selection algorithm
                 }
-                else if (item.equals(Items.golden_carrot)
-                        || item.equals(Items.golden_apple))
+                else if (item.equals(Items.GOLDEN_CARROT)
+                        || item.equals(Items.GOLDEN_APPLE))
                 {
                     if (!EatGoldenFood)
                     {
@@ -518,7 +513,7 @@ public class EatingAid extends ZyinHUDModBase
                     potionName = potionId.getEffectName();
                 }
 
-                if (UsePvPSoup && item.equals(Items.mushroom_stew))
+                if (UsePvPSoup && item.equals(Items.MUSHROOM_STEW))
                 {
                 	overeat = -1000;	//setting the overeat value very low will make it appealing to the food selection algorithm
                 } else if (potionName.equals("effect.saturation")     //Potion.saturation.id
@@ -526,8 +521,8 @@ public class EatingAid extends ZyinHUDModBase
                 {
                 	overeat = -999;	//setting the overeat value very low will make it appealing to the food selection algorithm
                 }
-                else if (item.equals(Items.golden_carrot)
-                        || item.equals(Items.golden_apple))	//golden food gives Potion.regeneration effect
+                else if (item.equals(Items.GOLDEN_CARROT)
+                        || item.equals(Items.GOLDEN_APPLE))	//golden food gives Potion.regeneration effect
                 {
                     if (!EatGoldenFood)
                     {

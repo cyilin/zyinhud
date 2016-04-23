@@ -1,32 +1,22 @@
 package com.zyin.zyinhud.mods;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.util.text.TextFormatting;
-
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
-import com.zyin.zyinhud.util.Localization;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shows information about horses in the F3 menu.
@@ -362,23 +352,23 @@ public class AnimalInfo extends ZyinHUDModBase
 		{
 	        //render the overlay icon
 			if(animal instanceof EntityHorse && ((EntityHorse)animal).isTame())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.golden_carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.GOLDEN_CARROT, partialTickTime);
 			else if(animal instanceof EntityCow)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
 			else if(animal instanceof EntitySheep)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
 			else if(animal instanceof EntityPig)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.CARROT, partialTickTime);
 			else if(animal instanceof EntityChicken)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat_seeds, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT_SEEDS, partialTickTime);
 			else if(animal instanceof EntityRabbit)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.CARROT, partialTickTime);
 			else if(animal instanceof EntityWolf && ((EntityWolf)animal).isTamed())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.beef, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.BEEF, partialTickTime);
 			else if(animal instanceof EntityWolf && !((EntityWolf)animal).isTamed())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.bone, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.BONE, partialTickTime);
 			else if(animal instanceof EntityOcelot)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.fish, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.FISH, partialTickTime);
 		}
 		
 		

@@ -6,7 +6,6 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 
 /**
  * The type Zyin hud sound.
@@ -43,7 +42,7 @@ public class ZyinHUDSound
 	 */
 	public static void PlayButtonPress()
 	{
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 	}
 
 	/**
@@ -51,6 +50,6 @@ public class ZyinHUDSound
 	 */
 	public static void PlayPlopSound()
 	{
-		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.entity_chicken_egg , 1.0F));
+		mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_CHICKEN_EGG , 1.0F));
 	}
 }

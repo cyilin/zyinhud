@@ -150,14 +150,14 @@ public class QuickDeposit extends ZyinHUDModBase
 	{
 		if(itemStack == null)
 			return false;
-		if((BlacklistTorch && itemStack.getItem() == Item.getItemFromBlock(Blocks.torch))
+		if((BlacklistTorch && itemStack.getItem() == Item.getItemFromBlock(Blocks.TORCH))
 				|| (BlacklistTools && itemStack.getItem() instanceof ItemTool || itemStack.getItem() instanceof ItemHoe || itemStack.getItem() instanceof ItemShears || ModCompatibility.TConstruct.IsTConstructHarvestTool(itemStack.getItem()))
 				|| (BlacklistWeapons && itemStack.getItem() instanceof ItemSword || itemStack.getItem() instanceof ItemBow)
-				|| (BlacklistArrow && itemStack.getItem() == Items.arrow)
-				|| (BlacklistEnderPearl && itemStack.getItem() == Items.ender_pearl)
-				|| (BlacklistWaterBucket && itemStack.getItem() == Items.water_bucket)
-				|| (BlacklistFood && (itemStack.getItem() instanceof ItemFood || itemStack.getItem() == Items.cake))
-				|| (BlacklistClockCompass && (itemStack.getItem() == Items.compass || itemStack.getItem() == Items.clock))) {
+				|| (BlacklistArrow && itemStack.getItem() == Items.ARROW)
+				|| (BlacklistEnderPearl && itemStack.getItem() == Items.ENDER_PEARL)
+				|| (BlacklistWaterBucket && itemStack.getItem() == Items.WATER_BUCKET)
+				|| (BlacklistFood && (itemStack.getItem() instanceof ItemFood || itemStack.getItem() == Items.CAKE))
+				|| (BlacklistClockCompass && (itemStack.getItem() == Items.COMPASS || itemStack.getItem() == Items.CLOCK))) {
 			return false;
 		}
 

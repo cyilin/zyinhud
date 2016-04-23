@@ -1,16 +1,14 @@
 package com.zyin.zyinhud.mods;
 
 
-import java.awt.AWTException;
-import java.awt.Robot;
-
+import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.ModCompatibility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.util.math.RayTraceResult;
 
-import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.ModCompatibility;
+import java.awt.*;
 
 /**
  * TorchAid Aid allows the player to easily use a torch without having it selected. It does this by
@@ -108,11 +106,11 @@ public class TorchAid extends ZyinHUDModBase
 
         if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
         {
-            int torchHotbarIndex = InventoryUtil.GetItemIndexFromHotbar(Blocks.torch);
+            int torchHotbarIndex = InventoryUtil.GetItemIndexFromHotbar(Blocks.TORCH);
             
             if(torchHotbarIndex < 0)
             {
-                int torchInventoryIndex = InventoryUtil.GetItemIndexFromInventory(Blocks.torch);
+                int torchInventoryIndex = InventoryUtil.GetItemIndexFromInventory(Blocks.TORCH);
 
     			if(torchInventoryIndex >= 0)
     			{

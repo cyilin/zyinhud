@@ -169,7 +169,7 @@ public class PlayerLocator extends ZyinHUDModBase
         } else {
             while (armor_list.iterator().hasNext()) {
                 Item armor_single_item = armor_list.iterator().next().getItem();
-                return armor_single_item == Items.iron_horse_armor ? 1 : (armor_single_item == Items.golden_horse_armor ? 2 : (armor_single_item == Items.diamond_horse_armor ? 3 : 0));
+                return armor_single_item == Items.IRON_HORSE_ARMOR ? 1 : (armor_single_item == Items.GOLDEN_HORSE_ARMOR ? 2 : (armor_single_item == Items.DIAMOND_HORSE_ARMOR ? 3 : 0));
             }
 
         }
@@ -405,32 +405,32 @@ public class PlayerLocator extends ZyinHUDModBase
 	
 	private static void RenderBoatIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.boat), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOAT), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderMinecartIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.minecart), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.MINECART), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorDiamondIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI( new ItemStack(Items.diamond_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI( new ItemStack(Items.DIAMOND_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorGoldIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.golden_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.GOLDEN_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorIronIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.iron_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.IRON_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderSaddleIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.saddle), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.SADDLE), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	

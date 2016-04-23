@@ -1,18 +1,13 @@
 package com.zyin.zyinhud.util;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import com.zyin.zyinhud.mods.QuickDeposit;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockDirt;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMerchant;
 import net.minecraft.client.gui.inventory.GuiBrewingStand;
 import net.minecraft.client.gui.inventory.GuiFurnace;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
@@ -25,7 +20,9 @@ import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 import net.minecraft.world.World;
 
-import com.zyin.zyinhud.mods.QuickDeposit;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static net.minecraft.block.BlockDirt.VARIANT;
 
@@ -922,7 +919,7 @@ public class InventoryUtil
 		    {
 				LeftClickContainerSlot(3);
 		    }
-        	else if(handStack.getItemDamage() == 0 && Items.potionitem == handStack.getItem())
+        	else if(handStack.getItemDamage() == 0 && Items.POTIONITEM == handStack.getItem())
 			{
 				//if handStack is a "Water Bottle"
 				//then deposit the water bottle in an empty output slot
@@ -958,7 +955,7 @@ public class InventoryUtil
 			    {
 					DepositItemInBrewingStand(i, 3);
 			    }
-				else if(itemStack.getItemDamage() == 0 && Items.potionitem == itemStack.getItem())
+				else if(itemStack.getItemDamage() == 0 && Items.POTIONITEM == itemStack.getItem())
 				{
 					//if itemStack is a "Water Bottle"
 					//then deposit the water bottle in an empty output slot

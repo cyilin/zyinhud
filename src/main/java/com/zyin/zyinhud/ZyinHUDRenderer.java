@@ -146,7 +146,7 @@ public class ZyinHUDRenderer
     {
         IBakedModel iBakedModel = mc.getRenderItem().getItemModelMesher().getItemModel(new ItemStack(item));
         TextureAtlasSprite textureAtlasSprite = mc.getTextureMapBlocks().getAtlasSprite(iBakedModel.getParticleTexture().getIconName());
-        mc.getTextureManager().bindTexture(TextureMap.locationBlocksTexture);
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         
         RenderTexture(x, y, textureAtlasSprite, width, height, 0);
     }

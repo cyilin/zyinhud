@@ -1,52 +1,21 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.Localization;
+import com.zyin.zyinhud.util.ZyinHUDUtil;
+import net.minecraft.block.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.EnumSkyBlock;
+import org.lwjgl.opengl.GL11;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockAnvil;
-import net.minecraft.block.BlockBarrier;
-import net.minecraft.block.BlockBasePressurePlate;
-import net.minecraft.block.BlockBed;
-import net.minecraft.block.BlockCactus;
-import net.minecraft.block.BlockCake;
-import net.minecraft.block.BlockCarpet;
-import net.minecraft.block.BlockChest;
-import net.minecraft.block.BlockFarmland;
-import net.minecraft.block.BlockFence;
-import net.minecraft.block.BlockFenceGate;
 //import net.minecraft.block.BlockFluid;
-import net.minecraft.block.BlockGlass;
 //import net.minecraft.block.BlockHalfSlab;
-import net.minecraft.block.BlockHopper;
-import net.minecraft.block.BlockIce;
-import net.minecraft.block.BlockLeaves;
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockPane;
-import net.minecraft.block.BlockPistonBase;
-import net.minecraft.block.BlockPistonExtension;
-import net.minecraft.block.BlockPistonMoving;
-import net.minecraft.block.BlockRailBase;
-import net.minecraft.block.BlockSlab;
-import net.minecraft.block.BlockSlime;
-import net.minecraft.block.BlockSnow;
-import net.minecraft.block.BlockStainedGlass;
-import net.minecraft.block.BlockStairs;
-import net.minecraft.block.BlockWall;
-import net.minecraft.block.BlockWeb;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.EnumSkyBlock;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.block.state.BlockStateBase;
-import org.lwjgl.opengl.GL11;
-
-import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 //import net.minecraftforge.event.ForgeSubscribe;
 
 /**
@@ -403,7 +372,7 @@ public class SafeOverlay extends ZyinHUDModBase
         
         //block is null when attempting to render on an Air block
         //we don't like null references so treat Air like an ordinary Stone block
-        block = (block == null) ? Blocks.stone : block;
+        block = (block == null) ? Blocks.STONE : block;
         
         //get bounding box data for this block
         //don't bother for horizontal (X and Z) bounds because every hostile mob spawns on a 1.0 wide block
@@ -767,7 +736,7 @@ public class SafeOverlay extends ZyinHUDModBase
             Block block = GetBlock(dx, dy, dz);
 
             if (block == null
-            	|| block == Blocks.air
+            	|| block == Blocks.AIR
             	|| block instanceof BlockBarrier
             	|| block instanceof BlockSlime)
             {
@@ -869,7 +838,7 @@ public class SafeOverlay extends ZyinHUDModBase
         {
             Block block = GetBlock(dx, dy, dz);
             
-            if (block == Blocks.air)
+            if (block == Blocks.AIR)
             {
                 return true;
             }

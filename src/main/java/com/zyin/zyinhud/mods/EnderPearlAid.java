@@ -42,7 +42,7 @@ public class EnderPearlAid extends ZyinHUDModBase
             EatingAid.instance.StopEating();    //it's not good if we have an ender pearl selected and hold right click down...
         }
         
-        boolean usedEnderPearlSuccessfully = InventoryUtil.UseItem(Items.ender_pearl);
+        boolean usedEnderPearlSuccessfully = InventoryUtil.UseItem(Items.ENDER_PEARL);
         
         if (!usedEnderPearlSuccessfully)
         {

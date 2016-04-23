@@ -188,7 +188,7 @@ public class Clock extends ZyinHUDModBase
         	{
         		int infoLineWidth = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
         		
-        		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.clock), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
+        		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.CLOCK), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
         		
         		GL11.glDisable(GL11.GL_LIGHTING);	//this is needed because the RenderItem.renderItem() methods enable lighting
 
