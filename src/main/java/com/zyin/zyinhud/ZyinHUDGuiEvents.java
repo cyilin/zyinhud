@@ -11,16 +11,29 @@ import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
  */
 public class ZyinHUDGuiEvents
 {
+	/**
+	 * The constant instance.
+	 */
 	public static final ZyinHUDGuiEvents instance = new ZyinHUDGuiEvents();
-    
-    //Used to inject new buttons into vanilla GUIs
+
+	/**
+	 * Init gui event post.
+	 *
+	 * @param event the event
+	 */
+//Used to inject new buttons into vanilla GUIs
 	@SubscribeEvent
 	public void InitGuiEventPost(InitGuiEvent.Post event)
 	{
 		GuiZyinHUDOptions.InitGuiEventPost(event);
 	}
-	
-	//Used to capture when a custom button is clicked in a vanilla GUI
+
+	/**
+	 * Action performed event post.
+	 *
+	 * @param event the event
+	 */
+//Used to capture when a custom button is clicked in a vanilla GUI
 	@SubscribeEvent
 	public void ActionPerformedEventPost(ActionPerformedEvent.Post event)
 	{

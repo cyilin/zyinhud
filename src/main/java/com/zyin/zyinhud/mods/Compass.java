@@ -1,6 +1,6 @@
 package com.zyin.zyinhud.mods;
 
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import com.zyin.zyinhud.util.Localization;
 
@@ -9,18 +9,24 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class Compass extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
+
+    /**
+     * The constant renderCompassTextInMiddle.
+     */
     public static boolean renderCompassTextInMiddle = true;
 
     private static String south = Localization.get("compass.south");
@@ -34,9 +40,8 @@ public class Compass extends ZyinHUDModBase
 
     /**
      * Calculates the direction the player is facing
-     * @param infoLineMessageUpToThisPoint
-     * @param renderCompassTextInMiddle if true, stabalizes the compass by rendering the red cardinal direction
-     * in the middle of of the containing [ ] brackets
+     *
+     * @param infoLineMessageUpToThisPoint the info line message up to this point
      * @return "[Direction]" compass formatted string if the Compass is enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine(String infoLineMessageUpToThisPoint)
@@ -94,15 +99,15 @@ public class Compass extends ZyinHUDModBase
                 	if(facing % 2 == 0)	//s,w,n,e
                 		x_padding += 3;
             	}
-            	
-            	
-            	mc.fontRendererObj.drawStringWithShadow(EnumChatFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
-            	
-            	return EnumChatFormatting.GRAY + brackets;
+
+
+                mc.fontRendererObj.drawStringWithShadow(TextFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
+
+                return TextFormatting.GRAY + brackets;
             }
             else
             {
-                return EnumChatFormatting.GRAY + "[" + EnumChatFormatting.RED + compassDirection + EnumChatFormatting.GRAY + "]";
+                return TextFormatting.GRAY + "[" + TextFormatting.RED + compassDirection + TextFormatting.GRAY + "]";
             }
         }
 

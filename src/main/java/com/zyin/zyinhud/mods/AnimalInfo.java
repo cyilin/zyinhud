@@ -1,57 +1,60 @@
 package com.zyin.zyinhud.mods;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.passive.EntityAnimal;
-import net.minecraft.entity.passive.EntityChicken;
-import net.minecraft.entity.passive.EntityCow;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityOcelot;
-import net.minecraft.entity.passive.EntityPig;
-import net.minecraft.entity.passive.EntityRabbit;
-import net.minecraft.entity.passive.EntitySheep;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.util.EnumChatFormatting;
-
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.text.WordUtils;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
-import com.zyin.zyinhud.util.Localization;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Shows information about horses in the F3 menu.
  */
 public class AnimalInfo extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Off modes.
+         */
         OFF(Localization.get("safeoverlay.mode.0")),
+        /**
+         * On modes.
+         */
         ON(Localization.get("safeoverlay.mode.1"));
         
         private String friendlyName;
@@ -63,38 +66,66 @@ public class AnimalInfo extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[0];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
 
+    /**
+     * The constant ShowTextBackgrounds.
+     */
     public static boolean ShowTextBackgrounds;
+    /**
+     * The constant ShowBreedingIcons.
+     */
     public static boolean ShowBreedingIcons;
-    //public static boolean ShowBreedingTimers;
+    /**
+     * The constant ShowHorseStatsOnF3Menu.
+     */
+//public static boolean ShowBreedingTimers;
     public static boolean ShowHorseStatsOnF3Menu;
+    /**
+     * The constant ShowHorseStatsOverlay.
+     */
     public static boolean ShowHorseStatsOverlay;
-    
-    /** Sets the number of decimal places that will be rendered when displaying horse stats */
+
+    /**
+     * Sets the number of decimal places that will be rendered when displaying horse stats
+     */
     public static int numberOfDecimalsDisplayed = 1;
+    /**
+     * The constant minNumberOfDecimalsDisplayed.
+     */
     public static int minNumberOfDecimalsDisplayed = 0;
+    /**
+     * The constant maxNumberOfDecimalsDisplayed.
+     */
     public static int maxNumberOfDecimalsDisplayed = 20;
     
     private static EntityPlayer me;
@@ -116,12 +147,23 @@ public class AnimalInfo extends ZyinHUDModBase
     private static int badHorseHPThreshold = 20;			//min: 15
     
     private static final int verticalSpaceBetweenLines = 10;	//space between the overlay lines (because it is more than one line)
-    
-    /** Animals that are farther away than this will not have their info shown */
+
+    /**
+     * Animals that are farther away than this will not have their info shown
+     */
     public static int viewDistanceCutoff = 8;		//how far away we will render the overlay
+    /**
+     * The constant minViewDistanceCutoff.
+     */
     public static int minViewDistanceCutoff = 0;
+    /**
+     * The constant maxViewDistanceCutoff.
+     */
     public static int maxViewDistanceCutoff = 120;
-    
+
+    /**
+     * The constant maxNumberOfOverlays.
+     */
     public static final int maxNumberOfOverlays = 200;	//render only the first nearest 50 overlays
 
     private static DecimalFormat decimalFormat = GetDecimalFormat();
@@ -144,19 +186,21 @@ public class AnimalInfo extends ZyinHUDModBase
     	
     	return new DecimalFormat(format);
     }
-    
+
     /**
      * Gets the number of deciamls used to display the horse stats.
-     * @return
+     *
+     * @return int
      */
     public static int GetNumberOfDecimalsDisplayed()
     {
     	return numberOfDecimalsDisplayed;
     }
-    
+
     /**
      * Sets the number of deciamls used to display the horse stats.
-     * @param numDecimals
+     *
+     * @param numDecimals the num decimals
      * @return
      */
     public static void SetNumberOfDecimalsDisplayed(int numDecimals)
@@ -175,7 +219,7 @@ public class AnimalInfo extends ZyinHUDModBase
         {
             if (mc.thePlayer.isRidingHorse())
             {
-                EntityHorse horse = (EntityHorse) mc.thePlayer.ridingEntity;
+                EntityHorse horse = (EntityHorse) mc.thePlayer.getRidingEntity();
                 String horseSpeedMessage = Localization.get("animalinfo.debug.speed") + " " + GetHorseSpeedText(horse) + " m/s";
                 String horseJumpMessage = Localization.get("animalinfo.debug.jump") + " " + GetHorseJumpText(horse) + " blocks";
                 String horseHPMessage = Localization.get("animalinfo.debug.hp") + " " + GetHorseHPText(horse);
@@ -187,8 +231,8 @@ public class AnimalInfo extends ZyinHUDModBase
             	list.add(horseSpeedMessage);
             	list.add(horseJumpMessage);
             	list.add(horseHPMessage);
-            	
-                if(horse.getHorseType() == 0)	//not a donkey
+
+                if (horse.getHorseVariant() == 0)    //not a donkey
                 {
                 	list.add(horseColor);
                 	list.add(horseMarking);
@@ -207,13 +251,13 @@ public class AnimalInfo extends ZyinHUDModBase
             }
         }
     }
-    
-    
-    
+
+
     /**
      * Renders information about an entity into the game world.
-     * @param entity
-     * @param partialTickTime
+     *
+     * @param entity          the entity
+     * @param partialTickTime the partial tick time
      */
     public static void RenderEntityInfoInWorld(Entity entity, float partialTickTime)
     {
@@ -236,7 +280,7 @@ public class AnimalInfo extends ZyinHUDModBase
         	
             EntityAgeable animal = (EntityAgeable)entity;
 
-            if (animal.riddenByEntity instanceof EntityPlayer)
+            if (animal.isBeingRidden())// instanceof EntityPlayer
             {
                 return;    //don't render stats of the horse/animal we are currently riding
             }
@@ -254,12 +298,13 @@ public class AnimalInfo extends ZyinHUDModBase
             i++;
         }
     }
-    
-    
+
+
     /**
      * Renders an overlay in the game world for the specified animal.
-     * @param animal
-     * @param partialTickTime
+     *
+     * @param animal          the animal
+     * @param partialTickTime the partial tick time
      */
     protected static void RenderAnimalOverlay(EntityAgeable animal, float partialTickTime)
     {
@@ -307,23 +352,23 @@ public class AnimalInfo extends ZyinHUDModBase
 		{
 	        //render the overlay icon
 			if(animal instanceof EntityHorse && ((EntityHorse)animal).isTame())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.golden_carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.GOLDEN_CARROT, partialTickTime);
 			else if(animal instanceof EntityCow)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
 			else if(animal instanceof EntitySheep)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
 			else if(animal instanceof EntityPig)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.CARROT, partialTickTime);
 			else if(animal instanceof EntityChicken)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.wheat_seeds, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT_SEEDS, partialTickTime);
 			else if(animal instanceof EntityRabbit)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.carrot, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.CARROT, partialTickTime);
 			else if(animal instanceof EntityWolf && ((EntityWolf)animal).isTamed())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.beef, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.BEEF, partialTickTime);
 			else if(animal instanceof EntityWolf && !((EntityWolf)animal).isTamed())
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.bone, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.BONE, partialTickTime);
 			else if(animal instanceof EntityOcelot)
-				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.fish, partialTickTime);
+				ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.FISH, partialTickTime);
 		}
 		
 		
@@ -339,6 +384,7 @@ public class AnimalInfo extends ZyinHUDModBase
 
     /**
      * Gets the status of the Animal Info
+     *
      * @return the string "animals" if Animal Info is enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
@@ -349,11 +395,11 @@ public class AnimalInfo extends ZyinHUDModBase
         }
         else if (Mode == Modes.ON)
         {
-            return EnumChatFormatting.WHITE + Localization.get("animalinfo.infoline");
+            return TextFormatting.WHITE + Localization.get("animalinfo.infoline");
         }
         else
         {
-            return EnumChatFormatting.WHITE + "???";
+            return TextFormatting.WHITE + "???";
         }
     }
 
@@ -397,11 +443,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseSpeedString = decimalFormat.format(horseSpeed);
 
         if (horseSpeed > perfectHorseSpeedThreshold)
-            horseSpeedString = EnumChatFormatting.AQUA + horseSpeedString + EnumChatFormatting.WHITE;
+            horseSpeedString = TextFormatting.AQUA + horseSpeedString + TextFormatting.WHITE;
         else if (horseSpeed > goodHorseSpeedThreshold)
-            horseSpeedString = EnumChatFormatting.GREEN + horseSpeedString + EnumChatFormatting.WHITE;
+            horseSpeedString = TextFormatting.GREEN + horseSpeedString + TextFormatting.WHITE;
         else if (horseSpeed < badHorseSpeedThreshold)
-            horseSpeedString = EnumChatFormatting.RED + horseSpeedString + EnumChatFormatting.WHITE;
+            horseSpeedString = TextFormatting.RED + horseSpeedString + TextFormatting.WHITE;
 
         return horseSpeedString;
     }
@@ -417,11 +463,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseHPString = decimalFormat.format(GetEntityMaxHP(horse));
 
         if (horseHP > perfectHorseHPThreshold)
-            horseHPString = EnumChatFormatting.AQUA + horseHPString + EnumChatFormatting.WHITE;
+            horseHPString = TextFormatting.AQUA + horseHPString + TextFormatting.WHITE;
         else if (horseHP > goodHorseHPThreshold)
-            horseHPString = EnumChatFormatting.GREEN + horseHPString + EnumChatFormatting.WHITE;
+            horseHPString = TextFormatting.GREEN + horseHPString + TextFormatting.WHITE;
         else if (horseHP < badHorseHPThreshold)
-            horseHPString = EnumChatFormatting.RED + horseHPString + EnumChatFormatting.WHITE;
+            horseHPString = TextFormatting.RED + horseHPString + TextFormatting.WHITE;
 
         return horseHPString;
     }
@@ -438,11 +484,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseHeartsString = "" + horseHearts;
 
         if (horseHP > perfectHorseHPThreshold)
-            horseHeartsString = EnumChatFormatting.AQUA + horseHeartsString + EnumChatFormatting.WHITE;
+            horseHeartsString = TextFormatting.AQUA + horseHeartsString + TextFormatting.WHITE;
         else if (horseHP > goodHorseHPThreshold)
-                horseHeartsString = EnumChatFormatting.GREEN + horseHeartsString + EnumChatFormatting.WHITE;
+            horseHeartsString = TextFormatting.GREEN + horseHeartsString + TextFormatting.WHITE;
         else if (horseHP < badHorseHPThreshold)
-            horseHeartsString = EnumChatFormatting.RED + horseHeartsString + EnumChatFormatting.WHITE;
+            horseHeartsString = TextFormatting.RED + horseHeartsString + TextFormatting.WHITE;
 
         return horseHeartsString;
     }
@@ -458,11 +504,11 @@ public class AnimalInfo extends ZyinHUDModBase
         String horseJumpString = decimalFormat.format(horseJump);
 
         if (horseJump > perfectHorseJumpThreshold)
-            horseJumpString = EnumChatFormatting.AQUA + horseJumpString + EnumChatFormatting.WHITE;
+            horseJumpString = TextFormatting.AQUA + horseJumpString + TextFormatting.WHITE;
         else if (horseJump > goodHorseJumpThreshold)
-            horseJumpString = EnumChatFormatting.GREEN + horseJumpString + EnumChatFormatting.WHITE;
+            horseJumpString = TextFormatting.GREEN + horseJumpString + TextFormatting.WHITE;
         else if (horseJump < badHorseJumpThreshold)
-            horseJumpString = EnumChatFormatting.RED + horseJumpString + EnumChatFormatting.WHITE;
+            horseJumpString = TextFormatting.RED + horseJumpString + TextFormatting.WHITE;
 
         return horseJumpString;
     }
@@ -533,7 +579,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     private static int GetEntityMaxHP(EntityLivingBase entity)
     {
-        return (int) entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
+        return (int) entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue();
     }
 
     /**
@@ -543,7 +589,7 @@ public class AnimalInfo extends ZyinHUDModBase
      */
     private static int GetEntityMaxHearts(EntityLivingBase entity)
     {
-        return (int) Math.round(entity.getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue() / 2);
+        return (int) Math.round(entity.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).getAttributeValue() / 2);
     }
 
     /**
@@ -555,35 +601,42 @@ public class AnimalInfo extends ZyinHUDModBase
     {
         //Steve has a movement speed of 0.1 and walks 4.3 blocks per second,
         //so multiply this result by 43 to convert to blocks per second
-        return entity.getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue() * 43;
+        return entity.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).getAttributeValue() * 43;
     }
 
     /**
      * Toggle showing horse stats on the F3 menu
+     *
      * @return the new F3 render boolean
      */
     public static boolean ToggleShowHorseStatsOnF3Menu()
     {
     	return ShowHorseStatsOnF3Menu = !ShowHorseStatsOnF3Menu;
     }
+
     /**
      * Toggle showing horse stats on the overlay
+     *
      * @return the new overlay render boolean
      */
     public static boolean ToggleShowHorseStatsOverlay()
     {
     	return ShowHorseStatsOverlay = !ShowHorseStatsOverlay;
     }
+
     /**
      * Toggle showing black text backgrounds on overlayed text
+     *
      * @return the new text background boolean
      */
     public static boolean ToggleShowTextBackgrounds()
     {
     	return ShowTextBackgrounds = !ShowTextBackgrounds;
     }
+
     /**
      * Toggles showing breeding icons
+     *
      * @return the new boolean
      */
     public static boolean ToggleShowBreedingIcons()

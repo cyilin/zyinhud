@@ -5,30 +5,46 @@ import java.util.ArrayList;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
-import net.minecraft.util.EnumChatFormatting;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
+import net.minecraft.util.text.TextFormatting;
 
 /**
  * A GuiScreen replacement that supports putting tooltips onto GuiButtons.
  */
 public abstract class GuiTooltipScreen extends GuiScreen
 {
-	/** Show a white "?" in the top right part of any button with a tooltip assigned to it */
+	/**
+	 * Show a white "?" in the top right part of any button with a tooltip assigned to it
+	 */
 	public static boolean ShowTooltipButtonEffect = true;
-	
-	/** Show an aqua "?" in the top right part of any button with a tooltip assigned to it when mouseovered */
+
+	/**
+	 * Show an aqua "?" in the top right part of any button with a tooltip assigned to it when mouseovered
+	 */
 	public static boolean ShowTooltipButtonMouseoverEffect = true;
-	
-	/** Putting this string into a tooltip will cause a line break */
-    public String tooltipNewlineDelimeter = "_p"; //"§p";	//the "§" symbol doesn't seem to work
-    
-    /** The amount of time in milliseconds until a tooltip is rendered */
+
+	/**
+	 * Putting this string into a tooltip will cause a line break
+	 */
+	public String tooltipNewlineDelimeter = "_p"; //"ï¿½p";	//the "ï¿½" symbol doesn't seem to work
+
+	/**
+	 * The amount of time in milliseconds until a tooltip is rendered
+	 */
 	public long tooltipDelay = 900;
-	
-	/** The maximum width in pixels a tooltip can occupy before word wrapping occurs */
+
+	/**
+	 * The maximum width in pixels a tooltip can occupy before word wrapping occurs
+	 */
 	public int tooltipMaxWidth = 150;
-	
+
+	/**
+	 * The Tooltip x offset.
+	 */
 	protected int tooltipXOffset = 0;
+	/**
+	 * The Tooltip y offset.
+	 */
 	protected int tooltipYOffset = 10;
 	
     private final static int LINE_HEIGHT = 11;
@@ -42,20 +58,22 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		
 		DrawTooltipScreen(mouseX, mouseY);
 	}
-	
+
 	/**
 	 * This method must be overriden. Gets a tooltip String for a specific button.
 	 * Recommended to use a switch/case statement for buttonId for easy implementation.
+	 *
 	 * @param buttonId The ID of the button this tooltip corresponds to
 	 * @return The tooltip string for the specified buttonId. null if no tooltip exists for this button.
 	 */
 	protected abstract String GetButtonTooltip(int buttonId);
-	
+
 	/**
-	 * Renders any special effects applied to tooltip buttons, and renders any tooltips for GuiButtons 
+	 * Renders any special effects applied to tooltip buttons, and renders any tooltips for GuiButtons
 	 * that are being mouseovered.
-	 * @param mouseX
-	 * @param mouseY
+	 *
+	 * @param mouseX the mouse x
+	 * @param mouseY the mouse y
 	 */
 	protected void DrawTooltipScreen(int mouseX, int mouseY)
 	{
@@ -65,17 +83,15 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		int mousedOverButtonId = -1;
 		
 		//find out which button is being mouseovered
-		for(int i = 0; i < buttonList.size(); i++)
-		{
-			GuiButton button = (GuiButton)buttonList.get(i);
-			
-			if(IsButtonMouseovered(mouseX, mouseY, button))
-			{
+		for (GuiButton aButtonList : buttonList) {
+			GuiButton button = (GuiButton) aButtonList;
+
+			if (IsButtonMouseovered(mouseX, mouseY, button)) {
 				mousedOverButtonId = button.id;
-				
-				if(ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
+
+				if (ShowTooltipButtonMouseoverEffect && GetButtonTooltip(mousedOverButtonId) != null)
 					RenderTooltipButtonMouseoverEffect(button);
-				
+
 				break;
 			}
 		}
@@ -105,12 +121,13 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			}
 		}
 	}
-	
+
 	/**
 	 * Determines if a GuiButton is being mouseovered.
-	 * @param mouseX
-	 * @param mouseY
-	 * @param button
+	 *
+	 * @param mouseX the mouse x
+	 * @param mouseY the mouse y
+	 * @param button the button
 	 * @return true if this button is mouseovered
 	 */
 	protected boolean IsButtonMouseovered(int mouseX, int mouseY, GuiButton button)
@@ -126,43 +143,42 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Render anything special onto all buttons that have tooltips assigned to them.
 	 */
-	protected void RenderTooltipButtonEffect()
-	{
-		for(int i = 0; i < buttonList.size(); i++)
-		{
-			GuiButton button = (GuiButton)buttonList.get(i);
-			
-			if(GetButtonTooltip(button.id) != null)
-			{
+	protected void RenderTooltipButtonEffect() {
+		for (GuiButton aButtonList : buttonList) {
+			GuiButton button = (GuiButton) aButtonList;
+
+			if (GetButtonTooltip(button.id) != null) {
 				boolean flag = mc.fontRendererObj.getUnicodeFlag();
 				mc.fontRendererObj.setUnicodeFlag(true);
-				mc.fontRendererObj.drawString("?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0x99FFFFFF);
+				mc.fontRendererObj.drawString("?", button.xPosition + button.getButtonWidth() - 5, button.yPosition, 0x99FFFFFF);
 				mc.fontRendererObj.setUnicodeFlag(flag);
 			}
 		}
 	}
-	
+
 	/**
 	 * Render anything special onto buttons that have tooltips assigned to them when they are mousevered.
-	 * @param button
+	 *
+	 * @param button the button
 	 */
 	protected void RenderTooltipButtonMouseoverEffect(GuiButton button)
 	{
 		boolean flag = mc.fontRendererObj.getUnicodeFlag();
 		mc.fontRendererObj.setUnicodeFlag(true);
-		mc.fontRendererObj.drawString(EnumChatFormatting.AQUA + "?", button.xPosition+button.getButtonWidth()-5, button.yPosition, 0xFFFFFF);
+		mc.fontRendererObj.drawString(TextFormatting.AQUA + "?", button.xPosition + button.getButtonWidth() - 5, button.yPosition, 0xFFFFFF);
 		mc.fontRendererObj.setUnicodeFlag(flag);
 	}
-	
+
 	/**
 	 * Renders a tooltip at (x,y).
-	 * @param x
-	 * @param y
-	 * @param tooltip
+	 *
+	 * @param x       the x
+	 * @param y       the y
+	 * @param tooltip the tooltip
 	 */
 	protected void RenderTooltip(int x, int y, String tooltip)
 	{
@@ -203,9 +219,10 @@ public abstract class GuiTooltipScreen extends GuiScreen
             lineCount++;
         }
 	}
-	
+
 	/**
 	 * Converts a String representation of a tooltip into a String[], and also decodes any font codes used.
+	 *
 	 * @param s Ex: "Hello,_nI am your _ltooltip_r and you love me."
 	 * @return An array of Strings such that each String width does not exceed tooltipMaxWidth
 	 */
@@ -218,18 +235,14 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		{
 			String tooltip = "";
 			String[] tooltipWords = section.split(" ");
-			
-			for(int i = 0; i < tooltipWords.length; i++)
-			{
-				int lineWidthWithNextWord = mc.fontRendererObj.getStringWidth(tooltip + tooltipWords[i]);
-				if(lineWidthWithNextWord > tooltipMaxWidth)
-				{
+
+			for (String tooltipWord : tooltipWords) {
+				int lineWidthWithNextWord = mc.fontRendererObj.getStringWidth(tooltip + tooltipWord);
+				if (lineWidthWithNextWord > tooltipMaxWidth) {
 					tooltipArrayList.add(tooltip.trim());
-					tooltip = tooltipWords[i] + " ";
-				}
-				else
-				{
-					tooltip += tooltipWords[i] + " ";
+					tooltip = tooltipWord + " ";
+				} else {
+					tooltip += tooltipWord + " ";
 				}
 			}
 			

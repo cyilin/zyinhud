@@ -107,6 +107,7 @@ durabilityinfo.options.showindividualarmoricons.tooltip=If set to OFF, it will s
 ;durabilityinfo.options.showdamageaspercent.tooltip=Display the remaining durability as a percentage rather than the amount of durability points it has left
 durabilityinfo.options.textmode=Number display: 
 durabilityinfo.options.textmode.tooltip=Changes how the durability text is drawn on the icon:_p§lNone§r_p§lText§r_p§lPercentage§r
+durabilityinfo.options.hidedurabilityinfoinchat=Hide durablity in chat: 
 
 eatingaid.name=Eating Aid
 eatingaid.mode.basic=Basic
@@ -218,6 +219,7 @@ potiontimers.options.hidepotioneffectsininventory.tooltip=Hides the default poti
 potiontimers.options.potionscale=Size: 
 potiontimers.options.offsetx=Offset X: 
 potiontimers.options.offsety=Offset Y: 
+potiontimers.options.hidebeaconpotioneffects=Hide beacon effect: 
 
 safeoverlay.name=Safe Overlay
 safeoverlay.mode.off=Off

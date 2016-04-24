@@ -6,9 +6,9 @@ import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,42 +22,63 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public class Miscellaneous extends ZyinHUDModBase
 {
+	/**
+	 * The constant instance.
+	 */
 	public static final Miscellaneous instance = new Miscellaneous();
 
+	/**
+	 * The constant UseEnhancedMiddleClick.
+	 */
 	public static boolean UseEnhancedMiddleClick;
+	/**
+	 * The constant UseQuickPlaceSign.
+	 */
 	public static boolean UseQuickPlaceSign;
+	/**
+	 * The constant UseUnlimitedSprinting.
+	 */
 	public static boolean UseUnlimitedSprinting;
+	/**
+	 * The constant ShowAnvilRepairs.
+	 */
 	public static boolean ShowAnvilRepairs;
 	
     private static final int maxRepairTimes = 6;
-	
 
-    @SubscribeEvent
-    public void GuiOpenEvent(GuiOpenEvent event)
-	{
-    	if(UseQuickPlaceSign && event.gui instanceof GuiEditSign && mc.thePlayer.isSneaking())
-    	{
-    		event.setCanceled(true);
-    	}
+
+	/**
+	 * Gui open event.
+	 *
+	 * @param event the event
+	 */
+	@SubscribeEvent
+	public void GuiOpenEvent(GuiOpenEvent event) {
+		if (UseQuickPlaceSign && event.getGui() instanceof GuiEditSign && mc.thePlayer.isSneaking()) {
+			event.setCanceled(true);
+		}
 	}
-    
 
-    @SubscribeEvent
-    public void DrawScreenEvent(DrawScreenEvent.Post event)
-    {
-    	if(ShowAnvilRepairs && event.gui instanceof GuiRepair)
-    	{
-    		DrawGuiRepairCounts((GuiRepair)event.gui);
-    	}
-    }
-    
-    /**
-     * Draws text above the anvil's repair slots showing how many more times it can be repaired
-     * @param guiRepair
-     */
-    public void DrawGuiRepairCounts(GuiRepair guiRepair)
-    {
-    	ContainerRepair anvil = ZyinHUDUtil.GetFieldByReflection(GuiRepair.class, guiRepair, "anvil", "field_147092_v");
+
+	/**
+	 * Draw screen event.
+	 *
+	 * @param event the event
+	 */
+	@SubscribeEvent
+	public void DrawScreenEvent(DrawScreenEvent.Post event) {
+		if (ShowAnvilRepairs && event.getGui() instanceof GuiRepair) {
+			DrawGuiRepairCounts((GuiRepair) event.getGui());
+		}
+	}
+
+	/**
+	 * Draws text above the anvil's repair slots showing how many more times it can be repaired
+	 *
+	 * @param guiRepair the gui repair
+	 */
+	public void DrawGuiRepairCounts(GuiRepair guiRepair) {
+		ContainerRepair anvil = ZyinHUDUtil.GetFieldByReflection(GuiRepair.class, guiRepair, "anvil", "field_147092_v");
     	IInventory inputSlots = ZyinHUDUtil.GetFieldByReflection(ContainerRepair.class, anvil, "inputSlots", "field_82853_g");
 
     	int xSize = ZyinHUDUtil.GetFieldByReflection(GuiContainer.class, guiRepair, "xSize", "field_146999_f");
@@ -74,45 +95,45 @@ public class Miscellaneous extends ZyinHUDModBase
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack);
         	String leftItemRepairCost;
-        	
-        	if(timesRepaired >= maxRepairTimes)
-        		leftItemRepairCost = EnumChatFormatting.RED.toString() + timesRepaired + EnumChatFormatting.DARK_GRAY + "/" + maxRepairTimes;
-        	else
-        		leftItemRepairCost = EnumChatFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
-        	
-        	mc.fontRendererObj.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
-        }
+
+			if (timesRepaired >= maxRepairTimes)
+				leftItemRepairCost = TextFormatting.RED.toString() + timesRepaired + TextFormatting.DARK_GRAY + "/" + maxRepairTimes;
+			else
+				leftItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
+
+			mc.fontRendererObj.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
+		}
         if(rightItemStack != null)
         {
         	int timesRepaired = GetTimesRepaired(rightItemStack);
         	String rightItemRepairCost;
-        	
-        	if(timesRepaired >= maxRepairTimes)
-        		rightItemRepairCost = EnumChatFormatting.RED.toString() + timesRepaired + EnumChatFormatting.DARK_GRAY + "/" + maxRepairTimes;
-        	else
-        		rightItemRepairCost = EnumChatFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
-        	
-        	mc.fontRendererObj.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
-        }
+
+			if (timesRepaired >= maxRepairTimes)
+				rightItemRepairCost = TextFormatting.RED.toString() + timesRepaired + TextFormatting.DARK_GRAY + "/" + maxRepairTimes;
+			else
+				rightItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
+
+			mc.fontRendererObj.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
+		}
         if(leftItemStack != null && rightItemStack != null)
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack) + GetTimesRepaired(rightItemStack) + 1;
-        	String finalItemRepairCost = EnumChatFormatting.DARK_GRAY.toString() + timesRepaired+"/" + maxRepairTimes;
-        	
-        	if(timesRepaired <= maxRepairTimes)
-        	{
+			String finalItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
+
+			if(timesRepaired <= maxRepairTimes) {
         		mc.fontRendererObj.drawString(finalItemRepairCost, guiRepairXOrigin + 133, guiRepairYOrigin + 37, 0xffffff);
-        	}
-        }
-    }
-    /**
-     * Returns how many times an item has been used with an Anvil
-     * @param itemStack
-     * @return
-     */
-    protected static int GetTimesRepaired(ItemStack itemStack)
-    {
-    	/*
+			}
+		}
+	}
+
+	/**
+	 * Returns how many times an item has been used with an Anvil
+	 *
+	 * @param itemStack the item stack
+	 * @return int
+	 */
+	protected static int GetTimesRepaired(ItemStack itemStack) {
+		/*
     	times repaired: repair cost, xp
     	0: 0, 2
     	1: 1, 3
@@ -134,10 +155,10 @@ public class Miscellaneous extends ZyinHUDModBase
      */
     private static int log(int x, int base)
     {
-        return (int)(Math.log(x) / Math.log(base));
+		return (int)(Math.log(x) / Math.log(base));
     }
-    
-    
+
+
 	/**
 	 * When the player middle clicks
 	 */
@@ -146,17 +167,15 @@ public class Miscellaneous extends ZyinHUDModBase
 		if(UseEnhancedMiddleClick)
 			MoveMouseoveredBlockIntoHotbar();
 	}
-	
-	
+
+
 	/**
 	 * Enhanced select block functionality (middle click). If the block exists in your inventory then
 	 * it will put it into the hotbar, instead of it only working if the block is on your hotbar.
 	 */
-	public static void MoveMouseoveredBlockIntoHotbar()
-	{
-        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
-        {
-            //Block block = ZyinHUDUtil.GetMouseOveredBlock();
+	public static void MoveMouseoveredBlockIntoHotbar() {
+		if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK) {
+			//Block block = ZyinHUDUtil.GetMouseOveredBlock();
         	BlockPos blockPos = ZyinHUDUtil.GetMouseOveredBlockPos();
             
             //Item blockItem = Item.getItemFromBlock(block);
@@ -179,24 +198,28 @@ public class Miscellaneous extends ZyinHUDModBase
             	{
             		//if it is in our inventory, swap it out to the hotbar
             		InventoryUtil.Swap(InventoryUtil.GetCurrentlySelectedItemInventoryIndex(), itemIndexInInventory);
-            	}
-            }
-        }
+				}
+			}
+		}
 	}
 
-    @SubscribeEvent
+	/**
+	 * Client tick event.
+	 *
+	 * @param event the event
+	 */
+	@SubscribeEvent
 	public void ClientTickEvent(ClientTickEvent event)
 	{
-		if(UseUnlimitedSprinting)
-		{
+		if(UseUnlimitedSprinting) {
 			MakeSprintingUnlimited();
 		}
 	}
-	
-    
-    /**
-     * Lets the player sprint longer than 30 seconds at a time. Needs to be called on every game tick to be effective.
-     */
+
+
+	/**
+	 * Lets the player sprint longer than 30 seconds at a time. Needs to be called on every game tick to be effective.
+	 */
 	public static void MakeSprintingUnlimited()
 	{
 		if(mc.thePlayer == null)
@@ -207,42 +230,41 @@ public class Miscellaneous extends ZyinHUDModBase
 		else
 			mc.thePlayer.sprintingTicksLeft = 600;	//sprintingTicksLeft is set to 600 when EntityPlayerSP.setSprinting() is called
 	}
-	
-	
 
-    /**
-     * Toggles improving the middle click functionality to work with blocks in your inventory
-     * @return 
-     */
-    public static boolean ToggleUseEnchancedMiddleClick()
-    {
-    	return UseEnhancedMiddleClick = !UseEnhancedMiddleClick;
-    }
-    
-    /**
-     * Toggles improving the middle click functionality to work with blocks in your inventory
-     * @return 
-     */
-    public static boolean ToggleUseQuickPlaceSign()
-    {
-    	return UseQuickPlaceSign = !UseQuickPlaceSign;
-    }
-    
-    /**
-     * Toggles unlimited sprinting
-     * @return 
-     */
-    public static boolean ToggleUseUnlimitedSprinting()
-    {
-    	return UseUnlimitedSprinting = !UseUnlimitedSprinting;
-    }
-    
-    /**
-     * Toggles showing anvil repairs
-     * @return 
-     */
-    public static boolean ToggleShowAnvilRepairs()
-    {
-    	return ShowAnvilRepairs = !ShowAnvilRepairs;
+
+	/**
+	 * Toggles improving the middle click functionality to work with blocks in your inventory
+	 *
+	 * @return boolean
+	 */
+	public static boolean ToggleUseEnchancedMiddleClick() {
+		return UseEnhancedMiddleClick = !UseEnhancedMiddleClick;
+	}
+
+	/**
+	 * Toggles improving the middle click functionality to work with blocks in your inventory
+	 *
+	 * @return boolean
+	 */
+	public static boolean ToggleUseQuickPlaceSign() {
+		return UseQuickPlaceSign = !UseQuickPlaceSign;
+	}
+
+	/**
+	 * Toggles unlimited sprinting
+	 *
+	 * @return boolean
+	 */
+	public static boolean ToggleUseUnlimitedSprinting() {
+		return UseUnlimitedSprinting = !UseUnlimitedSprinting;
+	}
+
+	/**
+	 * Toggles showing anvil repairs
+	 *
+	 * @return boolean
+	 */
+	public static boolean ToggleShowAnvilRepairs() {
+		return ShowAnvilRepairs = !ShowAnvilRepairs;
     }
 }

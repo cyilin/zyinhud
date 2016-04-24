@@ -2,7 +2,7 @@ package com.zyin.zyinhud.mods;
 
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import com.zyin.zyinhud.mods.Clock.Modes;
 import com.zyin.zyinhud.util.Localization;
@@ -13,25 +13,38 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public class Coordinates extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Xzy modes.
+         */
         XZY(Localization.get("coordinates.mode.xzy")),
+        /**
+         * Xyz modes.
+         */
         XYZ(Localization.get("coordinates.mode.xyz"));
         
         private String friendlyName;
@@ -43,13 +56,19 @@ public class Coordinates extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return ToggleMode(true);
         }
+
         /**
          * Sets the next availble mode for this mod if forward=true, or previous mode if false
+         *
+         * @param forward the forward
+         * @return the modes
          */
         public static Modes ToggleMode(boolean forward)
         {
@@ -58,31 +77,46 @@ public class Coordinates extends ZyinHUDModBase
         	else
         		return Mode = Mode.ordinal() > 0 ? Modes.values()[Mode.ordinal() - 1] : Modes.values()[Modes.values().length - 1];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return XZY;}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
-    
-    /** The default chat format String which replaces "{x}", "{y}", and "{z}" with coordinates */
+
+    /**
+     * The default chat format String which replaces "{x}", "{y}", and "{z}" with coordinates
+     */
     public static String DefaultChatStringFormat = "[{x}, {y}, {z}]";
-    /** A String which replaces "{x}", "{y}", and "{z}" with coordinates */
+    /**
+     * A String which replaces "{x}", "{y}", and "{z}" with coordinates
+     */
     public static String ChatStringFormat;
-    
-    /** Use colors to show what ores spawn at the elevation level */
+
+    /**
+     * Use colors to show what ores spawn at the elevation level
+     */
     public static boolean UseYCoordinateColors;
+    /**
+     * The constant ShowChunkCoordinates.
+     */
     public static boolean ShowChunkCoordinates;
     
     private static final int oreBoundaries[] =
@@ -95,15 +129,16 @@ public class Coordinates extends ZyinHUDModBase
     };
     private static final String oreBoundaryColors[] =
     {
-        EnumChatFormatting.WHITE.toString(),	//nothing below 5
-        EnumChatFormatting.AQUA.toString(),		//diamonds stop
-        EnumChatFormatting.BLUE.toString(),		//lapis lazuli stops
-        EnumChatFormatting.YELLOW.toString()	//gold stops
-        //EnumChatFormatting.GRAY		//coal stops
+            TextFormatting.WHITE.toString(),    //nothing below 5
+            TextFormatting.AQUA.toString(),        //diamonds stop
+            TextFormatting.BLUE.toString(),        //lapis lazuli stops
+            TextFormatting.YELLOW.toString()    //gold stops
+            //TextFormatting.GRAY		//coal stops
     };
 
     /**
      * Calculates the players coordinates
+     *
      * @return coordinates string if the Coordinates are enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
@@ -130,17 +165,17 @@ public class Coordinates extends ZyinHUDModBase
             String coordinatesString = "";
             if(Mode == Modes.XZY)
             {
-            	coordinatesString += EnumChatFormatting.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + EnumChatFormatting.WHITE + "]";
+                coordinatesString += TextFormatting.WHITE + "[" + coordX + ", " + coordZ + ", " + yColor + coordY + TextFormatting.WHITE + "]";
 
                 if(ShowChunkCoordinates)
-                	coordinatesString += EnumChatFormatting.ITALIC + " [" + EnumChatFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + EnumChatFormatting.ITALIC + "]";
+                    coordinatesString += TextFormatting.ITALIC + " [" + TextFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + TextFormatting.ITALIC + "]";
             }
             else if(Mode == Modes.XYZ)
             {
-            	coordinatesString += EnumChatFormatting.WHITE + "[" + coordX + ", " + yColor + coordY + EnumChatFormatting.WHITE + ", " + coordZ + "]";
+                coordinatesString += TextFormatting.WHITE + "[" + coordX + ", " + yColor + coordY + TextFormatting.WHITE + ", " + coordZ + "]";
 
 	            if(ShowChunkCoordinates)
-	            	coordinatesString += EnumChatFormatting.ITALIC + " [" + EnumChatFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + EnumChatFormatting.ITALIC + "]";
+                    coordinatesString += TextFormatting.ITALIC + " [" + TextFormatting.WHITE + (GetXCoordinate() & 15) + ", " + (GetYCoordinate() & 15) + ", " + (GetZCoordinate() & 15) + TextFormatting.ITALIC + "]";
             }
             else
             {
@@ -155,7 +190,10 @@ public class Coordinates extends ZyinHUDModBase
 
         return "";
     }
-    
+
+    /**
+     * Paste coordinates into chat.
+     */
     public static void PasteCoordinatesIntoChat()
     {
     	if(mc.currentScreen != null && mc.currentScreen instanceof GuiChat)
@@ -174,14 +212,31 @@ public class Coordinates extends ZyinHUDModBase
     	}
     }
 
+    /**
+     * Get x coordinate int.
+     *
+     * @return the int
+     */
     public static int GetXCoordinate()
     {
     	return (int) Math.floor(mc.thePlayer.posX);
     }
+
+    /**
+     * Get y coordinate int.
+     *
+     * @return the int
+     */
     public static int GetYCoordinate()
     {
     	return (int) Math.floor(mc.thePlayer.posY);
     }
+
+    /**
+     * Get z coordinate int.
+     *
+     * @return the int
+     */
     public static int GetZCoordinate()
     {
     	return (int) Math.floor(mc.thePlayer.posZ);
@@ -189,6 +244,7 @@ public class Coordinates extends ZyinHUDModBase
 
     /**
      * Toggles using color coded y coordinates
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleUseYCoordinateColors()
@@ -198,6 +254,7 @@ public class Coordinates extends ZyinHUDModBase
 
     /**
      * Toggles showing chunk coordinates
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleShowChunkCoordinates()

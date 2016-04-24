@@ -15,9 +15,10 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -30,25 +31,38 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class PlayerLocator extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
-	/** The current mode for this mod */
-	public static Modes Mode;
-	
-	/** The enum for the different types of Modes this mod can have */
+
+    /**
+     * The current mode for this mod
+     */
+    public static Modes Mode;
+
+    /**
+     * The enum for the different types of Modes this mod can have
+     */
     public static enum Modes
     {
+        /**
+         * Off modes.
+         */
         OFF(Localization.get("playerlocator.mode.off")),
+        /**
+         * On modes.
+         */
         ON(Localization.get("playerlocator.mode.on"));
         
         private String friendlyName;
@@ -60,34 +74,56 @@ public class PlayerLocator extends ZyinHUDModBase
 
         /**
          * Sets the next availble mode for this mod
+         *
+         * @return the modes
          */
         public static Modes ToggleMode()
         {
         	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
-        
+
         /**
          * Gets the mode based on its internal name as written in the enum declaration
-         * @param modeName
-         * @return
+         *
+         * @param modeName the mode name
+         * @return modes
          */
         public static Modes GetMode(String modeName)
         {
         	try {return Modes.valueOf(modeName);}
         	catch (IllegalArgumentException e) {return values()[0];}
         }
-        
+
+        /**
+         * Get friendly name string.
+         *
+         * @return the string
+         */
         public String GetFriendlyName()
         {
         	return friendlyName;
         }
     }
-    
-    /** Shows how far you are from other players next to their name */
+
+    /**
+     * Shows how far you are from other players next to their name
+     */
     public static boolean ShowDistanceToPlayers;
+    /**
+     * The constant ShowPlayerHealth.
+     */
     public static boolean ShowPlayerHealth;
+    /**
+     * The constant ShowWitherSkeletons.
+     */
     public static boolean ShowWitherSkeletons;
+    /**
+     * The constant ShowWolves.
+     */
     public static boolean ShowWolves;
+    /**
+     * The constant UseWolfColors.
+     */
     public static boolean UseWolfColors;
     
     private static final ResourceLocation iconsResourceLocation = new ResourceLocation("textures/gui/icons.png");
@@ -96,23 +132,55 @@ public class PlayerLocator extends ZyinHUDModBase
     
     private static final String wolfName = Localization.get("entity.Wolf.name");
     private static final String sprintingMessagePrefix = "";
-    private static final String sneakingMessagePrefix = EnumChatFormatting.ITALIC.toString();
+    private static final String sneakingMessagePrefix = TextFormatting.ITALIC.toString();
     private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
 
-    /** Don't render players that are closer than this */
+    /**
+     * Don't render players that are closer than this
+     */
     public static int viewDistanceCutoff = 0;
+    /**
+     * The constant minViewDistanceCutoff.
+     */
     public static final int minViewDistanceCutoff = 0;
+    /**
+     * The constant maxViewDistanceCutoff.
+     */
     public static final int maxViewDistanceCutoff = 130;	//realistic max distance the game will render entities: up to ~115 blocks away
 
+    /**
+     * The constant numOverlaysRendered.
+     */
     public static int numOverlaysRendered;
+    /**
+     * The constant maxNumberOfOverlays.
+     */
     public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
 
+    /**
+     * Get the type of the horse armor in int type
+     *
+     * @param armor_list
+     * @return Horse Armor Type
+     */
+    public static int getHorseArmorType(Iterable<ItemStack> armor_list) {
+        if (armor_list == null) {
+            return 0;
+        } else {
+            while (armor_list.iterator().hasNext()) {
+                Item armor_single_item = armor_list.iterator().next().getItem();
+                return armor_single_item == Items.IRON_HORSE_ARMOR ? 1 : (armor_single_item == Items.GOLDEN_HORSE_ARMOR ? 2 : (armor_single_item == Items.DIAMOND_HORSE_ARMOR ? 3 : 0));
+            }
 
+        }
+        return 0;
+    }
     /**
      * Renders nearby players's names on the screen.
-     * @param entity
-     * @param x location on the HUD
-     * @param y location on the HUD
+     *
+     * @param entity the entity
+     * @param x      location on the HUD
+     * @param y      location on the HUD
      */
     public static void RenderEntityInfoOnHUD(Entity entity, int x, int y)
     {
@@ -168,7 +236,7 @@ public class PlayerLocator extends ZyinHUDModBase
         		if(UseWolfColors)
         		{
         			EnumDyeColor collarColor = ((EntityWolf)entity).getCollarColor();
-        			float[] dyeRGBColors = EntitySheep.func_175513_a(collarColor);	//func_175513_a() friendly name is probably "getHexColorsFromDye"
+                    float[] dyeRGBColors = EntitySheep.getDyeRgb(collarColor);    //func_175513_a() friendly name is probably "getHexColorsFromDye"
 
 	                int r = (int)(dyeRGBColors[0]*255);
 	                int g = (int)(dyeRGBColors[1]*255);
@@ -191,10 +259,10 @@ public class PlayerLocator extends ZyinHUDModBase
         		rgb = 0x555555;
         		alpha = alpha / 6;
         	}
-        	
-        	if(entity.ridingEntity != null)
-        		overlayMessage = "    " + overlayMessage;	//make room for any icons we render
-        	
+
+            if (entity.getRidingEntity() != null)
+                overlayMessage = "    " + overlayMessage;    //make room for any icons we render
+
             int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);	//the width in pixels of the message
             ScaledResolution res = new ScaledResolution(mc);
             int width = res.getScaledWidth();		//~427
@@ -224,29 +292,28 @@ public class PlayerLocator extends ZyinHUDModBase
             mc.fontRendererObj.drawStringWithShadow(overlayMessage, x, y, color);
             
             //also render whatever the player is currently riding on
-            if (entity.ridingEntity instanceof EntityHorse)
+            if (entity.getRidingEntity() instanceof EntityHorse)
             {
             	//armor is 0 when no horse armor is equipped
-            	int armor = ((EntityHorse)entity.ridingEntity).getHorseArmorIndexSynced();
-            	
+                Iterable<ItemStack> armor_list = ((EntityHorse) entity.getRidingEntity()).getArmorInventoryList();
+                int armor = getHorseArmorType(armor_list);
+
             	if(armor == 1)
                 	RenderHorseArmorIronIcon(x, y);
             	else if(armor == 2)
                 	RenderHorseArmorGoldIcon(x, y);
             	else if(armor == 3)
                 	RenderHorseArmorDiamondIcon(x, y);
-            	else if(((EntityHorse)entity.ridingEntity).isHorseSaddled())
-                	RenderSaddleIcon(x, y);
+                else if (((EntityHorse) entity.getRidingEntity()).isHorseSaddled())
+                    RenderSaddleIcon(x, y);
             }
-            if (entity.ridingEntity instanceof EntityPig)
+            if (entity.getRidingEntity() instanceof EntityPig)
             {
             	RenderSaddleIcon(x, y);
-            }
-            else if (entity.ridingEntity instanceof EntityMinecart)
+            } else if (entity.getRidingEntity() instanceof EntityMinecart)
             {
             	RenderMinecartIcon(x, y);
-            }
-            else if (entity.ridingEntity instanceof EntityBoat)
+            } else if (entity.getRidingEntity() instanceof EntityBoat)
             {
             	RenderBoatIcon(x, y);
             }
@@ -277,16 +344,14 @@ public class PlayerLocator extends ZyinHUDModBase
     {
     	return wolf.isOnSameTeam(mc.thePlayer);
     }
-    
-    
-	private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe)
-	{
-		String overlayMessage = "Wither " + witherSkeleton.getCommandSenderName();
-		
+
+
+    private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe) {
+        String overlayMessage = "Wither " + witherSkeleton.getCommandSenderEntity().getName();
+
         //add distance to this wither skeleton into the message
-        if (ShowDistanceToPlayers)
-        {
-        	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
+        if (ShowDistanceToPlayers) {
+            overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
         }
         
         return overlayMessage;
@@ -302,9 +367,8 @@ public class PlayerLocator extends ZyinHUDModBase
 			overlayMessage = wolf.getCustomNameTag();
 
         //add distance to this wolf into the message
-        if (ShowDistanceToPlayers)
-        {
-        	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
+        if (ShowDistanceToPlayers) {
+            overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
         }
         
         return overlayMessage;
@@ -319,7 +383,7 @@ public class PlayerLocator extends ZyinHUDModBase
             if (ShowDistanceToPlayers)
             {
                 //overlayMessage = "[" + (int)distanceFromMe + "] " + overlayMessage;
-            	overlayMessage = EnumChatFormatting.GRAY + "[" + (int)distanceFromMe + "] " + EnumChatFormatting.RESET + overlayMessage;
+                overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
             }
 
             //add special effects based on what the other player is doing
@@ -341,32 +405,32 @@ public class PlayerLocator extends ZyinHUDModBase
 	
 	private static void RenderBoatIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.boat), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOAT), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderMinecartIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.minecart), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.MINECART), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorDiamondIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI( new ItemStack(Items.diamond_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI( new ItemStack(Items.DIAMOND_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorGoldIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.golden_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.GOLDEN_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderHorseArmorIronIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.iron_horse_armor), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.IRON_HORSE_ARMOR), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	private static void RenderSaddleIcon(int x, int y)
 	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.saddle), x, y - 4);
+		itemRenderer.renderItemIntoGUI(new ItemStack(Items.SADDLE), x, y - 4);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 	
@@ -395,12 +459,11 @@ public class PlayerLocator extends ZyinHUDModBase
     	return sign * angle;
     }
     */
-    
-    
-    
+
 
     /**
      * Gets the status of the Player Locator
+     *
      * @return the string "players" if the Player Locator is enabled, otherwise "".
      */
     public static String CalculateMessageForInfoLine()
@@ -408,55 +471,56 @@ public class PlayerLocator extends ZyinHUDModBase
         if (Mode == Modes.OFF || !PlayerLocator.Enabled)
         {
             return "";
-        }
-        else if (Mode == Modes.ON)
-        {
-            return EnumChatFormatting.WHITE + Localization.get("playerlocator.infoline");
-        }
-        else
-        {
-            return EnumChatFormatting.WHITE + "???";
+        } else if (Mode == Modes.ON) {
+            return TextFormatting.WHITE + Localization.get("playerlocator.infoline");
+        } else {
+            return TextFormatting.WHITE + "???";
         }
     }
 
     /**
      * Toggle showing the distance to players
+     *
      * @return The new Clock mode
      */
     public static boolean ToggleShowDistanceToPlayers()
     {
     	return ShowDistanceToPlayers = !ShowDistanceToPlayers;
     }
-    
+
     /**
      * Toggle showing the players health
+     *
      * @return The new Clock mode
      */
     public static boolean ToggleShowPlayerHealth()
     {
     	return ShowPlayerHealth = !ShowPlayerHealth;
     }
-    
+
     /**
      * Toggle showing wolves in addition to other players
+     *
      * @return The new Clock mode
      */
     public static boolean ToggleShowWolves()
     {
     	return ShowWolves = !ShowWolves;
     }
-    
+
     /**
      * Toggle using the coler of the wolf's collar to colorize the wolf's name
+     *
      * @return The new Clock mode
      */
     public static boolean ToggleUseWolfColors()
     {
     	return UseWolfColors = !UseWolfColors;
     }
-    
+
     /**
      * Toggle showing wolves in addition to other players
+     *
      * @return The new Clock mode
      */
     public static boolean ToggleShowWitherSkeletons()

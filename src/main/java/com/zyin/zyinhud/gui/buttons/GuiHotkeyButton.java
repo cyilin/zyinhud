@@ -3,7 +3,7 @@ package com.zyin.zyinhud.gui.buttons;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.text.TextFormatting;
 
 import org.lwjgl.input.Keyboard;
 
@@ -14,19 +14,32 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class GuiHotkeyButton extends GuiButton
 {
-	protected static Minecraft mc = Minecraft.getMinecraft();
-	
-    protected boolean waitingForHotkeyInput = false;
-    protected String hotkey;	//E.x.: "P"
-    protected String hotkeyDescription;	//E.x.: "key.zyinhud.somemod"
-	
 	/**
-	 * 
-	 * @param id
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
+	 * The constant mc.
+	 */
+	protected static Minecraft mc = Minecraft.getMinecraft();
+
+	/**
+	 * The Waiting for hotkey input.
+	 */
+	protected boolean waitingForHotkeyInput = false;
+	/**
+	 * The Hotkey.
+	 */
+	protected String hotkey;    //E.x.: "P"
+	/**
+	 * The Hotkey description.
+	 */
+	protected String hotkeyDescription;    //E.x.: "key.zyinhud.somemod"
+
+	/**
+	 * Instantiates a new Gui hotkey button.
+	 *
+	 * @param id                the id
+	 * @param x                 the x
+	 * @param y                 the y
+	 * @param width             the width
+	 * @param height            the height
 	 * @param hotkeyDescription This should be the same string used in the localization file, E.x.: "key.zyinhud.somemod"
 	 */
 	public GuiHotkeyButton(int id, int x, int y, int width, int height, String hotkeyDescription)
@@ -36,7 +49,7 @@ public class GuiHotkeyButton extends GuiButton
 		this.hotkey = GetHotkey();
 		UpdateDisplayString();
 	}
-	
+
 	/**
 	 * This method should be called whenever this button is clicked.
 	 */
@@ -45,7 +58,7 @@ public class GuiHotkeyButton extends GuiButton
 		waitingForHotkeyInput = !waitingForHotkeyInput;
 		UpdateDisplayString();
 	}
-	
+
 	/**
 	 * Make this button stop accepting hotkey input.
 	 */
@@ -54,16 +67,23 @@ public class GuiHotkeyButton extends GuiButton
 		waitingForHotkeyInput = false;
 		UpdateDisplayString();
 	}
-	
-	protected void UpdateDisplayString()
-	{
-    	if(waitingForHotkeyInput)
-    		displayString = Localization.get("gui.options.hotkey") + EnumChatFormatting.WHITE + "> " + EnumChatFormatting.YELLOW + GetHotkey() + EnumChatFormatting.WHITE + " <";
-    	else
-    		displayString = Localization.get("gui.options.hotkey") + GetHotkey();
-		
+
+	/**
+	 * Update display string.
+	 */
+	protected void UpdateDisplayString() {
+		if (waitingForHotkeyInput)
+			displayString = Localization.get("gui.options.hotkey") + TextFormatting.WHITE + "> " + TextFormatting.YELLOW + GetHotkey() + TextFormatting.WHITE + " <";
+		else
+			displayString = Localization.get("gui.options.hotkey") + GetHotkey();
+
 	}
-	
+
+	/**
+	 * Is waiting for hotkey input boolean.
+	 *
+	 * @return the boolean
+	 */
 	public boolean IsWaitingForHotkeyInput()
 	{
 		return waitingForHotkeyInput;
@@ -80,19 +100,18 @@ public class GuiHotkeyButton extends GuiButton
 
         KeyBinding keyBinding = null;
         KeyBinding[] keyBindings = mc.gameSettings.keyBindings;
-        for(int i = 0; i < keyBindings.length; i++)
-        {
-        	if(keyBindings[i].getKeyDescription().equals(hotkeyDescription))
-        	{
-        		return keyBindings[i];
-        	}
-        }
-        return null;
+		for (KeyBinding keyBinding1 : keyBindings) {
+			if (keyBinding1.getKeyDescription().equals(hotkeyDescription)) {
+				return keyBinding1;
+			}
+		}
+		return null;
 	}
-	
+
 	/**
 	 * Called when a key is pressed on the GuiZyinHUDOptions screen.
 	 * Updates Minecraft's keybinding.
+	 *
 	 * @param newHotkey e.x. 37 (K), 1 (Esc), 55 (*)
 	 */
 	public void ApplyHotkey(int newHotkey)
@@ -111,11 +130,11 @@ public class GuiHotkeyButton extends GuiButton
         	KeyBinding.resetKeyBindingArrayAndHash();
         }
 	}
-	
-	
-	
+
+
 	/**
 	 * Searches Minecraft's key bindings to get the hotkey based on the hotkey description, then caches the result for future use.
+	 *
 	 * @return String representation of the hotkey, e.x. "K", "LMENU"
 	 */
 	public String GetHotkey()
@@ -137,20 +156,22 @@ public class GuiHotkeyButton extends GuiButton
 		else
 			return hotkey;
 	}
-	
-	
+
+
 	/**
 	 * Sets the mods hotkey
+	 *
 	 * @param hotkey the new hotkey to use
 	 */
 	protected void SetHotkey(String hotkey)
 	{
 		this.hotkey = hotkey;
 	}
-	
+
 	/**
 	 * Gets the description for the mods hotkey
-	 * @return
+	 *
+	 * @return string
 	 */
 	protected String GetHotkeyDescription()
 	{

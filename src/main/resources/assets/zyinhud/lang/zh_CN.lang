@@ -95,6 +95,7 @@ durabilityinfo.options.showindividualarmoricons=使用装备图标:
 durabilityinfo.options.showindividualarmoricons.tooltip=关闭时,会显示装备损耗图标(类似暗黑破坏神3)而不是真正的装备图标
 durabilityinfo.options.showdamageaspercent=使用百分比: 
 durabilityinfo.options.showdamageaspercent.tooltip=显示剩余耐久百分比而不是耐久数值
+durabilityinfo.options.hidedurabilityinfoinchat=在聊天窗口隐藏耐久信息: 
 
 eatingaid.name=进食辅助
 eatingaid.mode.basic=基础
@@ -189,6 +190,7 @@ potiontimers.options.hidepotioneffectsininventory.tooltip=在查看物品栏时�
 potiontimers.options.potionscale=尺寸: 
 potiontimers.options.offsetx=X轴平移: 
 potiontimers.options.offsety=Y轴平移: 
+potiontimers.options.hidebeaconpotioneffects=隐藏信标药水效果: 
 
 safeoverlay.name=安全覆盖
 safeoverlay.mode.off=关

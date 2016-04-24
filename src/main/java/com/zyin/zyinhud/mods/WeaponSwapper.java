@@ -9,6 +9,7 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.EntityEquipmentSlot;
 
 import com.google.common.collect.Multimap;
 import com.zyin.zyinhud.ZyinHUDRenderer;
@@ -21,11 +22,14 @@ import com.zyin.zyinhud.util.ModCompatibility;
  */
 public class WeaponSwapper extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
@@ -35,14 +39,14 @@ public class WeaponSwapper extends ZyinHUDModBase
     
     //private static List<Class> meleeWeaponClasses = null;
     private static List<Class> rangedWeaponClasses = null;
-    
+
 
     /**
      * Makes the player select their sword. If a sword is already selected, it selects the bow instead.
      */
     public static void SwapWeapons()
     {
-        ItemStack currentItemStack = mc.thePlayer.getHeldItem();
+        ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand(); //getHeldItem();
         Item currentItem = null;
 
         if (currentItemStack != null)
@@ -101,10 +105,13 @@ public class WeaponSwapper extends ZyinHUDModBase
         	}
         }
     }
-    
+
     /**
      * Gets the inventory index of the most damaging melee weapon on the hotbar.
-     * @return 0-9
+     *
+     * @param minInventoryIndex the min inventory index
+     * @param maxInventoryIndex the max inventory index
+     * @return 0 -9
      */
     protected static int GetMostDamagingWeaponSlot(int minInventoryIndex, int maxInventoryIndex)
     {
@@ -131,7 +138,8 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     /**
      * Gets the hotbar index of the most damaging melee weapon on the hotbar.
-     * @return 0-8, -1 if none found
+     *
+     * @return 0 -8, -1 if none found
      */
     public static int GetMostDamagingWeaponSlotFromHotbar()
     {
@@ -140,27 +148,28 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     /**
      * Gets the inventory index of the most damaging melee weapon in the inventory.
-     * @return 9-35, -1 if none found
+     *
+     * @return 9 -35, -1 if none found
      */
     public static int GetMostDamagingWeaponSlotFromInventory()
     {
         return GetMostDamagingWeaponSlot(9, 35);
     }
-    
+
     /**
      * Gets the amount of melee damage delt by the specified item
-     * @param itemStack
+     *
+     * @param itemStack the item stack
      * @return -1 if it doesn't have a damage modifier
      */
     public static double GetItemWeaponDamage(ItemStack itemStack)
     {
-		Multimap multimap = itemStack.getItem().getAttributeModifiers(itemStack);
-		
-		if (multimap.containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
-		{
-			Collection attributes = multimap.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
-			if (attributes.size() > 0)
-			{
+        EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
+        Multimap multimap = itemStack.getItem().getAttributeModifiers(EquipmentSlot, itemStack);
+
+        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName())) {
+            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+            if (attributes.size() > 0) {
 				Object attribute = attributes.iterator().next();
 				if (attribute instanceof AttributeModifier)
 				{
@@ -202,19 +211,18 @@ public class WeaponSwapper extends ZyinHUDModBase
     {
     	if(rangedWeaponClasses == null)
     		return false;
-    	
-        for(int j = 0; j < rangedWeaponClasses.size(); j++)
-        {
-            if (rangedWeaponClasses.get(j).isInstance(item))
-            {
+
+        for (Class rangedWeaponClass : rangedWeaponClasses) {
+            if (rangedWeaponClass.isInstance(item)) {
                 return true;
             }
         }
 		return false;
 	}
 
-	/**
+    /**
      * Makes the player select a slot on their hotbar
+     *
      * @param slot 0 through 8
      */
     protected static void SelectHotbarSlot(int slot)
@@ -230,7 +238,10 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     /**
      * Gets the index of an item that exists in the player's hotbar.
-     * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
+     *
+     * @param itemClasses       the type of item to find (i.e. ItemSword.class, ItemBow.class)
+     * @param minInventoryIndex the min inventory index
+     * @param maxInventoryIndex the max inventory index
      * @return 0 through 8, inclusive. -1 if not found.
      */
     protected static int GetItemSlot(List<Class> itemClasses, int minInventoryIndex, int maxInventoryIndex)
@@ -244,11 +255,9 @@ public class WeaponSwapper extends ZyinHUDModBase
             if (itemStack != null)
             {
                 Item item = itemStack.getItem();
-                
-                for(int j = 0; j < itemClasses.size(); j++)
-                {
-                    if (itemClasses.get(j).isInstance(item))
-                    {
+
+                for (Class itemClass : itemClasses) {
+                    if (itemClass.isInstance(item)) {
                         return i;
                     }
                 }
@@ -260,6 +269,7 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     /**
      * Gets the index of an item that exists in the player's hotbar.
+     *
      * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
      * @return 0 through 8, inclusive. -1 if not found.
      */
@@ -270,6 +280,7 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     /**
      * Gets the index of an item that exists in the player's hotbar.
+     *
      * @param itemClasses the type of item to find (i.e. ItemSword.class, ItemBow.class)
      * @return 9 through 35, inclusive. -1 if not found.
      */

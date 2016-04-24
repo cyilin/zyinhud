@@ -1,16 +1,14 @@
 package com.zyin.zyinhud.mods;
 
 
-import java.awt.AWTException;
-import java.awt.Robot;
-
+import com.zyin.zyinhud.util.InventoryUtil;
+import com.zyin.zyinhud.util.ModCompatibility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 
-import com.zyin.zyinhud.util.InventoryUtil;
-import com.zyin.zyinhud.util.ModCompatibility;
+import java.awt.*;
 
 /**
  * TorchAid Aid allows the player to easily use a torch without having it selected. It does this by
@@ -19,11 +17,14 @@ import com.zyin.zyinhud.util.ModCompatibility;
  */
 public class TorchAid extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
@@ -33,7 +34,7 @@ public class TorchAid extends ZyinHUDModBase
     
     
     private Robot r = null;
-    
+
     /**
      * Use this instance for all method calls.
      */
@@ -55,20 +56,26 @@ public class TorchAid extends ZyinHUDModBase
      * or the index of the hotbar slot that was selected. The <code>UnequipTorch()</code> function uses this value to determine
      * what to do next. -1 means there are no torches in inventory.*/
     private static int previousTorchIndex = -1;
-    
 
+
+    /**
+     * Pressed.
+     */
     public void Pressed()
     {
     	if(TorchAid.Enabled)
     		EquipTorchIfToolIsEquipped();
     }
-    
+
+    /**
+     * Released.
+     */
     public void Released()
     {
     	if(TorchAid.Enabled)
     		UnequipTorch();
     }
-    
+
     /**
      * Makes the player place a Torch if they are currently using a tool.
      */
@@ -76,9 +83,8 @@ public class TorchAid extends ZyinHUDModBase
     {
     	if(mc.currentScreen == null && mc.inGameHasFocus)
     	{
-    		ItemStack currentItemStack = mc.thePlayer.getHeldItem();
-    		if(currentItemStack != null)
-    		{
+            ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
+            if (currentItemStack != null) {
     			if(currentItemStack.getItem() instanceof ItemTool
     				|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
 	    		{
@@ -87,7 +93,7 @@ public class TorchAid extends ZyinHUDModBase
     		}
     	}
     }
-    
+
     /**
      * Makes the player place a Torch if they have one by selecting a Torch in their inventory then right clicking.
      */
@@ -97,14 +103,14 @@ public class TorchAid extends ZyinHUDModBase
         {
             EatingAid.instance.StopEating();    //it's not good if we have a torch selected and hold right click down...
         }
-        
-        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+
+        if (mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
         {
-            int torchHotbarIndex = InventoryUtil.GetItemIndexFromHotbar(Blocks.torch);
+            int torchHotbarIndex = InventoryUtil.GetItemIndexFromHotbar(Blocks.TORCH);
             
             if(torchHotbarIndex < 0)
             {
-                int torchInventoryIndex = InventoryUtil.GetItemIndexFromInventory(Blocks.torch);
+                int torchInventoryIndex = InventoryUtil.GetItemIndexFromInventory(Blocks.TORCH);
 
     			if(torchInventoryIndex >= 0)
     			{

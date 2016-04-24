@@ -3,9 +3,9 @@ package com.zyin.zyinhud.mods;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.math.MathHelper;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,36 +19,57 @@ import com.zyin.zyinhud.util.Localization;
  */
 public class InfoLine extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
     {
     	return Enabled = !Enabled;
     }
-    
+
+    /**
+     * The constant ShowBiome.
+     */
     public static boolean ShowBiome;
+    /**
+     * The constant ShowCanSnow.
+     */
     public static boolean ShowCanSnow;
-    
-    /**  The padding string that is inserted between different elements of the Info Line */
+
+    /**
+     * The padding string that is inserted between different elements of the Info Line
+     */
     public static final String SPACER = " ";
+    /**
+     * The constant infoLineLocX.
+     */
     public static int infoLineLocX = 1;
+    /**
+     * The constant infoLineLocY.
+     */
     public static int infoLineLocY = 1;
 
     /*private static final int notificationDuration = 1200;	//measured in milliseconds
     private static long notificationTimer = 0;				//timer that goes from notificationDuration to 0
     private static long notificationStartTime;*/
-    
-    /** The notification string currently being rendered */
+
+    /**
+     * The notification string currently being rendered
+     */
     public static String notificationMessage = "";
-    
-    /** The info line string currently being rendered */
+
+    /**
+     * The info line string currently being rendered
+     */
     public static String infoLineMessage;
-    
+
 
     /**
      * Renders the on screen message consisting of everything that gets put into the top let message area,
@@ -113,7 +134,13 @@ public class InfoLine extends ZyinHUDModBase
             mc.fontRendererObj.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
         }
     }
-    
+
+    /**
+     * Calculate can snow for info line string.
+     *
+     * @param infoLineMessageUpToThisPoint the info line message up to this point
+     * @return the string
+     */
     protected static String CalculateCanSnowForInfoLine(String infoLineMessageUpToThisPoint)
     {
     	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
@@ -132,7 +159,7 @@ public class InfoLine extends ZyinHUDModBase
     		int x = (int)(mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
     		int y = (int)(-1);
     		
-    		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.snowball), x, y);
+    		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.SNOWBALL), x, y);
     		
     		GL11.glDisable(GL11.GL_LIGHTING);
     		GL11.glScalef(1/scaler, 1/scaler, 1/scaler);
@@ -141,14 +168,19 @@ public class InfoLine extends ZyinHUDModBase
     	}
     	return "";
     }
-    
+
+    /**
+     * Calculate biome for info line string.
+     *
+     * @return the string
+     */
     protected static String CalculateBiomeForInfoLine()
     {
     	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
         int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
-        
-    	String biomeName = mc.theWorld.getBiomeGenForCoords(new BlockPos(xCoord, 64, zCoord)).biomeName;
-    	return EnumChatFormatting.WHITE + biomeName;
+
+        String biomeName = mc.theWorld.getBiomeGenForCoords(new BlockPos(xCoord, 64, zCoord)).getBiomeName();
+        return TextFormatting.WHITE + biomeName;
     }
     
     /**
@@ -164,10 +196,11 @@ public class InfoLine extends ZyinHUDModBase
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("compass.name")) ||
 			((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("fps.name")));
     }
-    
+
 
     /**
      * Toggles showing the biome in the Info Line
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleShowBiome()
@@ -177,27 +210,29 @@ public class InfoLine extends ZyinHUDModBase
 
     /**
      * Toggles showing if it is possible for snow to fall at the player's feet in the Info Line
+     *
      * @return The state it was changed to
      */
     public static boolean ToggleShowCanSnow()
     {
     	return ShowCanSnow = !ShowCanSnow;
     }
-    
 
-    
+
     /**
      * Gets the horizontal location where the potion timers are rendered.
-     * @return
+     *
+     * @return int
      */
     public static int GetHorizontalLocation()
     {
     	return infoLineLocX;
     }
-    
+
     /**
      * Sets the horizontal location where the potion timers are rendered.
-     * @param x
+     *
+     * @param x the x
      * @return the new x location
      */
     public static int SetHorizontalLocation(int x)
@@ -205,10 +240,11 @@ public class InfoLine extends ZyinHUDModBase
     	infoLineLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
     	return infoLineLocX;
     }
-    
+
     /**
      * Gets the vertical location where the potion timers are rendered.
-     * @return
+     *
+     * @return int
      */
     public static int GetVerticalLocation()
     {
@@ -217,7 +253,8 @@ public class InfoLine extends ZyinHUDModBase
 
     /**
      * Sets the vertical location where the potion timers are rendered.
-     * @param y
+     *
+     * @param y the y
      * @return the new y location
      */
     public static int SetVerticalLocation(int y)

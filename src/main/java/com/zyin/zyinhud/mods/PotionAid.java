@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionUtils;
 
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
@@ -25,11 +26,14 @@ import com.zyin.zyinhud.util.ZyinHUDUtil;
  */
 public class PotionAid extends ZyinHUDModBase
 {
-	/** Enables/Disables this Mod */
-	public static boolean Enabled;
+    /**
+     * Enables/Disables this Mod
+     */
+    public static boolean Enabled;
 
     /**
      * Toggles this Mod on or off
+     *
      * @return The state the Mod was changed to
      */
     public static boolean ToggleEnabled()
@@ -50,7 +54,7 @@ public class PotionAid extends ZyinHUDModBase
     private int currentItemHotbarIndex;
     
     private static int potionDrinkDuration = 2000;
-    
+
     /**
      * Use this instance for all method calls.
      */
@@ -153,10 +157,7 @@ public class PotionAid extends ZyinHUDModBase
         swapTimerTask = InventoryUtil.instance.SwapWithDelay(currentItemInventoryIndex, potionInventoryIndex,
         		potionDrinkDuration + InventoryUtil.GetSuggestedItemSwapDelay());
     }
-    
-    
-    
-    
+
 
     /**
      * Stops eating by releasing right click and moving the food back to its original position.
@@ -187,7 +188,8 @@ public class PotionAid extends ZyinHUDModBase
 
     /**
      * Are we currently drinking a potion?
-     * @return
+     *
+     * @return boolean
      */
     public boolean isDrinking()
     {
@@ -204,6 +206,7 @@ public class PotionAid extends ZyinHUDModBase
      * Potion of Swiftness<br>
      * Potion of Strength<br>
      * Potion of Invisibility<br>
+     *
      * @return the index in your inventory that has the most appropriate potion to drink (9-34), or -1 if no appropriate potions found.
      */
     public int GetMostAppropriatePotionItemIndexFromInventory()
@@ -235,28 +238,37 @@ public class PotionAid extends ZyinHUDModBase
             if (item instanceof ItemPotion)
             {
             	ItemPotion potion = (ItemPotion)item;
-            	
-            	boolean isSplashPotion = potion.isSplash(itemStack.getItemDamage());
-            	
-            	//we dont' want to use splash potions
-            	if(isSplashPotion)
-            		continue;
-            	
-            	List potionEffects = potion.getEffects(itemStack.getItemDamage());
-            	PotionEffect potionEffect = (PotionEffect)potionEffects.get(0);
-                String potionEffectName = potionEffect.getEffectName();
+                boolean isSplashPotion;
+            	if ((itemStack.getItemDamage() & 16384) != 0)
+                {
+                    isSplashPotion = true;
+                }else{
+                    isSplashPotion = false;
+                }
+                //boolean isSplashPotion = potion.isSplash(itemStack.getItemDamage());
 
-            	if(potionEffectName.equals("potion.fireResistance"))
+            	//we dont' want to use splash potions
+            	if(isSplashPotion) {
+                    continue;
+                }
+                List potionEffects = PotionUtils.getEffectsFromStack(itemStack); //FIXME: Temporary fix
+                if (potionEffects.isEmpty()) {
+                    continue;
+                }
+                PotionEffect potionEffect = (PotionEffect) potionEffects.get(0);
+                String potionEffectName = potionEffect.getEffectName();
+                
+        	if(potionEffectName.equals("effect.fireResistance"))
             		fireResistancePotionIndex = i;
-            	else if(potionEffectName.equals("potion.heal"))
+            	else if(potionEffectName.equals("effect.heal"))
             		healPotionIndex = i;
-            	else if(potionEffectName.equals("potion.regeneration"))
+            	else if(potionEffectName.equals("effect.regeneration"))
             		regenerationPotionIndex = i;
-            	else if(potionEffectName.equals("potion.moveSpeed"))
+            	else if(potionEffectName.equals("effect.moveSpeed"))
             		moveSpeedPotionIndex = i;
-            	else if(potionEffectName.equals("potion.damageBoost"))
+            	else if(potionEffectName.equals("effect.damageBoost"))
             		damageBoostPotionIndex = i;
-            	else if(potionEffectName.equals("potion.invisibility"))
+            	else if(potionEffectName.equals("effect.invisibility"))
             		invisibilityPotionIndex = i;
             	
             }
@@ -277,15 +289,15 @@ public class PotionAid extends ZyinHUDModBase
             PotionEffect potionEffect = (PotionEffect)it.next();
             String potionEffectName = potionEffect.getEffectName();
 
-        	if(potionEffectName.equals("potion.regeneration"))
+        	if(potionEffectName.equals("effect.regeneration"))
         		hasRegenerationPotionEffect = true;
-        	else if(potionEffectName.equals("potion.fireResistance"))
+        	else if(potionEffectName.equals("effect.fireResistance"))
         		hasFireResistancePotionEffect = true;
-        	else if(potionEffectName.equals("potion.moveSpeed"))
+        	else if(potionEffectName.equals("effect.moveSpeed"))
         		hasMoveSpeedPotionEffect = true;
-        	else if(potionEffectName.equals("potion.damageBoost"))
+        	else if(potionEffectName.equals("effect.damageBoost"))
         		hasDamageBoostPotionEffect = true;
-        	else if(potionEffectName.equals("potion.invisibility"))
+        	else if(potionEffectName.equals("effect.invisibility"))
         		hasInvisibilityPotionEffect = true;
         }
         
@@ -325,13 +337,19 @@ public class PotionAid extends ZyinHUDModBase
 
         /**
          * Helper class whose purpose is to release right click and set our status to not drinking.
+         *
+         * @param r the r
          */
         StopDrinkingTimerTask(Robot r)
         {
             this.r = r;
         }
+
         /**
          * Helper class whose purpose is to release right click, set our status to not drinking, and select a hotbar index.
+         *
+         * @param r                       the r
+         * @param hotbarIndexToBeSelected the hotbar index to be selected
          */
         StopDrinkingTimerTask(Robot r, int hotbarIndexToBeSelected)
         {

@@ -28,6 +28,8 @@ public class RenderEntityTrackerHelper
 
     /**
      * Calculates the positions of entities in the world and renders various overlays on them.
+     *
+     * @param partialTickTime the partial tick time
      */
     public static void RenderEntityInfo(float partialTickTime)
     {
