@@ -1,22 +1,20 @@
 package com.zyin.zyinhud.mods;
 
-import java.util.Collection;
-import java.util.Iterator;
-
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-
 import org.lwjgl.opengl.GL11;
 
-import com.zyin.zyinhud.ZyinHUDRenderer;
-import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
-import com.zyin.zyinhud.util.Localization;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Potion Timers displays the remaining time left on any potion effects the user has.
@@ -134,6 +132,8 @@ public class PotionTimers extends ZyinHUDModBase
      */
     public static boolean HidePotionEffectsInInventory;
 
+    public static boolean HideBeaconPotionEffects;
+
     /**
      * The constant blinkingThresholds.
      */
@@ -185,9 +185,9 @@ public class PotionTimers extends ZyinHUDModBase
                 PotionEffect potionEffect = (PotionEffect)it.next();
                 //Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
                 Potion potion = potionEffect.getPotion();
-                Boolean isFromBeacon = potionEffect.getIsAmbient();	//Minecraft bug: this is always false
+                Boolean isFromBeacon = potionEffect.getIsAmbient();
 
-                if (!isFromBeacon)	//ignore effects from Beacons (Minecraft bug: isFromBeacon is always false)
+                if (!isFromBeacon || !HideBeaconPotionEffects)
                 {
                 	if(ShowPotionIcons)
                 	{
@@ -385,5 +385,9 @@ public class PotionTimers extends ZyinHUDModBase
     	potionLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
     	return potionLocY;
     }
-    
+
+    public static boolean ToggleHideBeaconPotionEffects(){
+        return HideBeaconPotionEffects = !HideBeaconPotionEffects;
+    }
+
 }

@@ -1,33 +1,12 @@
 package com.zyin.zyinhud;
 
-import java.io.File;
-
+import com.zyin.zyinhud.mods.*;
+import com.zyin.zyinhud.util.Localization;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-
 import org.lwjgl.input.Keyboard;
 
-import com.zyin.zyinhud.mods.AnimalInfo;
-import com.zyin.zyinhud.mods.Clock;
-import com.zyin.zyinhud.mods.Compass;
-import com.zyin.zyinhud.mods.Coordinates;
-import com.zyin.zyinhud.mods.DistanceMeasurer;
-import com.zyin.zyinhud.mods.DurabilityInfo;
-import com.zyin.zyinhud.mods.EatingAid;
-import com.zyin.zyinhud.mods.EnderPearlAid;
-import com.zyin.zyinhud.mods.Fps;
-import com.zyin.zyinhud.mods.HealthMonitor;
-import com.zyin.zyinhud.mods.InfoLine;
-import com.zyin.zyinhud.mods.ItemSelector;
-import com.zyin.zyinhud.mods.Miscellaneous;
-import com.zyin.zyinhud.mods.PlayerLocator;
-import com.zyin.zyinhud.mods.PotionAid;
-import com.zyin.zyinhud.mods.PotionTimers;
-import com.zyin.zyinhud.mods.QuickDeposit;
-import com.zyin.zyinhud.mods.SafeOverlay;
-import com.zyin.zyinhud.mods.TorchAid;
-import com.zyin.zyinhud.mods.WeaponSwapper;
-import com.zyin.zyinhud.util.Localization;
+import java.io.File;
 
 /**
  * This class is responsible for interacting with the configuration file.
@@ -404,6 +383,11 @@ public class ZyinHUDConfig
         else
         	p.set(DurabilityInfo.DurabilityScale);
 
+        p = config.get(CATEGORY_DURABILITYINFO, "HideDurabilityInfoInChat", true);
+        if(loadSettings)
+            DurabilityInfo.HideDurabilityInfoInChat = p.getBoolean(true);
+        else
+            p.set(DurabilityInfo.HideDurabilityInfoInChat);
 
         //CATEGORY_SAFEOVERLAY
         p = config.get(CATEGORY_SAFEOVERLAY, "EnableSafeOverlay", true);
@@ -501,6 +485,11 @@ public class ZyinHUDConfig
         else
         	p.set(PotionTimers.GetVerticalLocation());
 
+        p = config.get(CATEGORY_POTIONTIMERS, "HideBeaconPotionEffects", false);
+        if(loadSettings)
+            PotionTimers.HideBeaconPotionEffects = p.getBoolean(false);
+        else
+            p.set(PotionTimers.HideBeaconPotionEffects);
 
         //CATEGORY_PLAYERLOCATOR
         p = config.get(CATEGORY_PLAYERLOCATOR, "EnablePlayerLocator", true);

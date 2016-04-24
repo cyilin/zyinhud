@@ -1,20 +1,18 @@
 package com.zyin.zyinhud.mods;
 
-import java.util.ArrayList;
-
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.item.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
-
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.item.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
 
 /**
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
@@ -149,6 +147,8 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static float DurabilityScale = 1f;
 
+    public static boolean HideDurabilityInfoInChat;
+
     /**
      * The constant durabilityUpdateFrequency.
      */
@@ -227,7 +227,7 @@ public class DurabilityInfo extends ZyinHUDModBase
         //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (DurabilityInfo.Enabled &&
-                (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
+                (mc.inGameHasFocus || (mc.currentScreen != null && ((mc.currentScreen instanceof GuiChat && !HideDurabilityInfoInChat)|| TabIsSelectedInOptionsGui()))) &&
         		!mc.gameSettings.showDebugInfo)
         {
             //don't waste time recalculating things every tick
@@ -744,4 +744,9 @@ public class DurabilityInfo extends ZyinHUDModBase
     {
     	return UseColoredNumbers = !UseColoredNumbers;
     }
+
+    public static boolean ToggleHideDurabilityInfoInChat(){
+        return HideDurabilityInfoInChat = !HideDurabilityInfoInChat;
+    }
+
 }

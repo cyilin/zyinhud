@@ -496,6 +496,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         AddButtonAt(0, 1, new GuiButton(1005, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_String("potiontimers.options.textmode", PotionTimers.TextMode.GetFriendlyName())));
         AddButtonAt(0, 2, new GuiButton(1002, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons)));
         AddButtonAt(0, 3, new GuiButton(1007, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidepotioneffectsininventory", PotionTimers.HidePotionEffectsInInventory)));
+        AddButtonAt(0, 4, new GuiButton(1008, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.hidebeaconpotioneffects", PotionTimers.HideBeaconPotionEffects)));
         AddButtonAt(0, 5, new GuiNumberSliderWithUndo(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 0.5f, 4.0f, PotionTimers.PotionScale, 1f, GuiNumberSlider.Modes.PERCENT));
         AddButtonAt(0, 6, new GuiNumberSliderWithUndo(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
         AddButtonAt(0, 7, new GuiNumberSliderWithUndo(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), 16f, GuiNumberSlider.Modes.INTEGER));
@@ -517,7 +518,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         AddButtonAt(1, 2, new GuiNumberSliderWithUndo(1106, 0, 0, buttonWidth, buttonHeight, Localization.get("durabilityinfo.options.itemdurabilitythreshold"), 0f, 1f, DurabilityInfo.GetDurabilityDisplayThresholdForItem(), 0.1f, GuiNumberSlider.Modes.PERCENT));
         AddButtonAt(1, 3, new GuiButton(1112, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.autounequiptools", DurabilityInfo.AutoUnequipTools)));
         AddButtonAt(1, 4, new GuiButton(1110, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_String("durabilityinfo.options.textmode", DurabilityInfo.TextMode.GetFriendlyName())));
-
+        AddButtonAt(1, 5, new GuiButton(1118, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("durabilityinfo.options.hidedurabilityinfoinchat", DurabilityInfo.HideDurabilityInfoInChat)));
     }
 
     private void DrawEnderPearlAidButtons() {
@@ -994,6 +995,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                 case 1004:    //Vertical location
                     PotionTimers.SetVerticalLocation(((GuiNumberSlider) button).GetValueAsInteger());
                     break;
+                case 1008:    //Beacon
+                    PotionTimers.ToggleHideBeaconPotionEffects();
+                    button.displayString = GetButtonLabel_Boolean("potiontimers.options.hidebeaconpotioneffects", PotionTimers.HideBeaconPotionEffects);
+                    break;
 
                 /////////////////////////////////////////////////////////////////////////
                 // Durability Info
@@ -1049,6 +1054,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                     break;
                 case 1114:    //Durability scale slider
                     DurabilityInfo.DurabilityScale = ((GuiNumberSlider) button).GetValueAsFloat();
+                    break;
+                case 1118:
+                    DurabilityInfo.ToggleHideDurabilityInfoInChat();
+                    button.displayString = GetButtonLabel_Boolean("durabilityinfo.options.hidedurabilityinfoinchat", DurabilityInfo.HideDurabilityInfoInChat);
                     break;
 
 
