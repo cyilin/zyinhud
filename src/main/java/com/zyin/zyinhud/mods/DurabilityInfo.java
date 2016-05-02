@@ -240,7 +240,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 
             for (ItemStack itemStack : damagedItemsList)
             {
-                if (itemStack.getItem() instanceof ItemArmor)
+                if (itemStack.getItem() instanceof ItemArmor || itemStack.getItem() instanceof ItemElytra)
                     armorExists = true;
             }
 
@@ -253,7 +253,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                 
                 
                 //if this tool is an armor
-                if (tool instanceof ItemArmor)
+                if (tool instanceof ItemArmor || tool instanceof ItemElytra)
                 {
                     if (ShowArmorDurability)
                     {
