@@ -417,6 +417,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         AddButtonAt(0, 0, new GuiButton(101, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Enabled(InfoLine.Enabled)));
         AddButtonAt(0, 1, new GuiButton(102, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showbiome", InfoLine.ShowBiome)));
         AddButtonAt(0, 2, new GuiButton(105, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow)));
+        AddButtonAt(0, 3, new GuiButton(106, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("infoline.options.showping", InfoLine.ShowPing)));
         AddButtonAt(0, 6, new GuiNumberSliderWithUndo(103, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsetx"), 1, width - 25, InfoLine.GetHorizontalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
         AddButtonAt(0, 7, new GuiNumberSliderWithUndo(104, 0, 0, buttonWidth_double, buttonHeight, Localization.get("infoline.options.offsety"), 1, height - 8, InfoLine.GetVerticalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
 
@@ -750,6 +751,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                 case 105:    //Show if it can snow
                     InfoLine.ToggleShowCanSnow();
                     button.displayString = GetButtonLabel_Boolean("infoline.options.showcansnow", InfoLine.ShowCanSnow);
+                    break;
+                case 106:    //Show Ping
+                    InfoLine.ToggleShowPing();
+                    button.displayString = GetButtonLabel_Boolean("infoline.options.showping", InfoLine.ShowPing);
                     break;
                 case 103:    //Horizontal location
                     InfoLine.SetHorizontalLocation(((GuiNumberSlider) button).GetValueAsInteger());

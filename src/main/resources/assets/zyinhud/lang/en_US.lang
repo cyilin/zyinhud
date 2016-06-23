@@ -156,6 +156,7 @@ infoline.name=Info Line
 infoline.options.tooltip=The text shown in the top left part of the screen which other mods use to display information.
 infoline.options.showbiome=Show Biome: 
 infoline.options.showcansnow=Show if it can snow: 
+infoline.options.showping=Show Ping: 
 infoline.options.showcansnow.tooltip=Shows a snowball in the Info Line if it can show where you're currently standing
 infoline.options.offsetx=Offset X: 
 infoline.options.offsety=Offset Y: 

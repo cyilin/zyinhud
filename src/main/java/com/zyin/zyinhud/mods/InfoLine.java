@@ -3,6 +3,7 @@ package com.zyin.zyinhud.mods;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.math.MathHelper;
@@ -23,6 +24,9 @@ public class InfoLine extends ZyinHUDModBase
      * Enables/Disables this Mod
      */
     public static boolean Enabled;
+    private static long time = 0;
+    private static int lastPing = 0;
+    private static TextFormatting pingColor;
 
     /**
      * Toggles this Mod on or off
@@ -42,6 +46,8 @@ public class InfoLine extends ZyinHUDModBase
      * The constant ShowCanSnow.
      */
     public static boolean ShowCanSnow;
+
+    public static boolean ShowPing;
 
     /**
      * The padding string that is inserted between different elements of the Info Line
@@ -90,7 +96,12 @@ public class InfoLine extends ZyinHUDModBase
             if (clock.length() > 0)
             	clock += SPACER;
             infoLineMessage += clock;
-            
+
+            String ping = CalculatePingForInfoLine();
+            if (ping.length() > 0)
+                ping += SPACER;
+            infoLineMessage += ping;
+
             String coordinates = Coordinates.CalculateMessageForInfoLine();
             if (coordinates.length() > 0)
             	coordinates += SPACER;
@@ -182,7 +193,31 @@ public class InfoLine extends ZyinHUDModBase
         String biomeName = mc.theWorld.getBiomeGenForCoords(new BlockPos(xCoord, 64, zCoord)).getBiomeName();
         return TextFormatting.WHITE + biomeName;
     }
-    
+
+    protected static String CalculatePingForInfoLine() {
+        if (ShowPing && !mc.isSingleplayer()) {
+            if (time<System.currentTimeMillis()) {
+                time = System.currentTimeMillis()+5000;
+                try {
+                    lastPing = mc.getConnection().getPlayerInfo(mc.thePlayer.getUniqueID()).getResponseTime();
+                }catch (NullPointerException e){
+                    lastPing =-1;
+                }
+                if (lastPing < 80) {
+                    pingColor = TextFormatting.GREEN;
+                } else if (lastPing < 150) {
+                    pingColor = TextFormatting.YELLOW;
+                } else if (lastPing < 250) {
+                    pingColor = TextFormatting.GOLD;
+                } else {
+                    pingColor = TextFormatting.RED;
+                }
+            }
+            return TextFormatting.RESET + "[" + pingColor + lastPing + TextFormatting.RESET + "ms]";
+        }
+        return "";
+    }
+
     /**
      * Checks to see if the Info Line, Clock, Coordinates, Compass, or FPS tabs are selected in GuiZyinHUDOptions
      * @return
@@ -218,6 +253,10 @@ public class InfoLine extends ZyinHUDModBase
     	return ShowCanSnow = !ShowCanSnow;
     }
 
+    public static boolean ToggleShowPing()
+    {
+        return ShowPing = !ShowPing;
+    }
 
     /**
      * Gets the horizontal location where the potion timers are rendered.

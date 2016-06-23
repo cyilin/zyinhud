@@ -142,6 +142,7 @@ infoline.name=信息条
 infoline.options.tooltip=这些信息默认会显示在屏幕左上角.
 infoline.options.showbiome=显示生物群系: 
 infoline.options.showcansnow=显示是否下雪: 
+infoline.options.showping=显示Ping: 
 infoline.options.offsetx=X轴位移: 
 infoline.options.offsety=Y轴位移: 
 

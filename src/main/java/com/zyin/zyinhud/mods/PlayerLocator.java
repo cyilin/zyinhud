@@ -9,6 +9,7 @@ import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.monster.SkeletonType;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -168,8 +169,16 @@ public class PlayerLocator extends ZyinHUDModBase
             return 0;
         } else {
             while (armor_list.iterator().hasNext()) {
-                Item armor_single_item = armor_list.iterator().next().getItem();
-                return armor_single_item == Items.IRON_HORSE_ARMOR ? 1 : (armor_single_item == Items.GOLDEN_HORSE_ARMOR ? 2 : (armor_single_item == Items.DIAMOND_HORSE_ARMOR ? 3 : 0));
+                Item armor_single_item;
+                try {
+                    armor_single_item = armor_list.iterator().next().getItem();
+                }catch (NullPointerException e){
+                    return 0;
+                }
+                if(armor_single_item!=null){
+                    return armor_single_item == Items.IRON_HORSE_ARMOR ? 1 : (armor_single_item == Items.GOLDEN_HORSE_ARMOR ? 2 : (armor_single_item == Items.DIAMOND_HORSE_ARMOR ? 3 : 0));
+                }
+                return 0;
             }
 
         }
@@ -189,7 +198,7 @@ public class PlayerLocator extends ZyinHUDModBase
     	
     	if (!(entity instanceof EntityOtherPlayerMP ||
         	  entity instanceof EntityWolf ||
-        	  (entity instanceof EntitySkeleton) && ((EntitySkeleton)entity).getSkeletonType() == 1))
+        	  (entity instanceof EntitySkeleton) && ((EntitySkeleton)entity).func_189771_df() == SkeletonType.WITHER))
         {
             return;    //we only care about other players and wolves
         }
@@ -249,7 +258,7 @@ public class PlayerLocator extends ZyinHUDModBase
 	                rgb = rgb + ((r << 4*4) + (g << 4*2) + b);	//a more white version of the collar color
         		}
         	}
-        	else if(entity instanceof EntitySkeleton && (((EntitySkeleton)entity).getSkeletonType() == 1))
+        	else if(entity instanceof EntitySkeleton && (((EntitySkeleton)entity).func_189771_df() == SkeletonType.WITHER))
         	{
         		if(!ShowWitherSkeletons)
         			return;

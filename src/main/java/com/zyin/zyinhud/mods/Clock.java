@@ -127,6 +127,9 @@ public class Clock extends ZyinHUDModBase
 
             	//0 game time is 6am, so add 6000
                 long hours = (time + 6000) / 1000;
+				if(hours>=24){
+					hours=hours-24;
+				}
 				long seconds = (long) (((time + 6000) % 1000) * (60.0 / 1000.0));
 
 				if (IsNight()) {

@@ -209,6 +209,12 @@ public class ZyinHUDConfig
         else
         	p.set(InfoLine.ShowCanSnow);
 
+        p = config.get(CATEGORY_INFOLINE, "ShowPing", true);
+        if(loadSettings)
+            InfoLine.ShowPing = p.getBoolean(true);
+        else
+            p.set(InfoLine.ShowPing);
+
         p = config.get(CATEGORY_INFOLINE, "InfoLineLocationVertical", 1);
         p.setComment("The vertical position of the info line. 1 is top, 200 is very bottom.");
         if(loadSettings)
