@@ -27,7 +27,7 @@ public class Compass extends ZyinHUDModBase
     /**
      * The constant renderCompassTextInMiddle.
      */
-    public static boolean renderCompassTextInMiddle = true;
+    public static boolean renderCompassTextInMiddle = false;
 
     private static String south = Localization.get("compass.south");
     private static String southwest = Localization.get("compass.southwest");

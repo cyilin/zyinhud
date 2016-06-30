@@ -49,9 +49,8 @@ import com.zyin.zyinhud.util.ModCompatibility;
 /**
  * The type Zyin hud.
  */
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true)
-public class ZyinHUD
-{
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.0.2000,);")
+public class ZyinHUD {
     /**
      * Version number must be changed in 3 spots before releasing a build:
      * <br><ol>
@@ -61,7 +60,7 @@ public class ZyinHUD
      * </ol>
      * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
      */
-    public static final String VERSION = "1.5.0-SNAPSHOT";
+    public static final String VERSION = "1.5.1-SNAPSHOT";
     /**
      * The constant MODID.
      */
@@ -88,9 +87,8 @@ public class ZyinHUD
     /**
      * Instantiates a new Zyin hud.
      */
-    public ZyinHUD()
-    {
-    	
+    public ZyinHUD() {
+
     }
 
 
@@ -100,11 +98,10 @@ public class ZyinHUD
      * @param event the event
      */
     @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
-    {
+    public void preInit(FMLPreInitializationEvent event) {
         configFile = event.getSuggestedConfigurationFile();
-        
-        AddVersionChecker();
+
+        //AddVersionChecker();
     }
 
     /**
@@ -113,10 +110,9 @@ public class ZyinHUD
      * @param event the event
      */
     @EventHandler
-    public void init(FMLInitializationEvent event)
-    {
+    public void init(FMLInitializationEvent event) {
         //load all our Key Handlers
-        FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
+        //FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
         MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
 
         //load configuration settings from the ZyinHUD.cfg file
@@ -128,9 +124,10 @@ public class ZyinHUD
         MinecraftForge.EVENT_BUS.register(this);
         MinecraftForge.EVENT_BUS.register(ZyinHUDGuiEvents.instance);
         MinecraftForge.EVENT_BUS.register(ZyinHUDRenderer.instance);
-    	MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
-        FMLCommonHandler.instance().bus().register(Miscellaneous.instance);
-        FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
+        MinecraftForge.EVENT_BUS.register(Miscellaneous.instance);
+        MinecraftForge.EVENT_BUS.register(HealthMonitor.instance);
+        //FMLCommonHandler.instance().bus().register(Miscellaneous.instance);
+        //FMLCommonHandler.instance().bus().register(HealthMonitor.instance);
     }
 
     /**
@@ -140,8 +137,8 @@ public class ZyinHUD
      */
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-		ModCompatibility.TConstruct.isLoaded = Loader.isModLoaded("TConstruct");
-	}
+        ModCompatibility.TConstruct.isLoaded = Loader.isModLoaded("TConstruct");
+    }
 
     /**
      * Server starting.
@@ -149,11 +146,10 @@ public class ZyinHUD
      * @param event the event
      */
     @EventHandler
-    public void serverStarting(FMLServerStartingEvent event)
-    {
-    	//THIS EVENT IS NOT FIRED ON SMP SERVERS
-    	event.registerServerCommand(new CommandFps());
-    	event.registerServerCommand(new CommandZyinHUDOptions());
+    public void serverStarting(FMLServerStartingEvent event) {
+        //THIS EVENT IS NOT FIRED ON SMP SERVERS
+        event.registerServerCommand(new CommandFps());
+        event.registerServerCommand(new CommandZyinHUDOptions());
     }
 
     /**
@@ -161,13 +157,12 @@ public class ZyinHUD
      *
      * @link http ://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/2091981-version-checker-auto-update-mods-and-clean
      */
-    public void AddVersionChecker()
-    {
+    public void AddVersionChecker() {
         NBTTagCompound compound = new NBTTagCompound();
-        compound.setString("curseProjectName", "59953-zyins-hud");	//http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
+        compound.setString("curseProjectName", "59953-zyins-hud");    //http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
         compound.setString("curseFilenameParser", "ZyinsHUD-(1.9)-v.[].jar");
         FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "VersionChecker", "addCurseCheck", compound);
     }
-    
+
 }
 

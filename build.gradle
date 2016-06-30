@@ -14,18 +14,21 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 /*
 // for people who want stable - not yet functional for MC 1.8.8 - we require the forgegradle 2.1 snapshot
 plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "(1.10)-v.1.5.0-SNAPSHOT"
+version = "(1.10)-v.1.5.1-SNAPSHOT"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ZyinsHUD"
 
 minecraft {
-    version = "1.10-12.18.0.1982-1.10.0"
+    version = "1.10-12.18.0.2000-1.10.0"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
