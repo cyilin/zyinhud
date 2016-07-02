@@ -3,6 +3,7 @@ package com.zyin.zyinhud.mods;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityBoat;
@@ -30,8 +31,7 @@ import com.zyin.zyinhud.util.Localization;
 /**
  * The Player Locator checks for nearby players and displays their name on screen wherever they are.
  */
-public class PlayerLocator extends ZyinHUDModBase
-{
+public class PlayerLocator extends ZyinHUDModBase {
     /**
      * Enables/Disables this Mod
      */
@@ -42,9 +42,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The state the Mod was changed to
      */
-    public static boolean ToggleEnabled()
-    {
-    	return Enabled = !Enabled;
+    public static boolean ToggleEnabled() {
+        return Enabled = !Enabled;
     }
 
     /**
@@ -55,8 +54,7 @@ public class PlayerLocator extends ZyinHUDModBase
     /**
      * The enum for the different types of Modes this mod can have
      */
-    public static enum Modes
-    {
+    public static enum Modes {
         /**
          * Off modes.
          */
@@ -65,12 +63,11 @@ public class PlayerLocator extends ZyinHUDModBase
          * On modes.
          */
         ON(Localization.get("playerlocator.mode.on"));
-        
+
         private String friendlyName;
-        
-        private Modes(String friendlyName)
-        {
-        	this.friendlyName = friendlyName;
+
+        private Modes(String friendlyName) {
+            this.friendlyName = friendlyName;
         }
 
         /**
@@ -78,9 +75,8 @@ public class PlayerLocator extends ZyinHUDModBase
          *
          * @return the modes
          */
-        public static Modes ToggleMode()
-        {
-        	return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
+        public static Modes ToggleMode() {
+            return Mode = Mode.ordinal() < Modes.values().length - 1 ? Modes.values()[Mode.ordinal() + 1] : Modes.values()[0];
         }
 
         /**
@@ -89,10 +85,12 @@ public class PlayerLocator extends ZyinHUDModBase
          * @param modeName the mode name
          * @return modes
          */
-        public static Modes GetMode(String modeName)
-        {
-        	try {return Modes.valueOf(modeName);}
-        	catch (IllegalArgumentException e) {return values()[0];}
+        public static Modes GetMode(String modeName) {
+            try {
+                return Modes.valueOf(modeName);
+            } catch (IllegalArgumentException e) {
+                return values()[0];
+            }
         }
 
         /**
@@ -100,9 +98,8 @@ public class PlayerLocator extends ZyinHUDModBase
          *
          * @return the string
          */
-        public String GetFriendlyName()
-        {
-        	return friendlyName;
+        public String GetFriendlyName() {
+            return friendlyName;
         }
     }
 
@@ -126,15 +123,15 @@ public class PlayerLocator extends ZyinHUDModBase
      * The constant UseWolfColors.
      */
     public static boolean UseWolfColors;
-    
+
     private static final ResourceLocation iconsResourceLocation = new ResourceLocation("textures/gui/icons.png");
 
     private static final double pi = Math.PI;
-    
+
     private static final String wolfName = Localization.get("entity.Wolf.name");
     private static final String sprintingMessagePrefix = "";
     private static final String sneakingMessagePrefix = TextFormatting.ITALIC.toString();
-    private static final String ridingMessagePrefix = "    ";	//space for the saddle/minecart/boat/horse armor icon
+    private static final String ridingMessagePrefix = "    ";    //space for the saddle/minecart/boat/horse armor icon
 
     /**
      * Don't render players that are closer than this
@@ -147,7 +144,7 @@ public class PlayerLocator extends ZyinHUDModBase
     /**
      * The constant maxViewDistanceCutoff.
      */
-    public static final int maxViewDistanceCutoff = 130;	//realistic max distance the game will render entities: up to ~115 blocks away
+    public static final int maxViewDistanceCutoff = 130;    //realistic max distance the game will render entities: up to ~115 blocks away
 
     /**
      * The constant numOverlaysRendered.
@@ -156,7 +153,7 @@ public class PlayerLocator extends ZyinHUDModBase
     /**
      * The constant maxNumberOfOverlays.
      */
-    public static final int maxNumberOfOverlays = 50;	//render only the first nearest 50 players
+    public static final int maxNumberOfOverlays = 50;    //render only the first nearest 50 players
 
     /**
      * Get the type of the horse armor in int type
@@ -172,10 +169,10 @@ public class PlayerLocator extends ZyinHUDModBase
                 Item armor_single_item;
                 try {
                     armor_single_item = armor_list.iterator().next().getItem();
-                }catch (NullPointerException e){
+                } catch (NullPointerException e) {
                     return 0;
                 }
-                if(armor_single_item!=null){
+                if (armor_single_item != null) {
                     return armor_single_item == Items.IRON_HORSE_ARMOR ? 1 : (armor_single_item == Items.GOLDEN_HORSE_ARMOR ? 2 : (armor_single_item == Items.DIAMOND_HORSE_ARMOR ? 3 : 0));
                 }
                 return 0;
@@ -184,6 +181,7 @@ public class PlayerLocator extends ZyinHUDModBase
         }
         return 0;
     }
+
     /**
      * Renders nearby players's names on the screen.
      *
@@ -191,15 +189,13 @@ public class PlayerLocator extends ZyinHUDModBase
      * @param x      location on the HUD
      * @param y      location on the HUD
      */
-    public static void RenderEntityInfoOnHUD(Entity entity, int x, int y)
-    {
-    	if(numOverlaysRendered > maxNumberOfOverlays)
-    		return;
-    	
-    	if (!(entity instanceof EntityOtherPlayerMP ||
-        	  entity instanceof EntityWolf ||
-        	  (entity instanceof EntitySkeleton) && ((EntitySkeleton)entity).func_189771_df() == SkeletonType.WITHER))
-        {
+    public static void RenderEntityInfoOnHUD(Entity entity, int x, int y) {
+        if (numOverlaysRendered > maxNumberOfOverlays)
+            return;
+
+        if (!(entity instanceof EntityOtherPlayerMP ||
+                entity instanceof EntityWolf ||
+                (entity instanceof EntitySkeleton) && ((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER)) {
             return;    //we only care about other players and wolves
         }
 
@@ -208,8 +204,7 @@ public class PlayerLocator extends ZyinHUDModBase
         //and F3 not pressed
         if (PlayerLocator.Enabled && Mode == Modes.ON &&
                 (mc.inGameHasFocus || mc.currentScreen == null || mc.currentScreen instanceof GuiChat)
-                && !mc.gameSettings.showDebugInfo)
-        {
+                && !mc.gameSettings.showDebugInfo) {
 
             //only show entities that are close by
             float distanceFromMe = mc.thePlayer.getDistanceToEntity(entity);
@@ -220,229 +215,222 @@ public class PlayerLocator extends ZyinHUDModBase
             {
                 return;
             }
-            
-        	String overlayMessage = "";
+
+            String overlayMessage = "";
             int rgb = 0xFFFFFF;
             //calculate the color of the overlayMessage based on the distance from me
-            int alpha = (int)(0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
-        	
-            if(entity instanceof EntityOtherPlayerMP)
-        	{
-        		overlayMessage = GetOverlayMessageForOtherPlayer((EntityOtherPlayerMP)entity, distanceFromMe);
-        		
-        		//format the string to be the same color as that persons team color
-        		ScorePlayerTeam team = (ScorePlayerTeam)((EntityOtherPlayerMP)entity).getTeam();
-        		if(team != null)
-        			overlayMessage = team.formatString(overlayMessage);
-        	}
-        	else if(entity instanceof EntityWolf)
-        	{
-        		if(!ShowWolves || !PlayerIsWolfsOwner((EntityWolf)entity))
-        			return;
-        		
-        		overlayMessage = GetOverlayMessageForWolf((EntityWolf)entity, distanceFromMe);
-        		
-        		if(UseWolfColors)
-        		{
-        			EnumDyeColor collarColor = ((EntityWolf)entity).getCollarColor();
+            int alpha = (int) (0x55 + 0xAA * ((maxViewDistanceCutoff - distanceFromMe) / maxViewDistanceCutoff));
+
+            if (entity instanceof EntityOtherPlayerMP) {
+                overlayMessage = GetOverlayMessageForOtherPlayer((EntityOtherPlayerMP) entity, distanceFromMe);
+
+                //format the string to be the same color as that persons team color
+                ScorePlayerTeam team = (ScorePlayerTeam) ((EntityOtherPlayerMP) entity).getTeam();
+                if (team != null)
+                    overlayMessage = team.formatString(overlayMessage);
+            } else if (entity instanceof EntityWolf) {
+                if (!ShowWolves || !PlayerIsWolfsOwner((EntityWolf) entity))
+                    return;
+
+                overlayMessage = GetOverlayMessageForWolf((EntityWolf) entity, distanceFromMe);
+
+                if (UseWolfColors) {
+                    EnumDyeColor collarColor = ((EntityWolf) entity).getCollarColor();
                     float[] dyeRGBColors = EntitySheep.getDyeRgb(collarColor);    //func_175513_a() friendly name is probably "getHexColorsFromDye"
 
-	                int r = (int)(dyeRGBColors[0]*255);
-	                int g = (int)(dyeRGBColors[1]*255);
-	                int b = (int)(dyeRGBColors[2]*255);
-	                rgb = (r << 4*4) + (g << 4*2) + b;	//actual collar color
-	                
-	                r = (0xFF - r)/2;
-	                g = (0xFF - g)/2;
-	                b = (0xFF - b)/2;
-	                rgb = rgb + ((r << 4*4) + (g << 4*2) + b);	//a more white version of the collar color
-        		}
-        	}
-        	else if(entity instanceof EntitySkeleton && (((EntitySkeleton)entity).func_189771_df() == SkeletonType.WITHER))
-        	{
-        		if(!ShowWitherSkeletons)
-        			return;
-        		
-        		overlayMessage = GetOverlayMessageForWitherSkeleton((EntitySkeleton)entity, distanceFromMe);
-        		
-        		rgb = 0x555555;
-        		alpha = alpha / 6;
-        	}
+                    int r = (int) (dyeRGBColors[0] * 255);
+                    int g = (int) (dyeRGBColors[1] * 255);
+                    int b = (int) (dyeRGBColors[2] * 255);
+                    rgb = (r << 4 * 4) + (g << 4 * 2) + b;    //actual collar color
+
+                    r = (0xFF - r) / 2;
+                    g = (0xFF - g) / 2;
+                    b = (0xFF - b) / 2;
+                    rgb = rgb + ((r << 4 * 4) + (g << 4 * 2) + b);    //a more white version of the collar color
+                }
+            } else if (entity instanceof EntitySkeleton && (((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER)) {
+                if (!ShowWitherSkeletons)
+                    return;
+
+                overlayMessage = GetOverlayMessageForWitherSkeleton((EntitySkeleton) entity, distanceFromMe);
+
+                rgb = 0x555555;
+                alpha = alpha / 6;
+            }
 
             if (entity.getRidingEntity() != null)
                 overlayMessage = "    " + overlayMessage;    //make room for any icons we render
 
-            int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);	//the width in pixels of the message
+            int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);    //the width in pixels of the message
             ScaledResolution res = new ScaledResolution(mc);
-            int width = res.getScaledWidth();		//~427
-            int height = res.getScaledHeight();		//~240
-            
+            int width = res.getScaledWidth();        //~427
+            int height = res.getScaledHeight();        //~240
+
             //center the text horizontally over the entity
-            x -= overlayMessageWidth/2;
-            
+            x -= overlayMessageWidth / 2;
+
             //check if the text is attempting to render outside of the screen, and if so, fix it to snap to the edge of the screen.
             x = (x > width - overlayMessageWidth) ? width - overlayMessageWidth : x;
             x = (x < 0) ? 0 : x;
             y = (y > height - 10 && !ShowPlayerHealth) ? height - 10 : y;
             y = (y > height - 20 && ShowPlayerHealth) ? height - 20 : y;
-            if(y < 10 && InfoLine.infoLineLocY <= 1 && 
-            	(x > InfoLine.infoLineLocX + mc.fontRendererObj.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
-            	y = (y < 0) ? 0 : y;	//if the text is to the right or left of the info line then allow it to render in that open space
+            if (y < 10 && InfoLine.infoLineLocY <= 1 &&
+                    (x > InfoLine.infoLineLocX + mc.fontRendererObj.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
+                y = (y < 0) ? 0 : y;    //if the text is to the right or left of the info line then allow it to render in that open space
             else
-            	y = (y < 10) ? 10 : y;	//use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
-            
-            
+                y = (y < 10) ? 10 : y;    //use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
+
+
             //render the overlay message
             GL11.glDisable(GL11.GL_LIGHTING);
-    		GL11.glEnable(GL11.GL_BLEND);
-    		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            int color = (alpha << 24) + rgb;	//alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
+            int color = (alpha << 24) + rgb;    //alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
             mc.fontRendererObj.drawStringWithShadow(overlayMessage, x, y, color);
-            
+
             //also render whatever the player is currently riding on
-            if (entity.getRidingEntity() instanceof EntityHorse)
-            {
-            	//armor is 0 when no horse armor is equipped
+            if (entity.getRidingEntity() instanceof EntityHorse) {
+                //armor is 0 when no horse armor is equipped
                 Iterable<ItemStack> armor_list = ((EntityHorse) entity.getRidingEntity()).getArmorInventoryList();
                 int armor = getHorseArmorType(armor_list);
 
-            	if(armor == 1)
-                	RenderHorseArmorIronIcon(x, y);
-            	else if(armor == 2)
-                	RenderHorseArmorGoldIcon(x, y);
-            	else if(armor == 3)
-                	RenderHorseArmorDiamondIcon(x, y);
+                if (armor == 1)
+                    RenderHorseArmorIronIcon(x, y);
+                else if (armor == 2)
+                    RenderHorseArmorGoldIcon(x, y);
+                else if (armor == 3)
+                    RenderHorseArmorDiamondIcon(x, y);
                 else if (((EntityHorse) entity.getRidingEntity()).isHorseSaddled())
                     RenderSaddleIcon(x, y);
             }
-            if (entity.getRidingEntity() instanceof EntityPig)
-            {
-            	RenderSaddleIcon(x, y);
-            } else if (entity.getRidingEntity() instanceof EntityMinecart)
-            {
-            	RenderMinecartIcon(x, y);
-            } else if (entity.getRidingEntity() instanceof EntityBoat)
-            {
-            	RenderBoatIcon(x, y);
+            if (entity.getRidingEntity() instanceof EntityPig) {
+                RenderSaddleIcon(x, y);
+            } else if (entity.getRidingEntity() instanceof EntityMinecart) {
+                RenderMinecartIcon(x, y);
+            } else if (entity.getRidingEntity() instanceof EntityBoat) {
+                RenderBoatIcon(x, y);
             }
-            
+
             //if showing player health is turned on, render the hp and a heart icon under their name
-            if(ShowPlayerHealth && !(entity instanceof EntityMob))	//but don't show health for mobs, such as Wither Skeletons
+            if (ShowPlayerHealth && !(entity instanceof EntityMob))    //but don't show health for mobs, such as Wither Skeletons
             {
-                int numHearts = (int)((((EntityLivingBase)entity).getHealth()+1) / 2);
-            	String hpOverlayMessage = numHearts + "";
-            	
+                int numHearts = (int) ((((EntityLivingBase) entity).getHealth() + 1) / 2);
+                String hpOverlayMessage = numHearts + "";
+
                 int hpOverlayMessageWidth = mc.fontRendererObj.getStringWidth(hpOverlayMessage);
                 int offsetX = (overlayMessageWidth - hpOverlayMessageWidth - 9) / 2;
 
-                mc.fontRendererObj.drawStringWithShadow(hpOverlayMessage, x+offsetX, y+10, (alpha << 24) + 0xFFFFFF);
-                
-                GL11.glColor4f(1f, 1f, 1f, ((float)alpha) / 0xFF);
-                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);	//black outline of the heart icon
-                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);	//red interior of the heart icon
+                mc.fontRendererObj.drawStringWithShadow(hpOverlayMessage, x + offsetX, y + 10, (alpha << 24) + 0xFFFFFF);
+
+                GL11.glColor4f(1f, 1f, 1f, ((float) alpha) / 0xFF);
+                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);    //black outline of the heart icon
+                ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 52, 0, 9, 9, iconsResourceLocation, 1f);    //red interior of the heart icon
                 GL11.glColor4f(1f, 1f, 1f, 1f);
             }
-            
-    		numOverlaysRendered++;
+
+            numOverlaysRendered++;
         }
     }
-    
-    
-    private static boolean PlayerIsWolfsOwner(EntityWolf wolf)
-    {
-    	return wolf.isOnSameTeam(mc.thePlayer);
+
+
+    private static boolean PlayerIsWolfsOwner(EntityWolf wolf) {
+        return wolf.isOnSameTeam(mc.thePlayer);
     }
 
 
     private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe) {
-        String overlayMessage = "Wither " + witherSkeleton.getCommandSenderEntity().getName();
+        //String overlayMessage = "Wither " + witherSkeleton.getCommandSenderEntity().getName();
+        String overlayMessage = "";
+        if (witherSkeleton.hasCustomName()) {
+            overlayMessage = witherSkeleton.getName();
+            overlayMessage += "(";
+            overlayMessage += I18n.format("entity.WitherSkeleton.name");
+            overlayMessage += ")";
+        } else {
+            overlayMessage = I18n.format("entity.WitherSkeleton.name");
+        }
 
         //add distance to this wither skeleton into the message
         if (ShowDistanceToPlayers) {
             overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
         }
-        
+
         return overlayMessage;
-	}
-    
-	private static String GetOverlayMessageForWolf(EntityWolf wolf, float distanceFromMe)
-	{
-		String overlayMessage;
-		
-		if(wolf.getCustomNameTag().isEmpty())
-			overlayMessage = wolfName;
-		else
-			overlayMessage = wolf.getCustomNameTag();
+    }
+
+    private static String GetOverlayMessageForWolf(EntityWolf wolf, float distanceFromMe) {
+        String overlayMessage;
+
+        if (wolf.getCustomNameTag().isEmpty()) {
+            overlayMessage = wolfName;
+        } else {
+            overlayMessage = wolf.getCustomNameTag();
+        }
 
         //add distance to this wolf into the message
         if (ShowDistanceToPlayers) {
             overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
         }
-        
+
         return overlayMessage;
-	}
+    }
 
 
-	private static String GetOverlayMessageForOtherPlayer(EntityOtherPlayerMP otherPlayer, float distanceFromMe)
-	{
-            String overlayMessage = otherPlayer.getDisplayNameString();
+    private static String GetOverlayMessageForOtherPlayer(EntityOtherPlayerMP otherPlayer, float distanceFromMe) {
+        String overlayMessage = otherPlayer.getDisplayNameString();
 
-            //add distance to this player into the message
-            if (ShowDistanceToPlayers)
-            {
-                //overlayMessage = "[" + (int)distanceFromMe + "] " + overlayMessage;
-                overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
-            }
+        //add distance to this player into the message
+        if (ShowDistanceToPlayers) {
+            //overlayMessage = "[" + (int)distanceFromMe + "] " + overlayMessage;
+            overlayMessage = TextFormatting.GRAY + "[" + (int) distanceFromMe + "] " + TextFormatting.RESET + overlayMessage;
+        }
 
-            //add special effects based on what the other player is doing
-            if (otherPlayer.isSprinting())
-            {
-                overlayMessage = sprintingMessagePrefix + overlayMessage;	//nothing
-            }
-            if (otherPlayer.isSneaking())
-            {
-                overlayMessage = sneakingMessagePrefix + overlayMessage;	//italics
-            }
-            if (otherPlayer.isRiding())	//this doesn't work on some servers
-            {
-                overlayMessage = ridingMessagePrefix + overlayMessage;		//space for the saddle and horse armor icons
-            }
-            
-            return overlayMessage;
-	}
-	
-	private static void RenderBoatIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOAT), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	private static void RenderMinecartIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.MINECART), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	private static void RenderHorseArmorDiamondIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI( new ItemStack(Items.DIAMOND_HORSE_ARMOR), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	private static void RenderHorseArmorGoldIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.GOLDEN_HORSE_ARMOR), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	private static void RenderHorseArmorIronIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.IRON_HORSE_ARMOR), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	private static void RenderSaddleIcon(int x, int y)
-	{
-		itemRenderer.renderItemIntoGUI(new ItemStack(Items.SADDLE), x, y - 4);
-		GL11.glDisable(GL11.GL_LIGHTING);
-	}
-	
+        //add special effects based on what the other player is doing
+        if (otherPlayer.isSprinting()) {
+            overlayMessage = sprintingMessagePrefix + overlayMessage;    //nothing
+        }
+        if (otherPlayer.isSneaking()) {
+            overlayMessage = sneakingMessagePrefix + overlayMessage;    //italics
+        }
+        if (otherPlayer.isRiding())    //this doesn't work on some servers
+        {
+            overlayMessage = ridingMessagePrefix + overlayMessage;        //space for the saddle and horse armor icons
+        }
+
+        return overlayMessage;
+    }
+
+    private static void RenderBoatIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOAT), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private static void RenderMinecartIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.MINECART), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private static void RenderHorseArmorDiamondIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.DIAMOND_HORSE_ARMOR), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private static void RenderHorseArmorGoldIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.GOLDEN_HORSE_ARMOR), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private static void RenderHorseArmorIronIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.IRON_HORSE_ARMOR), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+
+    private static void RenderSaddleIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.SADDLE), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
+    
 	
 	
 	
@@ -475,10 +463,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return the string "players" if the Player Locator is enabled, otherwise "".
      */
-    public static String CalculateMessageForInfoLine()
-    {
-        if (Mode == Modes.OFF || !PlayerLocator.Enabled)
-        {
+    public static String CalculateMessageForInfoLine() {
+        if (Mode == Modes.OFF || !PlayerLocator.Enabled) {
             return "";
         } else if (Mode == Modes.ON) {
             return TextFormatting.WHITE + Localization.get("playerlocator.infoline");
@@ -492,9 +478,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The new Clock mode
      */
-    public static boolean ToggleShowDistanceToPlayers()
-    {
-    	return ShowDistanceToPlayers = !ShowDistanceToPlayers;
+    public static boolean ToggleShowDistanceToPlayers() {
+        return ShowDistanceToPlayers = !ShowDistanceToPlayers;
     }
 
     /**
@@ -502,9 +487,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The new Clock mode
      */
-    public static boolean ToggleShowPlayerHealth()
-    {
-    	return ShowPlayerHealth = !ShowPlayerHealth;
+    public static boolean ToggleShowPlayerHealth() {
+        return ShowPlayerHealth = !ShowPlayerHealth;
     }
 
     /**
@@ -512,9 +496,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The new Clock mode
      */
-    public static boolean ToggleShowWolves()
-    {
-    	return ShowWolves = !ShowWolves;
+    public static boolean ToggleShowWolves() {
+        return ShowWolves = !ShowWolves;
     }
 
     /**
@@ -522,9 +505,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The new Clock mode
      */
-    public static boolean ToggleUseWolfColors()
-    {
-    	return UseWolfColors = !UseWolfColors;
+    public static boolean ToggleUseWolfColors() {
+        return UseWolfColors = !UseWolfColors;
     }
 
     /**
@@ -532,9 +514,8 @@ public class PlayerLocator extends ZyinHUDModBase
      *
      * @return The new Clock mode
      */
-    public static boolean ToggleShowWitherSkeletons()
-    {
-    	return ShowWitherSkeletons = !ShowWitherSkeletons;
+    public static boolean ToggleShowWitherSkeletons() {
+        return ShowWitherSkeletons = !ShowWitherSkeletons;
     }
-    
+
 }
