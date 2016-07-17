@@ -252,7 +252,7 @@ public class ZyinHUDConfig
         else
         	p.set(Coordinates.ChatStringFormat);
 
-        p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", "XZY");
+        p = config.get(CATEGORY_COORDINATES, "CoordinatesMode", "XYZ");
         p.setComment("Sets the Coordinates mode.");
 
         String mode = p.getString();

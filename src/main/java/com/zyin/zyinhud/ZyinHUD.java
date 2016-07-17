@@ -49,7 +49,7 @@ import com.zyin.zyinhud.util.ModCompatibility;
 /**
  * The type Zyin hud.
  */
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.0.2000,);")
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.1.2014,);")
 public class ZyinHUD {
     /**
      * Version number must be changed in 3 spots before releasing a build:
@@ -60,7 +60,7 @@ public class ZyinHUD {
      * </ol>
      * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
      */
-    public static final String VERSION = "1.5.1-SNAPSHOT";
+    public static final String VERSION = "1.5.1";
     /**
      * The constant MODID.
      */

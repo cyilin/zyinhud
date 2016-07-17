@@ -23,12 +23,12 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "(1.10)-v.1.5.1-SNAPSHOT"
+version = "(1.10.2)-v.1.5.1"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ZyinsHUD"
 
 minecraft {
-    version = "1.10-12.18.0.2000-1.10.0"
+    version = "1.10.2-12.18.1.2014"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
