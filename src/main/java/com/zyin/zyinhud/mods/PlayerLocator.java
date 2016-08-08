@@ -15,6 +15,7 @@ import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
@@ -310,6 +311,8 @@ public class PlayerLocator extends ZyinHUDModBase {
                 RenderMinecartIcon(x, y);
             } else if (entity.getRidingEntity() instanceof EntityBoat) {
                 RenderBoatIcon(x, y);
+            } else if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isElytraFlying()) {
+                RenderElytraIcon(x, y);
             }
 
             //if showing player health is turned on, render the hp and a heart icon under their name
@@ -430,9 +433,12 @@ public class PlayerLocator extends ZyinHUDModBase {
         itemRenderer.renderItemIntoGUI(new ItemStack(Items.SADDLE), x, y - 4);
         GL11.glDisable(GL11.GL_LIGHTING);
     }
+
+    private static void RenderElytraIcon(int x, int y) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(Items.ELYTRA), x, y - 4);
+        GL11.glDisable(GL11.GL_LIGHTING);
+    }
     
-	
-	
 	
     /*
     public static double AngleBetweenTwoVectors(Vec3 a, Vec3 b)
