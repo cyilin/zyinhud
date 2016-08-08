@@ -690,7 +690,8 @@ public class SafeOverlay extends ZyinHUDModBase {
                     || block instanceof BlockStainedGlass
                     || block instanceof BlockStairs
                     || block instanceof BlockWall
-                    || block instanceof BlockWeb) {
+                    || block instanceof BlockWeb
+                    || block instanceof BlockMagma) {
                 return false;
             }
 
