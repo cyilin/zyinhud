@@ -221,6 +221,10 @@ potiontimers.options.potionscale=Size:
 potiontimers.options.offsetx=Offset X: 
 potiontimers.options.offsety=Offset Y: 
 potiontimers.options.hidebeaconpotioneffects=Hide beacon effect: 
+potiontimers.options.showvanillastatuseffecthud=Vanilla potion HUD: 
+potiontimers.options.showvanillastatuseffecthud.tooltip=Enable/disable the vanilla status effects HUD
+potiontimers.options.showeffectname=Show effect name: 
+potiontimers.options.showeffectlevel=Show effect level: 
 
 safeoverlay.name=Safe Overlay
 safeoverlay.mode.off=Off

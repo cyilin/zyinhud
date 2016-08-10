@@ -132,6 +132,13 @@ public class ZyinHUDRenderer
         GL11.glPopMatrix();
     }
 
+    @SubscribeEvent
+    public void RenderGameOverlay(RenderGameOverlayEvent.Pre event) {
+        if (event.getType().equals(RenderGameOverlayEvent.ElementType.POTION_ICONS) && !PotionTimers.ShowVanillaStatusEffectHUD) {
+            event.setCanceled(true);
+        }
+    }
+    
     /**
      * Renders a texture at the specified location
      * Copy/pasted static version of Gui.func_175175_a()

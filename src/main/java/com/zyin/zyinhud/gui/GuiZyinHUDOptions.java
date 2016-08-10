@@ -501,7 +501,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         AddButtonAt(0, 5, new GuiNumberSliderWithUndo(1006, 0, 0, buttonWidth, buttonHeight, Localization.get("potiontimers.options.potionscale"), 0.5f, 4.0f, PotionTimers.PotionScale, 1f, GuiNumberSlider.Modes.PERCENT));
         AddButtonAt(0, 6, new GuiNumberSliderWithUndo(1003, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsetx"), 1, width - 25, PotionTimers.GetHorizontalLocation(), 1f, GuiNumberSlider.Modes.INTEGER));
         AddButtonAt(0, 7, new GuiNumberSliderWithUndo(1004, 0, 0, buttonWidth_double, buttonHeight, Localization.get("potiontimers.options.offsety"), 0, height - 10, PotionTimers.GetVerticalLocation(), 16f, GuiNumberSlider.Modes.INTEGER));
-
+        AddButtonAt(1, 0, new GuiButton(1009, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showvanillastatuseffecthud", PotionTimers.ShowVanillaStatusEffectHUD)));
+        AddButtonAt(1, 1, new GuiButton(1010, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showeffectname", PotionTimers.ShowEffectName)));
+        AddButtonAt(1, 2, new GuiButton(1011, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showeffectlevel", PotionTimers.ShowEffectLevel)));
     }
 
     private void DrawDurabilityInfoButtons() {
@@ -1004,6 +1006,18 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                     PotionTimers.ToggleHideBeaconPotionEffects();
                     button.displayString = GetButtonLabel_Boolean("potiontimers.options.hidebeaconpotioneffects", PotionTimers.HideBeaconPotionEffects);
                     break;
+                case 1009:    //Vanilla Status effect HUD
+                    PotionTimers.ToggleShowVanillaStatusEffectHUD();
+                    button.displayString = GetButtonLabel_Boolean("potiontimers.options.showvanillastatuseffecthud", PotionTimers.ShowVanillaStatusEffectHUD);
+                    break;
+                case 1010:    //Show effect name
+                    PotionTimers.ToggleShowEffectName();
+                    button.displayString = GetButtonLabel_Boolean("potiontimers.options.showeffectname", PotionTimers.ShowEffectName);
+                    break;
+                case 1011:    //Show effect level
+                    PotionTimers.ToggleShowEffectLevel();
+                    button.displayString = GetButtonLabel_Boolean("potiontimers.options.showeffectlevel", PotionTimers.ShowEffectLevel);
+                    break;
 
                 /////////////////////////////////////////////////////////////////////////
                 // Durability Info
@@ -1368,6 +1382,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                 return Localization.get("potiontimers.options.textmode.tooltip");
             case 1007:
                 return Localization.get("potiontimers.options.hidepotioneffectsininventory.tooltip");
+            case 1009:
+                return Localization.get("potiontimers.options.showvanillastatuseffecthud.tooltip");
             case 1100:
                 return Localization.get("durabilityinfo.options.tooltip");
             case 1103:

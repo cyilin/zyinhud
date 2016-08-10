@@ -6,6 +6,7 @@ import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -19,8 +20,7 @@ import java.util.Iterator;
 /**
  * Potion Timers displays the remaining time left on any potion effects the user has.
  */
-public class PotionTimers extends ZyinHUDModBase
-{
+public class PotionTimers extends ZyinHUDModBase {
     /**
      * Enables/Disables this Mod
      */
@@ -31,9 +31,8 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @return The state the Mod was changed to
      */
-    public static boolean ToggleEnabled()
-    {
-    	return Enabled = !Enabled;
+    public static boolean ToggleEnabled() {
+        return Enabled = !Enabled;
     }
 
     /**
@@ -44,8 +43,7 @@ public class PotionTimers extends ZyinHUDModBase
     /**
      * The enum for the different types of Modes this mod can have
      */
-    public static enum TextModes
-    {
+    public static enum TextModes {
         /**
          * White text modes.
          */
@@ -58,12 +56,11 @@ public class PotionTimers extends ZyinHUDModBase
          * None text modes.
          */
         NONE(Localization.get("potiontimers.textmode.none"));
-        
+
         private String friendlyName;
-        
-        private TextModes(String friendlyName)
-        {
-        	this.friendlyName = friendlyName;
+
+        private TextModes(String friendlyName) {
+            this.friendlyName = friendlyName;
         }
 
         /**
@@ -71,9 +68,8 @@ public class PotionTimers extends ZyinHUDModBase
          *
          * @return the text modes
          */
-        public static TextModes ToggleMode()
-        {
-        	return ToggleMode(true);
+        public static TextModes ToggleMode() {
+            return ToggleMode(true);
         }
 
         /**
@@ -82,12 +78,11 @@ public class PotionTimers extends ZyinHUDModBase
          * @param forward the forward
          * @return the text modes
          */
-        public static TextModes ToggleMode(boolean forward)
-        {
-        	if (forward)
-        		return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
-        	else
-        		return TextMode = TextMode.ordinal() > 0 ? TextModes.values()[TextMode.ordinal() - 1] : TextModes.values()[TextModes.values().length - 1];
+        public static TextModes ToggleMode(boolean forward) {
+            if (forward)
+                return TextMode = TextMode.ordinal() < TextModes.values().length - 1 ? TextModes.values()[TextMode.ordinal() + 1] : TextModes.values()[0];
+            else
+                return TextMode = TextMode.ordinal() > 0 ? TextModes.values()[TextMode.ordinal() - 1] : TextModes.values()[TextModes.values().length - 1];
         }
 
         /**
@@ -96,10 +91,12 @@ public class PotionTimers extends ZyinHUDModBase
          * @param modeName the mode name
          * @return text modes
          */
-        public static TextModes GetMode(String modeName)
-        {
-        	try {return TextModes.valueOf(modeName);}
-        	catch (IllegalArgumentException e) {return values()[1];}
+        public static TextModes GetMode(String modeName) {
+            try {
+                return TextModes.valueOf(modeName);
+            } catch (IllegalArgumentException e) {
+                return values()[1];
+            }
         }
 
         /**
@@ -107,18 +104,25 @@ public class PotionTimers extends ZyinHUDModBase
          *
          * @return the string
          */
-        public String GetFriendlyName()
-        {
-        	return friendlyName;
+        public String GetFriendlyName() {
+            return friendlyName;
         }
     }
-    
+
     private static ResourceLocation inventoryResourceLocation = new ResourceLocation("textures/gui/container/inventory.png");
 
     /**
      * The constant ShowPotionIcons.
      */
     public static boolean ShowPotionIcons;
+    /**
+     * The constant ShowEffectName.
+     */
+    public static boolean ShowEffectName;
+    /**
+     * The constant ShowEffectLevel.
+     */
+    public static boolean ShowEffectLevel;
     /**
      * The constant UsePotionColors.
      */
@@ -131,21 +135,27 @@ public class PotionTimers extends ZyinHUDModBase
      * The constant HidePotionEffectsInInventory.
      */
     public static boolean HidePotionEffectsInInventory;
-
+    /**
+     * The constant HideBeaconPotionEffects.
+     */
     public static boolean HideBeaconPotionEffects;
+    /**
+     * The constant ShowVanillaStatusEffectHUD.
+     */
+    public static boolean ShowVanillaStatusEffectHUD;
 
     /**
      * The constant blinkingThresholds.
      */
-    protected static final int[] blinkingThresholds = {3 * 20, 5 * 20, 16 * 20};	//the time at which blinking starts
+    protected static final int[] blinkingThresholds = {3 * 20, 5 * 20, 16 * 20};    //the time at which blinking starts
     /**
      * The constant blinkingSpeed.
      */
-    protected static final int[] blinkingSpeed = {5, 10, 20};					//how often the blinking occurs
+    protected static final int[] blinkingSpeed = {5, 10, 20};                    //how often the blinking occurs
     /**
      * The constant blinkingDuration.
      */
-    protected static final int[] blinkingDuration = {2, 3, 3};					//how long the blink lasts
+    protected static final int[] blinkingDuration = {2, 3, 3};                    //how long the blink lasts
 
     /**
      * The constant potionLocX.
@@ -159,107 +169,101 @@ public class PotionTimers extends ZyinHUDModBase
     /**
      * Renders the duration any potion effects that the player currently has on the left side of the screen.
      */
-    public static void RenderOntoHUD()
-    {
+    public static void RenderOntoHUD() {
         //if the player is in the world
         //and not in a menu (except for chat and the custom Options menu)
         //and F3 not shown
         if (PotionTimers.Enabled &&
                 (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
-        		!mc.gameSettings.showDebugInfo)
-        {
-            Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect
+                !mc.gameSettings.showDebugInfo) {
+            Collection potionEffects = mc.thePlayer.getActivePotionEffects();    //key:potionId, value:potionEffect
             Iterator it = potionEffects.iterator();
-            
+
             int x = potionLocX;
             int y = potionLocY;
-            
+
             x /= PotionScale;
             y /= PotionScale;
             GL11.glScalef(PotionScale, PotionScale, PotionScale);
-            
+
 
             int i = 0;
-            while (it.hasNext())
-            {
-                PotionEffect potionEffect = (PotionEffect)it.next();
+            while (it.hasNext()) {
+                PotionEffect potionEffect = (PotionEffect) it.next();
                 //Potion potion = Potion.potionTypes[potionEffect.getPotionID()];
                 Potion potion = potionEffect.getPotion();
                 Boolean isFromBeacon = potionEffect.getIsAmbient();
 
-                if (!isFromBeacon || !HideBeaconPotionEffects)
-                {
-                	if(ShowPotionIcons)
-                	{
-                		DrawPotionIcon(x, y, potion);
-                		
-                		if(TextMode != TextModes.NONE)
-                			DrawPotionDuration(x+10, y, potion, potionEffect);
-                	}
-                	else
-                	{
-                		if(TextMode != TextModes.NONE)
-                			DrawPotionDuration(x, y, potion, potionEffect);
-                	}
+                if (!isFromBeacon || !HideBeaconPotionEffects) {
+                    if (ShowPotionIcons) {
+                        DrawPotionIcon(x, y, potion);
 
-                	y += 10;
+                        if (TextMode != TextModes.NONE)
+                            DrawPotionText(x + 10, y, potion, potionEffect);
+                    } else {
+                        if (TextMode != TextModes.NONE)
+                            DrawPotionText(x, y, potion, potionEffect);
+                    }
+
+                    y += 10;
                     i++;
                 }
             }
 
-            GL11.glScalef(1f/PotionScale, 1f/PotionScale, 1f/PotionScale);
+            GL11.glScalef(1f / PotionScale, 1f / PotionScale, 1f / PotionScale);
         }
     }
 
 
     /**
-     * Draws a potion's remaining duration with a color coded blinking timer
+     * Draws a potion's remaining duration and name with a color coded blinking timer
      *
      * @param x            the x
      * @param y            the y
      * @param potion       the potion
      * @param potionEffect the potion effect
      */
-    protected static void DrawPotionDuration(int x, int y, Potion potion, PotionEffect potionEffect) {
-        String durationString = Potion.getPotionDurationString(potionEffect, 1.0F);//TODO: Figure out that float number, this is a temporary fix
+    protected static void DrawPotionText(int x, int y, Potion potion, PotionEffect potionEffect) {
+        String potionText = Potion.getPotionDurationString(potionEffect, 1.0F);//TODO: Figure out that float number, this is a temporary fix
+        if (ShowEffectName) {
+            potionText += " " + I18n.format(potionEffect.getEffectName());
+        }
+        if (ShowEffectLevel) {
+            potionText += " " + (potionEffect.getAmplifier() + 1);
+        }
         int potionDuration = potionEffect.getDuration();    //goes down by 20 ticks per second
         int colorInt;
+        if (TextMode == TextModes.COLORED)
+            colorInt = potion.getLiquidColor();
+        else if (TextMode == TextModes.WHITE)
+            colorInt = 0xFFFFFF;
+        else
+            colorInt = 0xFFFFFF;
 
-		if(TextMode == TextModes.COLORED)
-			colorInt = potion.getLiquidColor();
-		else if(TextMode == TextModes.WHITE)
-			colorInt = 0xFFFFFF;
-		else
-			colorInt = 0xFFFFFF;
-		
-		
-		boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
+
+        boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
         mc.fontRendererObj.setUnicodeFlag(true);
-		
-		//render the potion duration text onto the screen
-		if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])	//if the text is not blinking then render it normally
-		{
-		    mc.fontRendererObj.drawStringWithShadow(durationString, x, y, colorInt);
-		}
-		else //else if the text is blinking, have a chance to not render it based on the blinking variables
-		{
-			//logic to determine if the text should be displayed, checks the blinking text settings
-		    for (int j = 0; j < blinkingThresholds.length; j++)
-		    {
-		        if (potionDuration < blinkingThresholds[j])
-		        {
-		            if (potionDuration % blinkingSpeed[j] > blinkingDuration[j])
-		            {
-		                mc.fontRendererObj.drawStringWithShadow(durationString, x, y, colorInt);
-		            }
 
-		            break;
-		        }
-		    }
-		}
+        //render the potion duration text onto the screen
+        if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])    //if the text is not blinking then render it normally
+        {
+            mc.fontRendererObj.drawStringWithShadow(potionText, x, y, colorInt);
+        } else //else if the text is blinking, have a chance to not render it based on the blinking variables
+        {
+            //logic to determine if the text should be displayed, checks the blinking text settings
+            for (int j = 0; j < blinkingThresholds.length; j++) {
+                if (potionDuration < blinkingThresholds[j]) {
+                    if (potionDuration % blinkingSpeed[j] > blinkingDuration[j]) {
+                        mc.fontRendererObj.drawStringWithShadow(potionText, x, y, colorInt);
+                    }
+
+                    break;
+                }
+            }
+        }
 
         mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
-	}
+    }
 
     /**
      * Draws a potion's icon texture
@@ -268,21 +272,20 @@ public class PotionTimers extends ZyinHUDModBase
      * @param y      the y
      * @param potion the potion
      */
-    protected static void DrawPotionIcon(int x, int y, Potion potion)
-    {
+    protected static void DrawPotionIcon(int x, int y, Potion potion) {
         mc.getTextureManager().bindTexture(inventoryResourceLocation);
-        
-        if(potion.hasStatusIcon())	//some modded potions use a custom Resource Location for potion drawing, typically done in the .hasStatusIcon() method
+
+        if (potion.hasStatusIcon())    //some modded potions use a custom Resource Location for potion drawing, typically done in the .hasStatusIcon() method
         {
-        	int iconIndex = potion.getStatusIconIndex();
+            int iconIndex = potion.getStatusIconIndex();
             int u = iconIndex % 8 * 18;
             int v = 198 + iconIndex / 8 * 18;
             int width = 18;
             int height = 18;
             float scaler = 0.5f;
-            
+
             GL11.glColor4f(1f, 1f, 1f, 1f);
-            
+
             ZyinHUDRenderer.RenderCustomTexture(x, y, u, v, width, height, null, scaler);
         }
     }
@@ -293,32 +296,29 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @param guiScreen the screen the player is looking at which extends InventoryEffectRenderer
      */
-    public static void DisableInventoryPotionEffects(InventoryEffectRenderer guiScreen)
-    {
-    	if(PotionTimers.Enabled && HidePotionEffectsInInventory)
-    	{
-    		//Note for future Forge versions: field "field_147045_u" will probably be renamed to something like "playerHasPotionEffects"
-	    	boolean playerHasPotionEffects = ObfuscationReflectionHelper.getPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer)guiScreen, "field_147045_u");
-	    	
-	    	if(playerHasPotionEffects)
-	    	{
-	    		int guiLeftPx = (guiScreen.width - 176) / 2;
-	    		
-	    		ObfuscationReflectionHelper.setPrivateValue(GuiContainer.class, (GuiContainer)guiScreen, guiLeftPx, "field_147003_i","guiLeft");
-	        	ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer)guiScreen, false, "field_147045_u");
-	    	}
-    	}
+    public static void DisableInventoryPotionEffects(InventoryEffectRenderer guiScreen) {
+        if (PotionTimers.Enabled && HidePotionEffectsInInventory) {
+            //Note for future Forge versions: field "field_147045_u" will probably be renamed to something like "playerHasPotionEffects"
+            boolean playerHasPotionEffects = ObfuscationReflectionHelper.getPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, "field_147045_u");
+
+            if (playerHasPotionEffects) {
+                int guiLeftPx = (guiScreen.width - 176) / 2;
+
+                ObfuscationReflectionHelper.setPrivateValue(GuiContainer.class, (GuiContainer) guiScreen, guiLeftPx, "field_147003_i", "guiLeft");
+                ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, false, "field_147045_u");
+            }
+        }
     }
-    
-    
+
+
     /**
      * Checks to see if the Potion Timers tab is selected in GuiZyinHUDOptions
+     *
      * @return
      */
-    private static boolean TabIsSelectedInOptionsGui()
-    {
-    	return mc.currentScreen instanceof GuiZyinHUDOptions &&
-    		(((GuiZyinHUDOptions)mc.currentScreen).IsButtonTabSelected(Localization.get("potiontimers.name")));
+    private static boolean TabIsSelectedInOptionsGui() {
+        return mc.currentScreen instanceof GuiZyinHUDOptions &&
+                (((GuiZyinHUDOptions) mc.currentScreen).IsButtonTabSelected(Localization.get("potiontimers.name")));
     }
 
 
@@ -327,9 +327,26 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @return boolean
      */
-    public static boolean ToggleShowPotionIcons()
-    {
-    	return ShowPotionIcons = !ShowPotionIcons;
+    public static boolean ToggleShowPotionIcons() {
+        return ShowPotionIcons = !ShowPotionIcons;
+    }
+
+    /**
+     * Toggles showing effect name
+     *
+     * @return boolean
+     */
+    public static boolean ToggleShowEffectName() {
+        return ShowEffectName = !ShowEffectName;
+    }
+
+    /**
+     * Toggles showing effect level
+     *
+     * @return boolean
+     */
+    public static boolean ToggleShowEffectLevel() {
+        return ShowEffectLevel = !ShowEffectLevel;
     }
 
     /**
@@ -337,9 +354,8 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @return boolean
      */
-    public static boolean ToggleHidePotionEffectsInInventory()
-    {
-    	return HidePotionEffectsInInventory = !HidePotionEffectsInInventory;
+    public static boolean ToggleHidePotionEffectsInInventory() {
+        return HidePotionEffectsInInventory = !HidePotionEffectsInInventory;
     }
 
     /**
@@ -347,9 +363,8 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @return int
      */
-    public static int GetHorizontalLocation()
-    {
-    	return potionLocX;
+    public static int GetHorizontalLocation() {
+        return potionLocX;
     }
 
     /**
@@ -358,10 +373,9 @@ public class PotionTimers extends ZyinHUDModBase
      * @param x the x
      * @return the new x location
      */
-    public static int SetHorizontalLocation(int x)
-    {
-    	potionLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
-    	return potionLocX;
+    public static int SetHorizontalLocation(int x) {
+        potionLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
+        return potionLocX;
     }
 
     /**
@@ -369,9 +383,8 @@ public class PotionTimers extends ZyinHUDModBase
      *
      * @return int
      */
-    public static int GetVerticalLocation()
-    {
-    	return potionLocY;
+    public static int GetVerticalLocation() {
+        return potionLocY;
     }
 
     /**
@@ -380,14 +393,17 @@ public class PotionTimers extends ZyinHUDModBase
      * @param y the y
      * @return the new y location
      */
-    public static int SetVerticalLocation(int y)
-    {
-    	potionLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
-    	return potionLocY;
+    public static int SetVerticalLocation(int y) {
+        potionLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
+        return potionLocY;
     }
 
-    public static boolean ToggleHideBeaconPotionEffects(){
+    public static boolean ToggleHideBeaconPotionEffects() {
         return HideBeaconPotionEffects = !HideBeaconPotionEffects;
+    }
+
+    public static boolean ToggleShowVanillaStatusEffectHUD() {
+        return ShowVanillaStatusEffectHUD = !ShowVanillaStatusEffectHUD;
     }
 
 }

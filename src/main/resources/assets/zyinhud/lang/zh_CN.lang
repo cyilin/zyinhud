@@ -221,6 +221,10 @@ potiontimers.options.potionscale=尺寸:
 potiontimers.options.offsetx=X轴平移: 
 potiontimers.options.offsety=Y轴平移: 
 potiontimers.options.hidebeaconpotioneffects=隐藏信标药水效果: 
+potiontimers.options.showvanillastatuseffecthud=原版状态效果HUD:
+potiontimers.options.showvanillastatuseffecthud.tooltip=显示/隐藏原版状态效果HUD:
+potiontimers.options.showeffectname=显示效果名称: 
+potiontimers.options.showeffectlevel=显示效果级别: 
 
 safeoverlay.name=安全覆盖
 safeoverlay.mode.off=关
