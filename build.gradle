@@ -23,7 +23,7 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "(1.10.2)-v.1.5.1"
+version = "(1.10.2)-v.1.5.2"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "ZyinsHUD"
 

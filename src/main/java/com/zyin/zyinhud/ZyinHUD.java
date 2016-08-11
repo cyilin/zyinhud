@@ -43,7 +43,7 @@ import java.io.File;
 /**
  * The type Zyin hud.
  */
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.1.2014,);")
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.1.2046,);")
 public class ZyinHUD {
     /**
      * Version number must be changed in 3 spots before releasing a build:
@@ -54,7 +54,7 @@ public class ZyinHUD {
      * </ol>
      * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
      */
-    public static final String VERSION = "1.5.1";
+    public static final String VERSION = "1.5.2";
     /**
      * The constant MODID.
      */
