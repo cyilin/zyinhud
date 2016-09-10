@@ -396,7 +396,7 @@ public class PlayerLocator extends ZyinHUDModBase {
         if (otherPlayer.isSneaking()) {
             overlayMessage = sneakingMessagePrefix + overlayMessage;    //italics
         }
-        if (otherPlayer.isRiding())    //this doesn't work on some servers
+        if (otherPlayer.isRiding() || otherPlayer.isElytraFlying())    //this doesn't work on some servers
         {
             overlayMessage = ridingMessagePrefix + overlayMessage;        //space for the saddle and horse armor icons
         }
