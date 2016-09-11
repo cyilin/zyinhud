@@ -43,7 +43,7 @@ import java.io.File;
 /**
  * The type Zyin hud.
  */
-@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = "required-after:Forge@[12.18.1.2046,);")
+@Mod(modid = ZyinHUD.MODID, version = ZyinHUD.VERSION, name = ZyinHUD.MODNAME, clientSideOnly = true, canBeDeactivated = true, dependencies = ZyinHUD.dependencies, updateJSON = ZyinHUD.updateJSON)
 public class ZyinHUD {
     /**
      * Version number must be changed in 3 spots before releasing a build:
@@ -63,7 +63,11 @@ public class ZyinHUD {
      * The constant MODNAME.
      */
     public static final String MODNAME = "Zyin's HUD";
+    
+    public static final String updateJSON = "https://raw.githubusercontent.com/cyilin/zyinhud-update/master/update.json";
 
+    public static final String dependencies = "required-after:Forge@[12.18.1.2046,);";
+    
     /**
      * The constant proxy.
      */
