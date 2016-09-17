@@ -23,9 +23,15 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "(1.10.2)-v.1.5.2"
+version = "1.5.2.%s"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ZyinsHUD"
+archivesBaseName = "ZyinsHUD-1.10.2"
+
+if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
+    version = String.format(version, System.getenv("TRAVIS_BUILD_NUMBER"))
+} else {
+    version = String.format(version, "0")
+}
 
 minecraft {
     version = "1.10.2-12.18.1.2046"
@@ -38,6 +44,20 @@ minecraft {
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20160518"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+}
+
+// https://github.com/MinecraftForge/MinecraftForge/blob/1.10.x/build.gradle#L219
+if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
+    def file = file("src/main/java/com/zyin/zyinhud/ZyinHUD.java");
+    def outfile = "";
+    file.eachLine { String s ->
+        if (s.matches('^    public static final String VERSION = "[^\\"]+";\$')){
+            s = "    public static final String VERSION = \"${version}\";";
+        }
+        outfile += s;
+        outfile += "\n";
+    }
+    file.write(outfile);
 }
 
 dependencies {
