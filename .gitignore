@@ -16,3 +16,4 @@
 !gradle
 !gradle/wrapper
 !gradle/wrapper/*
+!.travis.yml
