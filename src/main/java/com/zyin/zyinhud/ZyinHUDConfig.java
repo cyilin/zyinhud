@@ -4,7 +4,6 @@ import com.zyin.zyinhud.mods.*;
 import com.zyin.zyinhud.util.Localization;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
-import org.lwjgl.input.Keyboard;
 
 import java.io.File;
 
@@ -242,7 +241,7 @@ public class ZyinHUDConfig {
             p.set(Coordinates.UseYCoordinateColors);
 
         p = config.get(CATEGORY_COORDINATES, "CoordinatesChatStringFormat", Coordinates.DefaultChatStringFormat);
-        p.setComment("The format used when sending your coordiantes in a chat message by pressing '" + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[1].getKeyCode()) + "'. {x}{y}{z} are replaced with actual coordiantes.");
+        p.setComment("The format used when sending your coordiantes in a chat message by pressing '" + ZyinHUDKeyHandlers.KEY_BINDINGS[1].getDisplayName() + "'. {x}{y}{z} are replaced with actual coordiantes.");
         if (loadSettings)
             Coordinates.ChatStringFormat = p.getString();
         else
@@ -408,8 +407,8 @@ public class ZyinHUDConfig {
 
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlayDrawDistance", 20);
         p.setComment("How far away unsafe spots should be rendered around the player measured in blocks. This can be changed in game with - + "
-                + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode()) + " and + + "
-                + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode()) + ".");
+                + ZyinHUDKeyHandlers.KEY_BINDINGS[8].getDisplayName() + " and + + "
+                + ZyinHUDKeyHandlers.KEY_BINDINGS[8].getDisplayName() + ".");
         if (loadSettings)
             SafeOverlay.instance.SetDrawDistance(p.getInt(20));
         else
@@ -430,7 +429,7 @@ public class ZyinHUDConfig {
             p.set(SafeOverlay.instance.GetDisplayInNether());
 
         p = config.get(CATEGORY_SAFEOVERLAY, "SafeOverlaySeeThroughWalls", false);
-        p.setComment("Enable/Disable showing unsafe areas through walls. Toggle in game with Ctrl + " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[8].getKeyCode()) + ".");
+        p.setComment("Enable/Disable showing unsafe areas through walls. Toggle in game with Ctrl + " + ZyinHUDKeyHandlers.KEY_BINDINGS[8].getDisplayName() + ".");
         if (loadSettings)
             SafeOverlay.instance.SetSeeUnsafePositionsThroughWalls(p.getBoolean(false));
         else
@@ -571,7 +570,7 @@ public class ZyinHUDConfig {
 
         //CATEGORY_EATINGAID
         p = config.get(CATEGORY_EATINGAID, "EnableEatingAid", true);
-        p.setComment("Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[3].getKeyCode())
+        p.setComment("Enables pressing " + ZyinHUDKeyHandlers.KEY_BINDINGS[3].getDisplayName()
                 + " to eat food even if it is  in your inventory and not your hotbar.");
         if (loadSettings)
             EatingAid.Enabled = p.getBoolean(true);
@@ -616,7 +615,7 @@ public class ZyinHUDConfig {
 
         //CATEGORY_WEAPONSWAP
         p = config.get(CATEGORY_WEAPONSWAP, "EnableWeaponSwap", true);
-        p.setComment("Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[9].getKeyCode())
+        p.setComment("Enables pressing " + ZyinHUDKeyHandlers.KEY_BINDINGS[9].getDisplayName()
                 + " to swap between your sword and bow.");
         if (loadSettings)
             WeaponSwapper.Enabled = p.getBoolean(true);
@@ -768,7 +767,7 @@ public class ZyinHUDConfig {
 
         //CATEGORY_ENDERPEARLAID
         p = config.get(CATEGORY_ENDERPEARLAID, "EnableEnderPearlAid", true);
-        p.setComment("Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[4].getKeyCode())
+        p.setComment("Enables pressing " + ZyinHUDKeyHandlers.KEY_BINDINGS[4].getDisplayName()
                 + " to use an enderpearl even if it is  in your inventory and not your hotbar.");
         if (loadSettings)
             EnderPearlAid.Enabled = p.getBoolean(true);
@@ -794,7 +793,7 @@ public class ZyinHUDConfig {
 
         //CATEGORY_POTIONAID
         p = config.get(CATEGORY_POTIONAID, "EnablePotionAid", true);
-        p.setComment("Enables pressing " + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[6].getKeyCode())
+        p.setComment("Enables pressing " + ZyinHUDKeyHandlers.KEY_BINDINGS[6].getDisplayName()
                 + " to drink a potion even if it is  in your inventory and not your hotbar.");
         if (loadSettings)
             PotionAid.Enabled = p.getBoolean(true);
@@ -812,7 +811,7 @@ public class ZyinHUDConfig {
 
         p = config.get(CATEGORY_QUICKDEPOSIT, "IgnoreItemsInHotbar", false);
         p.setComment("Determines if items in your hotbar will be deposited into chests when '"
-                + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[7].getKeyCode()) + "' is pressed.");
+                + ZyinHUDKeyHandlers.KEY_BINDINGS[7].getDisplayName() + "' is pressed.");
         if (loadSettings)
             QuickDeposit.IgnoreItemsInHotbar = p.getBoolean(false);
         else
@@ -877,7 +876,7 @@ public class ZyinHUDConfig {
         //CATEGORY_ITEMSELECTOR
         p = config.get(CATEGORY_ITEMSELECTOR, "EnableItemSelector", true);
         p.setComment("Enables/Disable using mouse wheel scrolling whilst holding "
-                + Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[11].getKeyCode()) + " to swap the selected item with an inventory item.");
+                + ZyinHUDKeyHandlers.KEY_BINDINGS[11].getDisplayName() + " to swap the selected item with an inventory item.");
         if (loadSettings)
             ItemSelector.Enabled = p.getBoolean(true);
         else

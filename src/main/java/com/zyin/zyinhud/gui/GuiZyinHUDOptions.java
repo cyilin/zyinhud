@@ -149,7 +149,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
      */
     private String GetKeyBindingAsString(int keyBindingIndex) {
         try {
-            return Keyboard.getKeyName(ZyinHUDKeyHandlers.KEY_BINDINGS[keyBindingIndex].getKeyCode());
+            return ZyinHUDKeyHandlers.KEY_BINDINGS[keyBindingIndex].getDisplayName();
         } catch (ArrayIndexOutOfBoundsException e) {
             return "[?]";    //A user reported having getKeyCode() returning -89 and causing this exception
         }

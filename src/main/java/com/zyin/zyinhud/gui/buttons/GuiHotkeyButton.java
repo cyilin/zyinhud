@@ -2,10 +2,9 @@ package com.zyin.zyinhud.gui.buttons;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.TextFormatting;
-
-import org.lwjgl.input.Keyboard;
 
 import com.zyin.zyinhud.util.Localization;
 
@@ -117,7 +116,7 @@ public class GuiHotkeyButton extends GuiButton
 	public void ApplyHotkey(int newHotkey)
 	{
 		waitingForHotkeyInput = false;
-		hotkey = Keyboard.getKeyName(newHotkey);
+		hotkey = GameSettings.getKeyDisplayString(newHotkey);
 		
 		//SetHotkey(hotkey);
 		UpdateDisplayString();
@@ -146,7 +145,7 @@ public class GuiHotkeyButton extends GuiButton
 	        if(keyBinding != null)
 	        {
 	        	SetHotkey(hotkey);
-	        	return Keyboard.getKeyName(keyBinding.getKeyCode());
+	        	return keyBinding.getDisplayName();
 	        }
 	        else
 	        {
