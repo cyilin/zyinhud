@@ -34,7 +34,7 @@ if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
 }
 
 minecraft {
-    version = "1.10.2-12.18.1.2046"
+    version = "1.10.2-12.18.1.2094"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
