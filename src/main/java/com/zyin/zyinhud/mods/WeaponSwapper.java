@@ -1,21 +1,23 @@
 package com.zyin.zyinhud.mods;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.inventory.EntityEquipmentSlot;
-
 import com.google.common.collect.Multimap;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.init.Enchantments;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Weapon Swap allows the player to quickly equip their sword and bow.
@@ -58,7 +60,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         
 
         int meleeWeaponSlot = GetMostDamagingWeaponSlotFromHotbar();
-        int rangedWeaponSlot = GetItemSlotFromHotbar(rangedWeaponClasses);
+        int rangedWeaponSlot = GetBowSlotFromHotbar(rangedWeaponClasses);
 
         if (meleeWeaponSlot < 0 && rangedWeaponSlot < 0)
         {
@@ -117,6 +119,7 @@ public class WeaponSwapper extends ZyinHUDModBase
     {
         ItemStack[] items = mc.thePlayer.inventory.mainInventory;
         double highestWeaponDamage = -1;
+        double highestAttackSpeed = -1;
         int highestWeaponDamageSlot = -1;
         
         for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
@@ -126,9 +129,12 @@ public class WeaponSwapper extends ZyinHUDModBase
             if (itemStack != null)
             {
                 double weaponDamage = GetItemWeaponDamage(itemStack);
-                if(weaponDamage > highestWeaponDamage)
+                double weaponAttackSpeed = GetAttackSpeed(itemStack);
+                if((weaponDamage > highestWeaponDamage && weaponAttackSpeed >= highestAttackSpeed)||
+                        (weaponDamage >= highestWeaponDamage && weaponAttackSpeed > highestAttackSpeed))
                 {
                 	highestWeaponDamage = weaponDamage;
+                    highestAttackSpeed = weaponAttackSpeed;
                 	highestWeaponDamageSlot = i;
                 }
             }
@@ -166,7 +172,8 @@ public class WeaponSwapper extends ZyinHUDModBase
     {
         EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
         Multimap multimap = itemStack.getItem().getAttributeModifiers(EquipmentSlot, itemStack);
-
+        double enchantDamage=GetEnchantDamage(itemStack);
+        
         if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName())) {
             Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
             if (attributes.size() > 0) {
@@ -174,9 +181,13 @@ public class WeaponSwapper extends ZyinHUDModBase
 				if (attribute instanceof AttributeModifier)
 				{
 					AttributeModifier weaponModifier = (AttributeModifier)attribute;
-					return weaponModifier.getAmount();
-				}
+                    return weaponModifier.getAmount() + enchantDamage;
+                }
 			}
+		}else {
+            if(enchantDamage>0.0D){
+                return enchantDamage;
+            }
 		}
 		return -1;
     }
@@ -287,5 +298,63 @@ public class WeaponSwapper extends ZyinHUDModBase
     public static int GetItemSlotFromInventory(List<Class> itemClasses)
     {
     	return GetItemSlot(itemClasses, 9, 35);
+    }
+
+    public static double GetEnchantDamage(ItemStack item) {
+        double damage = 0.0D;
+        if (item.isItemEnchanted()) {
+            damage = EnchantmentHelper.getModifierForCreature(item, EnumCreatureAttribute.UNDEFINED);
+        }
+        return damage;
+    }
+
+    public static double GetAttackSpeed(ItemStack item) {
+        EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
+        Multimap multimap = item.getItem().getAttributeModifiers(EquipmentSlot, item);
+
+        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName())) {
+            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName());
+            if (attributes.size() > 0) {
+                Object attribute = attributes.iterator().next();
+                if (attribute instanceof AttributeModifier) {
+                    return (4.0D)+(((AttributeModifier) attribute).getAmount());
+                }
+            }
+        }
+        return -1;
+    }
+    
+    public static double GetBowDamage(ItemStack item) {
+        double damage = 0.0D;
+        if (item.isItemEnchanted()) {
+            int power = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER, item);
+            if (power > 0) {
+                damage = 2.0D + (double) power * 0.5D + 0.5D;
+            }
+        }
+        return damage;
+    }
+
+    public static int GetBowSlotFromHotbar(List<Class> itemClasses) {
+        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        double highestDamage = -1;
+        int slot = -1;
+        for (int i = 0; i <= 8; i++) {
+            ItemStack itemStack = items[i];
+
+            if (itemStack != null) {
+                Item item = itemStack.getItem();
+
+                for (Class itemClass : itemClasses) {
+                    if (itemClass.isInstance(item)) {
+                        if (GetBowDamage(itemStack) > highestDamage) {
+                            highestDamage = GetBowDamage(itemStack);
+                            slot = i;
+                        }
+                    }
+                }
+            }
+        }
+        return slot;
     }
 }
