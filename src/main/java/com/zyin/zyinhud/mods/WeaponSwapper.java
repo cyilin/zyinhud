@@ -14,6 +14,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -121,6 +122,9 @@ public class WeaponSwapper extends ZyinHUDModBase
         double highestWeaponDamage = -1;
         double highestAttackSpeed = -1;
         int highestWeaponDamageSlot = -1;
+        double highestSwordDamage = -1;
+        double highestSwordAttackSpeed = -1;
+        int highestSwordDamageSlot = -1;
         
         for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
@@ -128,18 +132,35 @@ public class WeaponSwapper extends ZyinHUDModBase
 
             if (itemStack != null)
             {
+                if (itemStack.getItem() instanceof ItemSword) {
+                    double swordDamage = GetItemWeaponDamage(itemStack);
+                    double swordAttackSpeed = GetAttackSpeed(itemStack);
+                    if ((swordDamage > highestSwordDamage && swordAttackSpeed >= highestSwordAttackSpeed) ||
+                            (swordDamage >= highestSwordDamage && swordAttackSpeed > highestSwordAttackSpeed)) {
+                        highestSwordDamage = swordDamage;
+                        highestSwordAttackSpeed = swordAttackSpeed;
+                        highestSwordDamageSlot = i;
+                    }
+                    continue;
+                }
                 double weaponDamage = GetItemWeaponDamage(itemStack);
                 double weaponAttackSpeed = GetAttackSpeed(itemStack);
-                if((weaponDamage > highestWeaponDamage && weaponAttackSpeed >= highestAttackSpeed)||
-                        (weaponDamage >= highestWeaponDamage && weaponAttackSpeed > highestAttackSpeed))
-                {
-                	highestWeaponDamage = weaponDamage;
+                if ((weaponDamage > highestWeaponDamage && weaponAttackSpeed >= highestAttackSpeed) ||
+                        (weaponDamage >= highestWeaponDamage && weaponAttackSpeed > highestAttackSpeed)) {
+                    highestWeaponDamage = weaponDamage;
                     highestAttackSpeed = weaponAttackSpeed;
-                	highestWeaponDamageSlot = i;
+                    highestWeaponDamageSlot = i;
                 }
             }
         }
-        return highestWeaponDamageSlot;
+        if (highestSwordDamageSlot == -1) {
+            return highestWeaponDamageSlot;
+        }else if ((highestAttackSpeed > highestSwordDamage && highestAttackSpeed >= highestSwordAttackSpeed) ||
+                (highestWeaponDamage >= highestSwordDamage && highestAttackSpeed > highestSwordAttackSpeed)) {
+            return highestWeaponDamageSlot;
+        } else {
+            return highestSwordDamageSlot;
+        }
     }
 
     /**
