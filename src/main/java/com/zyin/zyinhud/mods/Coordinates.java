@@ -219,7 +219,7 @@ public class Coordinates extends ZyinHUDModBase
      */
     public static int GetXCoordinate()
     {
-    	return (int) Math.floor(mc.thePlayer.posX);
+    	return (int) Math.floor(mc.getRenderViewEntity().posX);
     }
 
     /**
@@ -229,7 +229,7 @@ public class Coordinates extends ZyinHUDModBase
      */
     public static int GetYCoordinate()
     {
-    	return (int) Math.floor(mc.thePlayer.posY);
+    	return (int) Math.floor(mc.getRenderViewEntity().posY);
     }
 
     /**
@@ -239,7 +239,7 @@ public class Coordinates extends ZyinHUDModBase
      */
     public static int GetZCoordinate()
     {
-    	return (int) Math.floor(mc.thePlayer.posZ);
+    	return (int) Math.floor(mc.getRenderViewEntity().posZ);
     }
 
     /**

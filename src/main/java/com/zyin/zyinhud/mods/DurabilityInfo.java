@@ -535,7 +535,7 @@ public class DurabilityInfo extends ZyinHUDModBase
             for(int i = 0; i < itemStacks.length; i++)
             {
             	ItemStack itemStack = itemStacks[i];
-                if (itemStack != null)
+                if (itemStack != null && !(itemStack.getItem() instanceof ItemElytra))
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();

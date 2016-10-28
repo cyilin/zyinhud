@@ -31,11 +31,11 @@ public class EnderPearlAid extends ZyinHUDModBase
      */
     public static void UseEnderPearl()
     {
-        if(mc.playerController.isInCreativeMode())
+        /*if(mc.playerController.isInCreativeMode())
         {
         	ZyinHUDRenderer.DisplayNotification(Localization.get("enderpearlaid.increative"));
         	return;
-        }
+        }*/
         
         if (EatingAid.instance.isEating())
         {
