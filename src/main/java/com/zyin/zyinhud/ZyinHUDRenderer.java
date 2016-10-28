@@ -290,6 +290,8 @@ public class ZyinHUDRenderer
         GL11.glScalef(-scale, -scale, scale);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glDepthMask(false);
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
         GL11.glDisable(GL11.GL_DEPTH_TEST);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -344,7 +346,10 @@ public class ZyinHUDRenderer
         	mc.fontRendererObj.drawString(message, -textWidth / 2, i*lineHeight, color);
         	i++;
         }
-        
+        GlStateManager.enableDepth();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
+        GlStateManager.disableBlend();
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_DEPTH_TEST);
