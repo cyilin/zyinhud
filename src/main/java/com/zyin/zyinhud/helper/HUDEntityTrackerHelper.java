@@ -107,7 +107,7 @@ public class HUDEntityTrackerHelper {
                 //only track entities that we are tracking (i.e. other players/wolves/witherskeletons)
             	if(!(object instanceof EntityOtherPlayerMP || 
                 	 object instanceof EntityWolf ||
-                	 (object instanceof EntitySkeleton) && ((EntitySkeleton)object).func_189771_df() == SkeletonType.WITHER))
+                	 (object instanceof EntitySkeleton) && ((EntitySkeleton)object).getSkeletonType() == SkeletonType.WITHER))
                     continue;
                 
                 Entity entity = (Entity)object;

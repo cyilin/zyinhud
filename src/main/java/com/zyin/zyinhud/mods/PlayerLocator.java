@@ -196,7 +196,7 @@ public class PlayerLocator extends ZyinHUDModBase {
 
         if (!(entity instanceof EntityOtherPlayerMP ||
                 entity instanceof EntityWolf ||
-                (entity instanceof EntitySkeleton) && ((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER)) {
+                (entity instanceof EntitySkeleton) && ((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER)) {
             return;    //we only care about other players and wolves
         }
 
@@ -249,7 +249,7 @@ public class PlayerLocator extends ZyinHUDModBase {
                     b = (0xFF - b) / 2;
                     rgb = rgb + ((r << 4 * 4) + (g << 4 * 2) + b);    //a more white version of the collar color
                 }
-            } else if (entity instanceof EntitySkeleton && (((EntitySkeleton) entity).func_189771_df() == SkeletonType.WITHER)) {
+            } else if (entity instanceof EntitySkeleton && (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER)) {
                 if (!ShowWitherSkeletons)
                     return;
 
