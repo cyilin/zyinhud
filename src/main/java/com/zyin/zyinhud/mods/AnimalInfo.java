@@ -16,7 +16,6 @@ import org.apache.commons.lang3.text.WordUtils;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Shows information about horses in the F3 menu.
@@ -208,26 +207,26 @@ public class AnimalInfo extends ZyinHUDModBase {
     public static void RenderOntoDebugMenu() {
         //if F3 is shown
         if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu && mc.gameSettings.showDebugInfo) {
-            if (mc.thePlayer.isRidingHorse()) {
-                EntityHorse horse = (EntityHorse) mc.thePlayer.getRidingEntity();
+            if (mc.thePlayer.isRidingHorse() ||
+                    mc.thePlayer.isRiding() && mc.thePlayer.getRidingEntity() instanceof EntityLlama) {
+                AbstractHorse horse = (AbstractHorse) mc.thePlayer.getRidingEntity();
                 String horseSpeedMessage = Localization.get("animalinfo.debug.speed") + " " + GetHorseSpeedText(horse) + " m/s";
                 String horseJumpMessage = Localization.get("animalinfo.debug.jump") + " " + GetHorseJumpText(horse) + " blocks";
                 String horseHPMessage = Localization.get("animalinfo.debug.hp") + " " + GetHorseHPText(horse);
-                String horseColor = Localization.get("animalinfo.debug.color") + " " + GetHorseColoringText(horse);
-                String horseMarking = Localization.get("animalinfo.debug.markings") + " " + GetHorseMarkingText(horse);
 
-                List list = new ArrayList<String>(5);
-
+                ArrayList<String> list = new ArrayList<String>();
                 list.add(horseSpeedMessage);
                 list.add(horseJumpMessage);
                 list.add(horseHPMessage);
-
-                if (horse.getHorseVariant() != 0)    //not a donkey
-                {
+                if (horse instanceof EntityLlama) {
+                    String llamaStrength = Localization.get("animalinfo.debug.strength") + " " + GetLlamaStrength((EntityLlama) horse);
+                    list.add(llamaStrength);
+                } else if (horse instanceof EntityHorse) {
+                    String horseColor = Localization.get("animalinfo.debug.color") + " " + GetHorseColoringText(horse);
+                    String horseMarking = Localization.get("animalinfo.debug.markings") + " " + GetHorseMarkingText(horse);
                     list.add(horseColor);
                     list.add(horseMarking);
                 }
-
                 for (int i = 0; i < list.size(); ++i) {
                     String s = (String) list.get(i);
 
@@ -299,17 +298,20 @@ public class AnimalInfo extends ZyinHUDModBase {
         //a positive value means the horse has bred recently
         int animalGrowingAge = animal.getGrowingAge();
 
-        ArrayList multilineOverlayArrayList = new ArrayList(4);
+        ArrayList<String> multilineOverlayArrayList = new ArrayList();
 
-        if (ShowHorseStatsOverlay && animal instanceof EntityHorse) {
-            EntityHorse horse = (EntityHorse) animal;
+        if (ShowHorseStatsOverlay && animal instanceof AbstractHorse) {
+            AbstractHorse horse = (AbstractHorse) animal;
 
             multilineOverlayArrayList.add(GetHorseSpeedText(horse) + " " + Localization.get("animalinfo.overlay.speed"));
             multilineOverlayArrayList.add(GetHorseHPText(horse) + " " + Localization.get("animalinfo.overlay.hp"));
             multilineOverlayArrayList.add(GetHorseJumpText(horse) + " " + Localization.get("animalinfo.overlay.jump"));
+            if (animal instanceof EntityLlama) {
+                multilineOverlayArrayList.add(GetLlamaStrength((EntityLlama) animal) + " " + Localization.get("animalinfo.overlay.strength"));
+            }
 
-            if (animalGrowingAge < 0)
-                multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
+            //if (animalGrowingAge < 0)
+            //    multilineOverlayArrayList.add(GetHorseBabyGrowingAgeAsPercent(horse) + "%");
         }
         /* Breeding timer info no longer available on client in 1.8
     	if(ShowBreedingTimers && animal instanceof EntityAgeable)
@@ -333,7 +335,7 @@ public class AnimalInfo extends ZyinHUDModBase {
                 !((EntityAnimal) animal).isInLove())    //animal is not currently breeding
         {
             //render the overlay icon
-            if (animal instanceof EntityHorse && ((EntityHorse) animal).isTame())
+            if (animal instanceof AbstractHorse && ((AbstractHorse) animal).isTame())
                 ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.GOLDEN_CARROT, partialTickTime);
             else if (animal instanceof EntityCow)
                 ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
@@ -385,7 +387,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return
      */
-    private static int GetHorseBabyGrowingAgeAsPercent(EntityHorse horse) {
+    private static int GetHorseBabyGrowingAgeAsPercent(AbstractHorse horse) {
         float horseGrowingAge = horse.getHorseSize();    //horse size ranges from 0.5 to 1
         return (int) ((horseGrowingAge - 0.5f) * 2.0f * 100f);
     }
@@ -414,7 +416,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return e.x.:<br>aqua "13.5"<br>green "12.5"<br>white "11.3"<br>red "7.0"
      */
-    private static String GetHorseSpeedText(EntityHorse horse) {
+    private static String GetHorseSpeedText(AbstractHorse horse) {
         double horseSpeed = GetEntityMaxSpeed(horse);
         String horseSpeedString = decimalFormat.format(horseSpeed);
 
@@ -434,7 +436,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return e.x.:<br>aqua "28"<br>green "26"<br>white "22"<br>red "18"
      */
-    private static String GetHorseHPText(EntityHorse horse) {
+    private static String GetHorseHPText(AbstractHorse horse) {
         int horseHP = GetEntityMaxHP(horse);
         String horseHPString = decimalFormat.format(GetEntityMaxHP(horse));
 
@@ -454,7 +456,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return e.x.:<br>aqua "15"<br>green "13"<br>white "11"<br>red "9"
      */
-    private static String GetHorseHeartsText(EntityHorse horse) {
+    private static String GetHorseHeartsText(AbstractHorse horse) {
         int horseHP = GetEntityMaxHP(horse);
         int horseHearts = GetEntityMaxHearts(horse);
         String horseHeartsString = "" + horseHearts;
@@ -475,7 +477,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return e.x.:<br>aqua "5.4"<br>green "4"<br>white "3"<br>red "1.5"
      */
-    private static String GetHorseJumpText(EntityHorse horse) {
+    private static String GetHorseJumpText(AbstractHorse horse) {
         double horseJump = GetHorseMaxJump(horse);
         String horseJumpString = decimalFormat.format(horseJump);
 
@@ -495,8 +497,11 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return empty string if there is no coloring (for donkeys)
      */
-    private static String GetHorseColoringText(EntityHorse horse) {
-        String texture = horse.getVariantTexturePaths()[0];
+    private static String GetHorseColoringText(AbstractHorse horse) {
+        String texture = "";
+        if (horse instanceof EntityHorse) {
+            texture = ((EntityHorse) horse).getVariantTexturePaths()[0];
+        }
 
         if (texture == null || texture.isEmpty())
             return "";
@@ -515,9 +520,11 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return empty string if there is no secondary coloring (for donkeys)
      */
-    private static String GetHorseMarkingText(EntityHorse horse) {
-        String texture = horse.getVariantTexturePaths()[1];
-
+    private static String GetHorseMarkingText(AbstractHorse horse) {
+        String texture = "";
+        if (horse instanceof EntityHorse) {
+            texture = ((EntityHorse) horse).getVariantTexturePaths()[1];
+        }
         if (texture == null || texture.isEmpty())
             return "";
 
@@ -535,7 +542,7 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @param horse
      * @return e.x. 1.2?-5.5?
      */
-    private static double GetHorseMaxJump(EntityHorse horse) {
+    private static double GetHorseMaxJump(AbstractHorse horse) {
         //simulate gravity and air resistance to determine the jump height
         double yVelocity = horse.getHorseJumpStrength();    //horses's jump strength attribute
         double jumpHeight = 0;
@@ -545,6 +552,11 @@ public class AnimalInfo extends ZyinHUDModBase {
             yVelocity *= 0.98;
         }
         return jumpHeight;
+    }
+    
+    private static int GetLlamaStrength(EntityLlama llama) {
+        int strength = llama.func_190707_dL();
+        return strength;
     }
 
     /**

@@ -10,7 +10,7 @@ import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityMinecart;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.SkeletonType;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.passive.EntitySheep;
@@ -196,7 +196,7 @@ public class PlayerLocator extends ZyinHUDModBase {
 
         if (!(entity instanceof EntityOtherPlayerMP ||
                 entity instanceof EntityWolf ||
-                (entity instanceof EntitySkeleton) && ((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER)) {
+                entity instanceof EntityWitherSkeleton)) {
             return;    //we only care about other players and wolves
         }
 
@@ -249,11 +249,11 @@ public class PlayerLocator extends ZyinHUDModBase {
                     b = (0xFF - b) / 2;
                     rgb = rgb + ((r << 4 * 4) + (g << 4 * 2) + b);    //a more white version of the collar color
                 }
-            } else if (entity instanceof EntitySkeleton && (((EntitySkeleton) entity).getSkeletonType() == SkeletonType.WITHER)) {
+            } else if (entity instanceof EntityWitherSkeleton) {
                 if (!ShowWitherSkeletons)
                     return;
 
-                overlayMessage = GetOverlayMessageForWitherSkeleton((EntitySkeleton) entity, distanceFromMe);
+                overlayMessage = GetOverlayMessageForWitherSkeleton((EntityWitherSkeleton) entity, distanceFromMe);
 
                 rgb = 0x555555;
                 alpha = alpha / 6;
@@ -342,7 +342,7 @@ public class PlayerLocator extends ZyinHUDModBase {
     }
 
 
-    private static String GetOverlayMessageForWitherSkeleton(EntitySkeleton witherSkeleton, float distanceFromMe) {
+    private static String GetOverlayMessageForWitherSkeleton(EntityWitherSkeleton witherSkeleton, float distanceFromMe) {
         //String overlayMessage = "Wither " + witherSkeleton.getCommandSenderEntity().getName();
         String overlayMessage = "";
         if (witherSkeleton.hasCustomName()) {

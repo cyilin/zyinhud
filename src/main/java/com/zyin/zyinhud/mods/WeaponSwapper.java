@@ -15,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.util.NonNullList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +53,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand(); //getHeldItem();
         Item currentItem = null;
 
-        if (currentItemStack != null)
+        if (!currentItemStack.func_190926_b())
         {
             currentItem = currentItemStack.getItem();
         }
@@ -118,7 +119,7 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     protected static int GetMostDamagingWeaponSlot(int minInventoryIndex, int maxInventoryIndex)
     {
-        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
         double highestWeaponDamage = -1;
         double highestAttackSpeed = -1;
         int highestWeaponDamageSlot = -1;
@@ -128,9 +129,9 @@ public class WeaponSwapper extends ZyinHUDModBase
         
         for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
-            ItemStack itemStack = items[i];
+            ItemStack itemStack = items.get(i);
 
-            if (itemStack != null)
+            if (!itemStack.func_190926_b())
             {
                 if (itemStack.getItem() instanceof ItemSword) {
                     double swordDamage = GetItemWeaponDamage(itemStack);
@@ -278,13 +279,13 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     protected static int GetItemSlot(List<Class> itemClasses, int minInventoryIndex, int maxInventoryIndex)
     {
-        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
 
         for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
-            ItemStack itemStack = items[i];
+            ItemStack itemStack = items.get(i);
 
-            if (itemStack != null)
+            if (!itemStack.func_190926_b())
             {
                 Item item = itemStack.getItem();
 
@@ -357,13 +358,13 @@ public class WeaponSwapper extends ZyinHUDModBase
     }
 
     public static int GetBowSlotFromHotbar(List<Class> itemClasses) {
-        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
         double highestDamage = -1;
         int slot = -1;
         for (int i = 0; i <= 8; i++) {
-            ItemStack itemStack = items[i];
+            ItemStack itemStack = items.get(i);
 
-            if (itemStack != null) {
+            if (!itemStack.func_190926_b()) {
                 Item item = itemStack.getItem();
 
                 for (Class itemClass : itemClasses) {

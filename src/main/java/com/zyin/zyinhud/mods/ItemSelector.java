@@ -1,11 +1,13 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.ZyinHUDUtil;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
@@ -16,6 +18,8 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
+
+import java.util.ArrayList;
 
 /**
  * Item Selector allows the player to conveniently swap their currently selected
@@ -170,7 +174,7 @@ public class ItemSelector extends ZyinHUDModBase
 	/**
 	 * The Current inventory.
 	 */
-	protected static ItemStack[] currentInventory = null;
+	protected static NonNullList<ItemStack> currentInventory = null;
 
 	/**
 	 * Scrolls the selector towards the specified direction. This will cause the item selector overlay to show.
@@ -181,8 +185,7 @@ public class ItemSelector extends ZyinHUDModBase
 	{
 		// Bind to current player state
 		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
-
+		currentInventory = mc.thePlayer.inventory.mainInventory;
 		if (!AdjustSlot(direction))
 		{
 			Done();
@@ -204,7 +207,7 @@ public class ItemSelector extends ZyinHUDModBase
 	public static void SideButton(int direction)
 	{
 		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
+		currentInventory = mc.thePlayer.inventory.mainInventory;
 
 		if (AdjustSlot(direction))
 		{
@@ -226,7 +229,7 @@ public class ItemSelector extends ZyinHUDModBase
 	{
 		if (!mc.isSingleplayer())
 		{
-			if (currentInventory[currentHotbarSlot] != null && currentInventory[currentHotbarSlot].isItemEnchanted())
+			if (!currentInventory.get(currentHotbarSlot).func_190926_b() && currentInventory.get(currentHotbarSlot).isItemEnchanted())
 			{
 				ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));
 				return false;
@@ -251,11 +254,11 @@ public class ItemSelector extends ZyinHUDModBase
 			if (Mode == Modes.SAME_COLUMN && memory % 9 != currentHotbarSlot)
 				continue;
 
-			if (currentInventory[memory] == null)
+			if (currentInventory.get(memory).func_190926_b())
 				continue;
 
 			if (!mc.isSingleplayer()
-					&& currentInventory[memory].isItemEnchanted())
+					&& currentInventory.get(memory).isItemEnchanted())
 				continue;
 
 			targetInvSlot = memory;
@@ -280,7 +283,7 @@ public class ItemSelector extends ZyinHUDModBase
 			return;
 
 		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory.clone();
+		currentInventory = mc.thePlayer.inventory.mainInventory;
 		isCurrentlyRendering = true;
 	}
 
@@ -325,7 +328,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 		if(targetInvSlot > -1)
 		{
-			String labelText = currentInventory[targetInvSlot].getDisplayName();
+			String labelText = currentInventory.get(targetInvSlot).getDisplayName();
 			//String labelText = currentInventory[targetInvSlot].getChatComponent().getFormattedText();
 			int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
 			mc.fontRendererObj.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFFFFF);
@@ -360,11 +363,11 @@ public class ItemSelector extends ZyinHUDModBase
 					//GL11.glDisable(GL11.GL_BLEND);	//causes enchanted items to render incorrectly
 				}
 
-				ItemStack itemStack = currentInventory[idx + 9];
+				ItemStack itemStack = currentInventory.get(idx + 9);
 
-				if (itemStack != null)
+				if (!itemStack.func_190926_b())
 				{
-					float anim = itemStack.animationsToGo - partialTicks;
+					float anim = (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, itemStack, "animationsToGo", "field_77992_b") - partialTicks;
 					int dimX = originX + (x * 20) + 3;
 					int dimZ = originZ + (z * 22) + 3;
 					
@@ -406,15 +409,15 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	private static void SelectItem()
 	{
-		ItemStack currentStack = mc.thePlayer.inventory.mainInventory[currentHotbarSlot];
-		ItemStack targetStack = mc.thePlayer.inventory.mainInventory[targetInvSlot];
+		ItemStack currentStack = mc.thePlayer.inventory.mainInventory.get(currentHotbarSlot);
+		ItemStack targetStack = mc.thePlayer.inventory.mainInventory.get(targetInvSlot);
 
 		// Check if what was actually selected still exists in player's inventory
-		if (targetStack != null)
+		if (!targetStack.func_190926_b())
 		{
 			if (!mc.isSingleplayer())
 			{
-				if ((currentStack != null && currentStack.isItemEnchanted())
+				if ((!currentStack.func_190926_b() && currentStack.isItemEnchanted())
 						|| targetStack.isItemEnchanted())
 				{
 					ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));

@@ -37,10 +37,12 @@ animalinfo.overlay.speed=m/s
 animalinfo.overlay.jump=jump
 animalinfo.overlay.hp=hp
 animalinfo.overlay.hearts=hearts
+animalinfo.overlay.strength=strength
 animalinfo.debug.speed=Horse Speed:
 animalinfo.debug.jump=Horse Jump:
 animalinfo.debug.hp=Horse HP:
 animalinfo.debug.color=Horse Color:
+animalinfo.debug.strength=Llama Strength:
 animalinfo.debug.markings=Horse Markings:
 
 clock.name=Clock

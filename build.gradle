@@ -23,9 +23,9 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.5.2.%s"
+version = "1.5.3.%s"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ZyinsHUD-1.10.2"
+archivesBaseName = "ZyinsHUD-1.11"
 
 if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
     version = String.format(version, System.getenv("TRAVIS_BUILD_NUMBER"))
@@ -34,7 +34,7 @@ if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
 }
 
 minecraft {
-    version = "1.10.2-12.18.2.2125"
+    version = "1.11-13.19.0.2141"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.

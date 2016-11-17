@@ -228,7 +228,7 @@ public class PotionAid extends ZyinHUDModBase
             Slot slot = (Slot)inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
 
-            if (itemStack == null)
+            if (itemStack.func_190926_b())
             {
                 continue;
             }

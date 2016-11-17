@@ -148,7 +148,7 @@ public class QuickDeposit extends ZyinHUDModBase
 	 */
 	public static boolean IsAllowedToBeDepositedInContainer(ItemStack itemStack)
 	{
-		if(itemStack == null)
+		if(itemStack.func_190926_b())
 			return false;
 		if((BlacklistTorch && itemStack.getItem() == Item.getItemFromBlock(Blocks.TORCH))
 				|| (BlacklistTools && itemStack.getItem() instanceof ItemTool || itemStack.getItem() instanceof ItemHoe || itemStack.getItem() instanceof ItemShears || ModCompatibility.TConstruct.IsTConstructHarvestTool(itemStack.getItem()))

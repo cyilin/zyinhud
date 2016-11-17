@@ -7,8 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.monster.SkeletonType;
+import net.minecraft.entity.monster.EntityWitherSkeleton;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.Vec3d;
@@ -107,7 +106,7 @@ public class HUDEntityTrackerHelper {
                 //only track entities that we are tracking (i.e. other players/wolves/witherskeletons)
             	if(!(object instanceof EntityOtherPlayerMP || 
                 	 object instanceof EntityWolf ||
-                	 (object instanceof EntitySkeleton) && ((EntitySkeleton)object).getSkeletonType() == SkeletonType.WITHER))
+                	 object instanceof EntityWitherSkeleton))
                     continue;
                 
                 Entity entity = (Entity)object;

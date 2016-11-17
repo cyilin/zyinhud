@@ -214,7 +214,7 @@ public class InventoryUtil {
     public static boolean SendUseItem() {
         //Items need to use the sendUseItem() function to work properly (only works for instant-use items, NOT something like food!)
         boolean sendUseItem = false;//mc.playerController.sendUseItem((EntityPlayer) mc.thePlayer, (World) mc.theWorld, mc.thePlayer.getHeldItemMainhand());
-        EnumActionResult sendUseItem_result = mc.playerController.processRightClick(mc.thePlayer, mc.theWorld, mc.thePlayer.getHeldItem(EnumHand.MAIN_HAND), EnumHand.MAIN_HAND);
+        EnumActionResult sendUseItem_result = mc.playerController.processRightClick(mc.thePlayer, mc.theWorld, EnumHand.MAIN_HAND);
         //TODO: More expressions!!
         if (sendUseItem_result == EnumActionResult.SUCCESS) {
             sendUseItem = true;
@@ -235,7 +235,6 @@ public class InventoryUtil {
         //boolean
         EnumActionResult sendUseBlock_result = mc.playerController.processRightClickBlock(mc.thePlayer,
                 mc.theWorld,
-                mc.thePlayer.getHeldItemMainhand(),
                 new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord),
                 mc.objectMouseOver.sideHit,
                 mc.objectMouseOver.hitVec,
@@ -284,7 +283,7 @@ public class InventoryUtil {
 
 
         ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-        if (handStack != null) {
+        if (!handStack.func_190926_b()) {
             int emptyIndex = GetFirstEmptyIndexInInventory();
             if (emptyIndex < 0)
                 emptyIndex = 1;    //use the crafting area
@@ -294,17 +293,17 @@ public class InventoryUtil {
 
         //there are 4 cases we need to handle:
         //1: src = null, dest = null
-        if (srcStack == null && destStack == null) {
+        if (srcStack.func_190926_b() && destStack.func_190926_b()) {
             return false;
         }
         //2: src = null, dest = item
-        else if (srcStack == null && destStack != null) {
+        else if (srcStack.func_190926_b() && !destStack.func_190926_b()) {
             LeftClickInventorySlot(destIndex);
             LeftClickInventorySlot(srcIndex);
             return true;
         }
         //3: src = item, dest = null
-        else if (srcStack != null && destStack == null) {
+        else if (!srcStack.func_190926_b() && destStack.func_190926_b()) {
             LeftClickInventorySlot(srcIndex);
             LeftClickInventorySlot(destIndex);
             return true;
@@ -354,7 +353,7 @@ public class InventoryUtil {
     public static boolean DepositAllMatchingItemsInContainer(boolean onlyDepositMatchingItems, boolean ignoreItemsInHotbar) {
         //check to see if the player is holding an item
         ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-        if (handStack != null) {
+        if (!handStack.func_190926_b()) {
             int emptyIndex;
             //if we can't deposit this item being held in the cursor, put it down in our inventory
             if (!QuickDeposit.IsAllowedToBeDepositedInContainer(handStack)) {
@@ -378,7 +377,7 @@ public class InventoryUtil {
 
                     //keep putting into next available slot until we deposit all the items in this stack
                     handStack = mc.thePlayer.inventory.getItemStack();
-                    while (handStack != null) {
+                    while (!handStack.func_190926_b()) {
                         emptyIndex = GetFirstEmptyIndexInContainer(handStack);
                         if (emptyIndex < 0)
                             return false;
@@ -412,7 +411,7 @@ public class InventoryUtil {
         for (int i = iStart; i < iEnd; i++) {
             Slot slot = (Slot) chestSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null) {
+            if (!itemStack.func_190926_b()) {
 
                 if (onlyDepositMatchingItems) {
                     int itemIndex = GetFirstItemIndexInContainer(itemStack);
@@ -482,15 +481,15 @@ public class InventoryUtil {
 
         //there are 4 cases we need to handle:
         //1: src = null, dest = null
-        if (srcStack == null && destStack == null) {
+        if (srcStack.func_190926_b() && destStack.func_190926_b()) {
             return false;
         }
         //2: src = null, dest = item
-        else if (srcStack == null && destStack != null) {
+        else if (srcStack.func_190926_b() && !destStack.func_190926_b()) {
             return false;
         }
         //3: src = item, dest = null
-        else if (srcStack != null && destStack == null) {
+        else if (!srcStack.func_190926_b() && destStack.func_190926_b()) {
             LeftClickContainerSlot(srcIndex);
             LeftClickContainerSlot(destIndex);
             return true;
@@ -507,7 +506,7 @@ public class InventoryUtil {
             {
                 //there are 3 cases we need to handle:
                 //1: dest is a full stack
-                if (destStack.stackSize == destStack.getMaxStackSize()) {
+                if ((int)ZyinHUDUtil.GetFieldByReflection(ItemStack.class, destStack, "stackSize", "field_77994_a") == destStack.getMaxStackSize()) {
                     //put this in the next available slot
                     int emptyIndex = GetFirstEmptyIndexInContainer(destStack);
                     if (emptyIndex < 0) {
@@ -519,7 +518,7 @@ public class InventoryUtil {
 
                     //keep putting into next available slot until we deposit all the items in this stack
                     ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-                    while (handStack != null) {
+                    while (!handStack.func_190926_b()) {
                         emptyIndex = GetFirstEmptyIndexInContainer(destStack);
                         if (emptyIndex < 0) {
                             LeftClickContainerSlot(srcIndex);
@@ -533,7 +532,8 @@ public class InventoryUtil {
                     return true;
                 }
                 //2: if the combined stacks overflow past the stack limit
-                else if (srcStack.stackSize + destStack.stackSize > destStack.getMaxStackSize()) {
+                else if ((int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, srcStack, "stackSize", "field_77994_a") +
+                        (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, destStack, "stackSize", "field_77994_a") > destStack.getMaxStackSize()) {
                     int emptyIndex = GetFirstEmptyIndexInContainer(destStack);
                     if (emptyIndex < 0) {
                         LeftClickContainerSlot(destIndex);
@@ -546,7 +546,7 @@ public class InventoryUtil {
 
                     //keep putting into next available slot until we deposit all the items in this stack
                     ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-                    while (handStack != null) {
+                    while (!handStack.func_190926_b()) {
                         emptyIndex = GetFirstEmptyIndexInContainer(destStack);
                         if (emptyIndex < 0) {
                             LeftClickContainerSlot(srcIndex);
@@ -606,10 +606,10 @@ public class InventoryUtil {
 
         //check if we have an item in our cursor
         ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-        if (handStack != null) {
-            if (buyingItemStack1 != null && handStack.isItemEqual(buyingItemStack1)) {
+        if (!handStack.func_190926_b()) {
+            if (!buyingItemStack1.func_190926_b() && handStack.isItemEqual(buyingItemStack1)) {
                 LeftClickContainerSlot(0);
-            } else if (buyingItemStack2 != null && handStack.isItemEqual(buyingItemStack2)) {
+            } else if (!buyingItemStack2.func_190926_b() && handStack.isItemEqual(buyingItemStack2)) {
                 LeftClickContainerSlot(1);
             }
         }
@@ -623,10 +623,10 @@ public class InventoryUtil {
         for (int i = iStart; i < iEnd; i++) {
             Slot slot = (Slot) merchantSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null) {
-                if (buyingItemStack1 != null && itemStack.isItemEqual(buyingItemStack1)) {
+            if (!itemStack.func_190926_b()) {
+                if (!buyingItemStack1.func_190926_b() && itemStack.isItemEqual(buyingItemStack1)) {
                     DepositItemInMerchant(i, 0);
-                } else if (buyingItemStack2 != null && itemStack.isItemEqual(buyingItemStack2)) {
+                } else if (!buyingItemStack2.func_190926_b() && itemStack.isItemEqual(buyingItemStack2)) {
                     DepositItemInMerchant(i, 1);
                 }
             }
@@ -646,15 +646,15 @@ public class InventoryUtil {
 
         //there are 4 cases we need to handle:
         //1: src = null, dest = null
-        if (srcStack == null && destStack == null) {
+        if (srcStack.func_190926_b() && destStack.func_190926_b()) {
             return false;
         }
         //2: src = null, dest = item
-        else if (srcStack == null && destStack != null) {
+        else if (srcStack.func_190926_b() && !destStack.func_190926_b()) {
             return false;
         }
         //3: src = item, dest = null
-        else if (srcStack != null && destStack == null) {
+        else if (!srcStack.func_190926_b() && destStack.func_190926_b()) {
             LeftClickContainerSlot(srcIndex);
             LeftClickContainerSlot(destIndex);
             return true;
@@ -667,7 +667,7 @@ public class InventoryUtil {
                 LeftClickContainerSlot(destIndex);
 
                 ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-                if (handStack != null) {
+                if (!handStack.func_190926_b()) {
                     LeftClickContainerSlot(srcIndex);
                 }
                 return true;
@@ -704,10 +704,10 @@ public class InventoryUtil {
 
         //check to see if we have an item in our cursor
         ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-        if (handStack != null) {
-            if (inputStack != null && handStack.isItemEqual(inputStack)) {
+        if (!handStack.func_190926_b()) {
+            if (!inputStack.func_190926_b() && handStack.isItemEqual(inputStack)) {
                 LeftClickContainerSlot(0);
-            } else if (fuelStack != null && handStack.isItemEqual(fuelStack)) {
+            } else if (!fuelStack.func_190926_b() && handStack.isItemEqual(fuelStack)) {
                 LeftClickContainerSlot(1);
             }
         }
@@ -719,17 +719,17 @@ public class InventoryUtil {
         for (int i = iStart; i < iEnd; i++) {
             Slot slot = (Slot) furanceSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null) {
-                if (inputStack != null && itemStack.isItemEqual(inputStack)) {
+            if (!itemStack.func_190926_b()) {
+                if (!inputStack.func_190926_b() && itemStack.isItemEqual(inputStack)) {
                     DepositItemInFurance(i, 0);
-                } else if (fuelStack != null && itemStack.isItemEqual(fuelStack)) {
+                } else if (!fuelStack.func_190926_b() && itemStack.isItemEqual(fuelStack)) {
                     DepositItemInFurance(i, 1);
                 }
             }
         }
 
         //take the item from the output slot and put it in our inventory
-        if (outputStack != null) {
+        if (!outputStack.func_190926_b()) {
             int openSlot = GetFirstEmptyIndexInContainerInventory(outputStack);
             if (openSlot > 0)
                 DepositItemInFurance(2, openSlot);    //'deposit' it from the output slot into an empty slot in our inventory
@@ -751,15 +751,15 @@ public class InventoryUtil {
 
         //there are 4 cases we need to handle:
         //1: src = null, dest = null
-        if (srcStack == null && destStack == null) {
+        if (srcStack.func_190926_b() && destStack.func_190926_b()) {
             return false;
         }
         //2: src = null, dest = item
-        else if (srcStack == null && destStack != null) {
+        else if (srcStack.func_190926_b() && !destStack.func_190926_b()) {
             return false;
         }
         //3: src = item, dest = null
-        else if (srcStack != null && destStack == null) {
+        else if (!srcStack.func_190926_b() && destStack.func_190926_b()) {
             LeftClickContainerSlot(srcIndex);
             LeftClickContainerSlot(destIndex);
             return true;
@@ -772,7 +772,7 @@ public class InventoryUtil {
                 LeftClickContainerSlot(destIndex);
 
                 ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-                if (handStack != null) {
+                if (!handStack.func_190926_b()) {
                     LeftClickContainerSlot(srcIndex);
 
                     do {
@@ -782,7 +782,7 @@ public class InventoryUtil {
 
                         LeftClickContainerSlot(openSlot);
                         handStack = mc.thePlayer.inventory.getItemStack();
-                    } while (handStack != null);
+                    } while (!handStack.func_190926_b());
                 }
                 return true;
             }
@@ -820,8 +820,8 @@ public class InventoryUtil {
 
         //check to see if we have an item in our cursor
         ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-        if (handStack != null) {
-            if (inputStack != null && handStack.isItemEqual(inputStack)) {
+        if (!handStack.func_190926_b()) {
+            if (!inputStack.func_190926_b() && handStack.isItemEqual(inputStack)) {
                 LeftClickContainerSlot(3);
             } else if (handStack.getItemDamage() == 0 && Items.POTIONITEM == handStack.getItem()) {
                 //if handStack is a "Water Bottle"
@@ -846,21 +846,21 @@ public class InventoryUtil {
         for (int i = iStart; i < iEnd; i++) {
             Slot slot = (Slot) brewingStandSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null) {
-                if (inputStack != null && itemStack.isItemEqual(inputStack)) {
+            if (!itemStack.func_190926_b()) {
+                if (!inputStack.func_190926_b() && itemStack.isItemEqual(inputStack)) {
                     DepositItemInBrewingStand(i, 3);
                 } else if (itemStack.getItemDamage() == 0 && Items.POTIONITEM == itemStack.getItem()) {
                     //if itemStack is a "Water Bottle"
                     //then deposit the water bottle in an empty output slot
-                    if (outputStack1 == null) {
+                    if (outputStack1.func_190926_b()) {
                         DepositItemInBrewingStand(i, 0);
                         outputStack1 = mc.thePlayer.openContainer.inventorySlots.get(0).getStack();
                         continue;
-                    } else if (outputStack2 == null) {
+                    } else if (outputStack2.func_190926_b()) {
                         DepositItemInBrewingStand(i, 1);
                         outputStack2 = mc.thePlayer.openContainer.inventorySlots.get(1).getStack();
                         continue;
-                    } else if (outputStack3 == null) {
+                    } else if (outputStack3.func_190926_b()) {
                         DepositItemInBrewingStand(i, 2);
                         outputStack3 = mc.thePlayer.openContainer.inventorySlots.get(2).getStack();
                         continue;
@@ -884,15 +884,15 @@ public class InventoryUtil {
 
         //there are 4 cases we need to handle:
         //1: src = null, dest = null
-        if (srcStack == null && destStack == null) {
+        if (srcStack.func_190926_b() && destStack.func_190926_b()) {
             return false;
         }
         //2: src = null, dest = item
-        else if (srcStack == null && destStack != null) {
+        else if (srcStack.func_190926_b() && !destStack.func_190926_b()) {
             return false;
         }
         //3: src = item, dest = null
-        else if (srcStack != null && destStack == null) {
+        else if (!srcStack.func_190926_b() && destStack.func_190926_b()) {
             LeftClickContainerSlot(srcIndex);
             LeftClickContainerSlot(destIndex);
             return true;
@@ -905,7 +905,7 @@ public class InventoryUtil {
                 LeftClickContainerSlot(destIndex);
 
                 ItemStack handStack = mc.thePlayer.inventory.getItemStack();
-                if (handStack != null) {
+                if (!handStack.func_190926_b()) {
                     LeftClickContainerSlot(srcIndex);
                 }
                 return true;
@@ -930,7 +930,7 @@ public class InventoryUtil {
         for (int i = iStart; i <= iEnd; i++) {
             Slot slot = (Slot) inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null) {
+            if (!itemStack.func_190926_b()) {
                 if (object instanceof BlockPos) {
                     Block blockToFind = ZyinHUDUtil.GetBlock((BlockPos) object);
 
@@ -990,7 +990,7 @@ public class InventoryUtil {
         for (int i = 9; i <= 44; i++) {
             Slot slot = (Slot) inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack == null) {
+            if (itemStack.func_190926_b()) {
                 return i;
             }
         }
@@ -1032,11 +1032,12 @@ public class InventoryUtil {
         for (int i = iStart; i <= iEnd - 1; i++) {
             Slot slot = (Slot) containerSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack == null && firstEmptyIndex == -1) {
+            if (itemStack.func_190926_b() && firstEmptyIndex == -1) {
                 firstEmptyIndex = i;
-            } else if (itemStack != null && itemStackToMatch != null
+            } else if (!itemStack.func_190926_b() && itemStackToMatch != null && !itemStackToMatch.func_190926_b()
                     && itemStack.isItemEqual(itemStackToMatch)
-                    && itemStack.stackSize < itemStack.getMaxStackSize()
+                    && (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, itemStack, "stackSize",
+                    "field_77994_a") < itemStack.getMaxStackSize()
                     && firstEmptyMatchingItemStackIndex == -1) {
                 firstEmptyMatchingItemStackIndex = i;
                 break;
@@ -1086,11 +1087,12 @@ public class InventoryUtil {
         for (int i = iStart; i <= iEnd - 1; i++) {
             Slot slot = (Slot) containerSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack == null && firstEmptyIndex == -1) {
+            if (itemStack.func_190926_b() && firstEmptyIndex == -1) {
                 firstEmptyIndex = i;
-            } else if (itemStack != null && itemStackToMatch != null
+            } else if (!itemStack.func_190926_b() && itemStackToMatch != null
                     && itemStack.isItemEqual(itemStackToMatch)
-                    && itemStack.stackSize < itemStack.getMaxStackSize()
+                    && (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, itemStack, "stackSize",
+                    "field_77994_a") < itemStack.getMaxStackSize()
                     && firstEmptyMatchingItemStackIndex == -1) {
                 firstEmptyMatchingItemStackIndex = i;
                 break;
@@ -1127,7 +1129,7 @@ public class InventoryUtil {
         for (int i = iStart; i <= iEnd - 1; i++) {
             Slot slot = (Slot) chestSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (itemStack != null && itemStack.isItemEqual(itemStackToMatch)) {
+            if (!itemStack.func_190926_b() && itemStack.isItemEqual(itemStackToMatch)) {
                 return i;
             }
         }

@@ -1,74 +1,74 @@
 {
-  "lowhealth_AoL": {
+  "lowhealth_aol": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_AoL",
+        "name": "lowhealth_aol",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_AoL"
+      "zyinhud:hud/lowhealth_aol"
     ]
   },
-  "lowhealth_LA": {
+  "lowhealth_la": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_LA",
+        "name": "lowhealth_la",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_LA"
+      "zyinhud:hud/lowhealth_la"
     ]
   },
-  "lowhealth_LoZ": {
+  "lowhealth_loz": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_LoZ",
+        "name": "lowhealth_loz",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_LoZ"
+      "zyinhud:hud/lowhealth_loz"
     ]
   },
-  "lowhealth_LttP": {
+  "lowhealth_lttp": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_LttP",
+        "name": "lowhealth_lttp",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_LttP"
+      "zyinhud:hud/lowhealth_lttp"
     ]
   },
-  "lowhealth_OoT": {
+  "lowhealth_oot": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_OoT",
+        "name": "lowhealth_oot",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_OoT"
+      "zyinhud:hud/lowhealth_oot"
     ]
   },
-  "lowhealth_Oracle": {
+  "lowhealth_oracle": {
     "category": "master",
     "replace": false,
     "sounds": [
       {
-        "name": "lowhealth_Oracle",
+        "name": "lowhealth_oracle",
         "type": "event",
         "weight": 6
       },
-      "zyinhud:hud/lowhealth_Oracle"
+      "zyinhud:hud/lowhealth_oracle"
     ]
   }
 }

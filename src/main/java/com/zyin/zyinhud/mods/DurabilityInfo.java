@@ -8,11 +8,13 @@ import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.item.*;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
@@ -444,21 +446,21 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     private static void CalculateDurabilityIconsForTools()
     {
-        ItemStack[] items = mc.thePlayer.inventory.mainInventory;
-        ItemStack[] offhanditems = mc.thePlayer.inventory.offHandInventory;
+        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> offhanditems = mc.thePlayer.inventory.offHandInventory;
 
         for (int i = 0; i < 10; i++)
         {
             ItemStack itemStack;
             if (i < 9)
             {
-                itemStack = items[i];
+                itemStack = items.get(i);
             }else{
-                itemStack = offhanditems[0];//There will be only one item here
+                itemStack = offhanditems.get(0);//There will be only one item here
             }
 
 
-            if (itemStack != null)
+            if (!itemStack.func_190926_b())
             {
                 Item item = itemStack.getItem();
                 if (IsTool(item))
@@ -482,13 +484,13 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     private static void CalculateDurabilityIconsForArmor()
     {
-        ItemStack[] armorStacks = mc.thePlayer.inventory.armorInventory;
+        NonNullList<ItemStack> armorStacks = mc.thePlayer.inventory.armorInventory;
         
         //iterate backwards over the armor the user is wearing so the helm is displayed first
-        for(int i = armorStacks.length-1; i >= 0 ; i--)
+        for(int i = armorStacks.size()-1; i >= 0 ; i--)
         {
-        	ItemStack armorStack = armorStacks[i];
-            if (armorStack != null)
+        	ItemStack armorStack = armorStacks.get(i);
+            if (!armorStack.func_190926_b())
             {
                 int itemDamage = armorStack.getItemDamage();
                 int maxDamage = armorStack.getMaxDamage();
@@ -529,13 +531,13 @@ public class DurabilityInfo extends ZyinHUDModBase
     {
     	if(AutoUnequipArmor)
     	{
-            ItemStack[] itemStacks = mc.thePlayer.inventory.armorInventory;
+            NonNullList<ItemStack> itemStacks = mc.thePlayer.inventory.armorInventory;
             
             //iterate over the armor the user is wearing
-            for(int i = 0; i < itemStacks.length; i++)
+            for(int i = 0; i < itemStacks.size(); i++)
             {
-            	ItemStack itemStack = itemStacks[i];
-                if (itemStack != null && !(itemStack.getItem() instanceof ItemElytra))
+            	ItemStack itemStack = itemStacks.get(i);
+                if (!itemStack.func_190926_b() && !(itemStack.getItem() instanceof ItemElytra))
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
@@ -563,7 +565,7 @@ public class DurabilityInfo extends ZyinHUDModBase
     	{
             ItemStack itemStack = mc.thePlayer.inventory.getCurrentItem();
 
-            if (itemStack != null)
+            if (!itemStack.func_190926_b())
             {
                 Item item = itemStack.getItem();
 

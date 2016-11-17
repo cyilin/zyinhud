@@ -91,7 +91,7 @@ public class Miscellaneous extends ZyinHUDModBase
         ItemStack rightItemStack = inputSlots.getStackInSlot(1);
         ItemStack finalItemStack = inputSlots.getStackInSlot(2);
         
-        if(leftItemStack != null)
+        if(!leftItemStack.func_190926_b())
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack);
         	String leftItemRepairCost;
@@ -103,7 +103,7 @@ public class Miscellaneous extends ZyinHUDModBase
 
 			mc.fontRendererObj.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
 		}
-        if(rightItemStack != null)
+        if(!rightItemStack.func_190926_b())
         {
         	int timesRepaired = GetTimesRepaired(rightItemStack);
         	String rightItemRepairCost;
@@ -115,7 +115,7 @@ public class Miscellaneous extends ZyinHUDModBase
 
 			mc.fontRendererObj.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
 		}
-        if(leftItemStack != null && rightItemStack != null)
+        if(!leftItemStack.func_190926_b() && !rightItemStack.func_190926_b())
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack) + GetTimesRepaired(rightItemStack) + 1;
 			String finalItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;

@@ -45,27 +45,27 @@ public class HealthMonitor extends ZyinHUDModBase
 		/**
 		 * Oot modes.
 		 */
-		OOT(Localization.get("healthmonitor.mode.oot"), "lowhealth_OoT"),
+		OOT(Localization.get("healthmonitor.mode.oot"), "lowhealth_oot"),
 		/**
 		 * Lttp modes.
 		 */
-		LTTP(Localization.get("healthmonitor.mode.lttp"), "lowhealth_LttP"),
+		LTTP(Localization.get("healthmonitor.mode.lttp"), "lowhealth_lttp"),
 		/**
 		 * Oracle modes.
 		 */
-		ORACLE(Localization.get("healthmonitor.mode.oracle"), "lowhealth_Oracle"),
+		ORACLE(Localization.get("healthmonitor.mode.oracle"), "lowhealth_oracle"),
 		/**
 		 * La modes.
 		 */
-		LA(Localization.get("healthmonitor.mode.la"), "lowhealth_LA"),
+		LA(Localization.get("healthmonitor.mode.la"), "lowhealth_la"),
 		/**
 		 * Loz modes.
 		 */
-		LOZ(Localization.get("healthmonitor.mode.loz"), "lowhealth_LoZ"),
+		LOZ(Localization.get("healthmonitor.mode.loz"), "lowhealth_loz"),
 		/**
 		 * Aol modes.
 		 */
-		AOL(Localization.get("healthmonitor.mode.aol"), "lowhealth_AoL");
+		AOL(Localization.get("healthmonitor.mode.aol"), "lowhealth_aol");
 
 		private String friendlyName;
 		/**

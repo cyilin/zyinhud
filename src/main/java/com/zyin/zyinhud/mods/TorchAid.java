@@ -84,7 +84,7 @@ public class TorchAid extends ZyinHUDModBase
     	if(mc.currentScreen == null && mc.inGameHasFocus)
     	{
             ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
-            if (currentItemStack != null) {
+            if (!currentItemStack.func_190926_b()) {
     			if(currentItemStack.getItem() instanceof ItemTool
     				|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
 	    		{

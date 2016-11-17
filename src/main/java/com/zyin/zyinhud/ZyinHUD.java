@@ -54,7 +54,7 @@ public class ZyinHUD {
      * </ol>
      * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
      */
-    public static final String VERSION = "1.5.2.0";
+    public static final String VERSION = "1.5.3.0";
     /**
      * The constant MODID.
      */
@@ -66,7 +66,7 @@ public class ZyinHUD {
     
     public static final String updateJSON = "https://raw.githubusercontent.com/cyilin/zyinhud-update/master/update.json";
 
-    public static final String dependencies = "required-after:Forge@[12.18.1.2094,);";
+    public static final String dependencies = "required-after:forge@[13.19.0.2141,);";
     
     /**
      * The constant proxy.
