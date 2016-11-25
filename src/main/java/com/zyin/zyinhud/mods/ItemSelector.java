@@ -184,8 +184,8 @@ public class ItemSelector extends ZyinHUDModBase
 	public static void Scroll(int direction)
 	{
 		// Bind to current player state
-		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory;
+		currentHotbarSlot = mc.player.inventory.currentItem;
+		currentInventory = mc.player.inventory.mainInventory;
 		if (!AdjustSlot(direction))
 		{
 			Done();
@@ -206,8 +206,8 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	public static void SideButton(int direction)
 	{
-		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory;
+		currentHotbarSlot = mc.player.inventory.currentItem;
+		currentInventory = mc.player.inventory.mainInventory;
 
 		if (AdjustSlot(direction))
 		{
@@ -229,7 +229,7 @@ public class ItemSelector extends ZyinHUDModBase
 	{
 		if (!mc.isSingleplayer())
 		{
-			if (!currentInventory.get(currentHotbarSlot).func_190926_b() && currentInventory.get(currentHotbarSlot).isItemEnchanted())
+			if (!currentInventory.get(currentHotbarSlot).isEmpty() && currentInventory.get(currentHotbarSlot).isItemEnchanted())
 			{
 				ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));
 				return false;
@@ -254,7 +254,7 @@ public class ItemSelector extends ZyinHUDModBase
 			if (Mode == Modes.SAME_COLUMN && memory % 9 != currentHotbarSlot)
 				continue;
 
-			if (currentInventory.get(memory).func_190926_b())
+			if (currentInventory.get(memory).isEmpty())
 				continue;
 
 			if (!mc.isSingleplayer()
@@ -282,8 +282,8 @@ public class ItemSelector extends ZyinHUDModBase
 		if (!ItemSelector.Enabled)
 			return;
 
-		currentHotbarSlot = mc.thePlayer.inventory.currentItem;
-		currentInventory = mc.thePlayer.inventory.mainInventory;
+		currentHotbarSlot = mc.player.inventory.currentItem;
+		currentInventory = mc.player.inventory.mainInventory;
 		isCurrentlyRendering = true;
 	}
 
@@ -365,7 +365,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 				ItemStack itemStack = currentInventory.get(idx + 9);
 
-				if (!itemStack.func_190926_b())
+				if (!itemStack.isEmpty())
 				{
 					float anim = (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, itemStack, "animationsToGo", "field_77992_b") - partialTicks;
 					int dimX = originX + (x * 20) + 3;
@@ -409,15 +409,15 @@ public class ItemSelector extends ZyinHUDModBase
 	 */
 	private static void SelectItem()
 	{
-		ItemStack currentStack = mc.thePlayer.inventory.mainInventory.get(currentHotbarSlot);
-		ItemStack targetStack = mc.thePlayer.inventory.mainInventory.get(targetInvSlot);
+		ItemStack currentStack = mc.player.inventory.mainInventory.get(currentHotbarSlot);
+		ItemStack targetStack = mc.player.inventory.mainInventory.get(targetInvSlot);
 
 		// Check if what was actually selected still exists in player's inventory
-		if (!targetStack.func_190926_b())
+		if (!targetStack.isEmpty())
 		{
 			if (!mc.isSingleplayer())
 			{
-				if ((!currentStack.func_190926_b() && currentStack.isItemEnchanted())
+				if ((!currentStack.isEmpty() && currentStack.isItemEnchanted())
 						|| targetStack.isItemEnchanted())
 				{
 					ZyinHUDRenderer.DisplayNotification(Localization.get("itemselector.error.enchant"));
@@ -473,7 +473,7 @@ public class ItemSelector extends ZyinHUDModBase
 	 * @param value the value
 	 */
 	public static void SetTimeout(int value) {
-		timeout = MathHelper.clamp_int(value, minTimeout, maxTimeout);
+		timeout = MathHelper.clamp(value, minTimeout, maxTimeout);
 	}
 
 	/**

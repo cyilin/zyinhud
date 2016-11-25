@@ -7,6 +7,7 @@ import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ModCompatibility;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.*;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -14,7 +15,6 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Durability Info checks to see if any equipment (items in the hotbar, and armor) is damaged
@@ -446,8 +446,8 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     private static void CalculateDurabilityIconsForTools()
     {
-        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
-        NonNullList<ItemStack> offhanditems = mc.thePlayer.inventory.offHandInventory;
+        NonNullList<ItemStack> items = mc.player.inventory.mainInventory;
+        NonNullList<ItemStack> offhanditems = mc.player.inventory.offHandInventory;
 
         for (int i = 0; i < 10; i++)
         {
@@ -460,7 +460,7 @@ public class DurabilityInfo extends ZyinHUDModBase
             }
 
 
-            if (!itemStack.func_190926_b())
+            if (!itemStack.isEmpty())
             {
                 Item item = itemStack.getItem();
                 if (IsTool(item))
@@ -484,13 +484,13 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     private static void CalculateDurabilityIconsForArmor()
     {
-        NonNullList<ItemStack> armorStacks = mc.thePlayer.inventory.armorInventory;
+        NonNullList<ItemStack> armorStacks = mc.player.inventory.armorInventory;
         
         //iterate backwards over the armor the user is wearing so the helm is displayed first
         for(int i = armorStacks.size()-1; i >= 0 ; i--)
         {
         	ItemStack armorStack = armorStacks.get(i);
-            if (!armorStack.func_190926_b())
+            if (!armorStack.isEmpty())
             {
                 int itemDamage = armorStack.getItemDamage();
                 int maxDamage = armorStack.getMaxDamage();
@@ -531,13 +531,14 @@ public class DurabilityInfo extends ZyinHUDModBase
     {
     	if(AutoUnequipArmor)
     	{
-            NonNullList<ItemStack> itemStacks = mc.thePlayer.inventory.armorInventory;
+            NonNullList<ItemStack> itemStacks = mc.player.inventory.armorInventory;
             
             //iterate over the armor the user is wearing
             for(int i = 0; i < itemStacks.size(); i++)
             {
             	ItemStack itemStack = itemStacks.get(i);
-                if (!itemStack.func_190926_b() && !(itemStack.getItem() instanceof ItemElytra))
+                if (!itemStack.isEmpty() && !(itemStack.getItem() instanceof ItemElytra) &&
+                        !(itemStack.isItemEnchanted() && EnchantmentHelper.hasBindingCurse(itemStack)))
                 {
                     int itemDamage = itemStack.getItemDamage();
                     int maxDamage = itemStack.getMaxDamage();
@@ -563,9 +564,9 @@ public class DurabilityInfo extends ZyinHUDModBase
     {
     	if(AutoUnequipTools)
     	{
-            ItemStack itemStack = mc.thePlayer.inventory.getCurrentItem();
+            ItemStack itemStack = mc.player.inventory.getCurrentItem();
 
-            if (!itemStack.func_190926_b())
+            if (!itemStack.isEmpty())
             {
                 Item item = itemStack.getItem();
 
@@ -659,7 +660,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static int SetHorizontalLocation(int x)
     {
-    	durabalityLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
+    	durabalityLocX = MathHelper.clamp(x, 0, mc.displayWidth);
     	equipmentLocX = durabalityLocX + armorDurabilityIconX;
     	return durabalityLocX;
     }
@@ -682,7 +683,7 @@ public class DurabilityInfo extends ZyinHUDModBase
      */
     public static int SetVerticalLocation(int y)
     {
-    	durabalityLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
+    	durabalityLocY = MathHelper.clamp(y, 0, mc.displayHeight);
     	equipmentLocY = durabalityLocY;
     	return durabalityLocY;
     }

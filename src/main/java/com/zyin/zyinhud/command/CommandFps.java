@@ -16,13 +16,13 @@ import net.minecraft.server.MinecraftServer;
 public class CommandFps extends CommandBase
 {
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return "fps";
 	}
 	
 	@Override
-    public List getCommandAliases()
+    public List getAliases()
     {
 		List list = new ArrayList();
 		list.add("f");
@@ -42,7 +42,7 @@ public class CommandFps extends CommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender)
+	public String getUsage(ICommandSender iCommandSender)
 	{
 		return "commands.zyinhudfps.usage";
 	}

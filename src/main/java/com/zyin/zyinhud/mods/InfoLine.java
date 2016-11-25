@@ -154,13 +154,13 @@ public class InfoLine extends ZyinHUDModBase
      */
     protected static String CalculateCanSnowForInfoLine(String infoLineMessageUpToThisPoint)
     {
-    	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
-        int yCoord = MathHelper.floor_double(mc.thePlayer.posY) - 1;
-        int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
+    	int xCoord = MathHelper.floor(mc.player.posX);
+        int yCoord = MathHelper.floor(mc.player.posY) - 1;
+        int zCoord = MathHelper.floor(mc.player.posZ);
         
         BlockPos pos = new BlockPos(xCoord, yCoord, zCoord);
         
-    	boolean canSnowAtPlayersFeet = mc.theWorld.canSnowAtBody(pos, false);
+    	boolean canSnowAtPlayersFeet = mc.world.canSnowAtBody(pos, false);
     	
     	if(canSnowAtPlayersFeet)
     	{
@@ -187,10 +187,10 @@ public class InfoLine extends ZyinHUDModBase
      */
     protected static String CalculateBiomeForInfoLine()
     {
-    	int xCoord = MathHelper.floor_double(mc.thePlayer.posX);
-        int zCoord = MathHelper.floor_double(mc.thePlayer.posZ);
+    	int xCoord = MathHelper.floor(mc.player.posX);
+        int zCoord = MathHelper.floor(mc.player.posZ);
 
-        String biomeName = mc.theWorld.getBiome(new BlockPos(xCoord, 64, zCoord)).getBiomeName();
+        String biomeName = mc.world.getBiome(new BlockPos(xCoord, 64, zCoord)).getBiomeName();
         return TextFormatting.WHITE + biomeName;
     }
 
@@ -199,7 +199,7 @@ public class InfoLine extends ZyinHUDModBase
             if (time<System.currentTimeMillis()) {
                 time = System.currentTimeMillis()+5000;
                 try {
-                    lastPing = mc.getConnection().getPlayerInfo(mc.thePlayer.getUniqueID()).getResponseTime();
+                    lastPing = mc.getConnection().getPlayerInfo(mc.player.getUniqueID()).getResponseTime();
                 }catch (NullPointerException e){
                     lastPing =-1;
                 }
@@ -276,7 +276,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static int SetHorizontalLocation(int x)
     {
-    	infoLineLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
+    	infoLineLocX = MathHelper.clamp(x, 0, mc.displayWidth);
     	return infoLineLocX;
     }
 
@@ -298,7 +298,7 @@ public class InfoLine extends ZyinHUDModBase
      */
     public static int SetVerticalLocation(int y)
     {
-    	infoLineLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
+    	infoLineLocY = MathHelper.clamp(y, 0, mc.displayHeight);
     	return infoLineLocY;
     }
 }

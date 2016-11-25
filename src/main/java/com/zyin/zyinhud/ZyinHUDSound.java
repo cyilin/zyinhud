@@ -34,7 +34,7 @@ public class ZyinHUDSound
 	 */
 	public static void PlaySound(String name, float volume)
 	{
-		mc.getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation("zyinhud:" + name), SoundCategory.MASTER, volume, 1.0F, false, 0, ISound.AttenuationType.LINEAR, (float) mc.thePlayer.posX, (float) mc.thePlayer.posY, (float) mc.thePlayer.posZ));
+		mc.getSoundHandler().playSound(new PositionedSoundRecord(new ResourceLocation("zyinhud:" + name), SoundCategory.MASTER, volume, 1.0F, false, 0, ISound.AttenuationType.LINEAR, (float) mc.player.posX, (float) mc.player.posY, (float) mc.player.posZ));
 	}
 
 	/**

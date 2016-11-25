@@ -54,7 +54,7 @@ public class Miscellaneous extends ZyinHUDModBase
 	 */
 	@SubscribeEvent
 	public void GuiOpenEvent(GuiOpenEvent event) {
-		if (UseQuickPlaceSign && event.getGui() instanceof GuiEditSign && mc.thePlayer.isSneaking()) {
+		if (UseQuickPlaceSign && event.getGui() instanceof GuiEditSign && mc.player.isSneaking()) {
 			event.setCanceled(true);
 		}
 	}
@@ -91,7 +91,7 @@ public class Miscellaneous extends ZyinHUDModBase
         ItemStack rightItemStack = inputSlots.getStackInSlot(1);
         ItemStack finalItemStack = inputSlots.getStackInSlot(2);
         
-        if(!leftItemStack.func_190926_b())
+        if(!leftItemStack.isEmpty())
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack);
         	String leftItemRepairCost;
@@ -103,7 +103,7 @@ public class Miscellaneous extends ZyinHUDModBase
 
 			mc.fontRendererObj.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
 		}
-        if(!rightItemStack.func_190926_b())
+        if(!rightItemStack.isEmpty())
         {
         	int timesRepaired = GetTimesRepaired(rightItemStack);
         	String rightItemRepairCost;
@@ -115,7 +115,7 @@ public class Miscellaneous extends ZyinHUDModBase
 
 			mc.fontRendererObj.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
 		}
-        if(!leftItemStack.func_190926_b() && !rightItemStack.func_190926_b())
+        if(!leftItemStack.isEmpty() && !rightItemStack.isEmpty())
         {
         	int timesRepaired = GetTimesRepaired(leftItemStack) + GetTimesRepaired(rightItemStack) + 1;
 			String finalItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
@@ -222,13 +222,13 @@ public class Miscellaneous extends ZyinHUDModBase
 	 */
 	public static void MakeSprintingUnlimited()
 	{
-		if(mc.thePlayer == null)
+		if(mc.player == null)
 			return;
 		
-		if(!mc.thePlayer.isSprinting())
-			mc.thePlayer.sprintingTicksLeft = 0;
+		if(!mc.player.isSprinting())
+			mc.player.sprintingTicksLeft = 0;
 		else
-			mc.thePlayer.sprintingTicksLeft = 600;	//sprintingTicksLeft is set to 600 when EntityPlayerSP.setSprinting() is called
+			mc.player.sprintingTicksLeft = 600;	//sprintingTicksLeft is set to 600 when EntityPlayerSP.setSprinting() is called
 	}
 
 

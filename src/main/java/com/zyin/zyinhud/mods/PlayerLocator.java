@@ -208,7 +208,7 @@ public class PlayerLocator extends ZyinHUDModBase {
                 && !mc.gameSettings.showDebugInfo) {
 
             //only show entities that are close by
-            float distanceFromMe = mc.thePlayer.getDistanceToEntity(entity);
+            float distanceFromMe = mc.player.getDistanceToEntity(entity);
 
             if (distanceFromMe > maxViewDistanceCutoff
                     || distanceFromMe < viewDistanceCutoff
@@ -338,7 +338,7 @@ public class PlayerLocator extends ZyinHUDModBase {
 
 
     private static boolean PlayerIsWolfsOwner(EntityWolf wolf) {
-        return wolf.isOnSameTeam(mc.thePlayer);
+        return wolf.isOnSameTeam(mc.player);
     }
 
 

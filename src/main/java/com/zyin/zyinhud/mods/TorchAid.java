@@ -83,8 +83,8 @@ public class TorchAid extends ZyinHUDModBase
     {
     	if(mc.currentScreen == null && mc.inGameHasFocus)
     	{
-            ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
-            if (!currentItemStack.func_190926_b()) {
+            ItemStack currentItemStack = mc.player.getHeldItemMainhand();
+            if (!currentItemStack.isEmpty()) {
     			if(currentItemStack.getItem() instanceof ItemTool
     				|| ModCompatibility.TConstruct.IsTConstructToolWithoutARightClickAction(currentItemStack.getItem()))
 	    		{
@@ -125,7 +125,7 @@ public class TorchAid extends ZyinHUDModBase
             }
             else
             {
-            	previousTorchIndex = InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem);
+            	previousTorchIndex = InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.player.inventory.currentItem);
             	EquipItemFromHotbar(torchHotbarIndex);
             }
         }
@@ -156,7 +156,7 @@ public class TorchAid extends ZyinHUDModBase
     	
     	hotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(hotbarIndex);
     	
-    	mc.thePlayer.inventory.currentItem = hotbarIndex;
+    	mc.player.inventory.currentItem = hotbarIndex;
     }
     
 
@@ -172,11 +172,11 @@ public class TorchAid extends ZyinHUDModBase
     	{
         	if(previousTorchIndex >= 36 && previousTorchIndex <= 44)	//on the hotbar
         	{
-        		mc.thePlayer.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(previousTorchIndex);
+        		mc.player.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(previousTorchIndex);
         	}
         	else
         	{
-        		InventoryUtil.Swap(InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.thePlayer.inventory.currentItem), previousTorchIndex);
+        		InventoryUtil.Swap(InventoryUtil.TranslateHotbarIndexToInventoryIndex(mc.player.inventory.currentItem), previousTorchIndex);
         	}
     	}
     	previousTorchIndex = -1;

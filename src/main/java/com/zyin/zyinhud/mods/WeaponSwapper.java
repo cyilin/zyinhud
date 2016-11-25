@@ -50,10 +50,10 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     public static void SwapWeapons()
     {
-        ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand(); //getHeldItem();
+        ItemStack currentItemStack = mc.player.getHeldItemMainhand(); //getHeldItem();
         Item currentItem = null;
 
-        if (!currentItemStack.func_190926_b())
+        if (!currentItemStack.isEmpty())
         {
             currentItem = currentItemStack.getItem();
         }
@@ -97,7 +97,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         else
         {
         	//we have both a bow and a sword
-        	if(mc.thePlayer.inventory.currentItem == meleeWeaponSlot)
+        	if(mc.player.inventory.currentItem == meleeWeaponSlot)
         	{
         		//we are selected on the best melee weapon, so select the ranged weapon
         		SelectHotbarSlot(rangedWeaponSlot);
@@ -119,7 +119,7 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     protected static int GetMostDamagingWeaponSlot(int minInventoryIndex, int maxInventoryIndex)
     {
-        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.player.inventory.mainInventory;
         double highestWeaponDamage = -1;
         double highestAttackSpeed = -1;
         int highestWeaponDamageSlot = -1;
@@ -131,7 +131,7 @@ public class WeaponSwapper extends ZyinHUDModBase
         {
             ItemStack itemStack = items.get(i);
 
-            if (!itemStack.func_190926_b())
+            if (!itemStack.isEmpty())
             {
                 if (itemStack.getItem() instanceof ItemSword) {
                     double swordDamage = GetItemWeaponDamage(itemStack);
@@ -196,8 +196,8 @@ public class WeaponSwapper extends ZyinHUDModBase
         Multimap multimap = itemStack.getItem().getAttributeModifiers(EquipmentSlot, itemStack);
         double enchantDamage=GetEnchantDamage(itemStack);
         
-        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName())) {
-            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getAttributeUnlocalizedName());
+        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getName())) {
+            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
             if (attributes.size() > 0) {
 				Object attribute = attributes.iterator().next();
 				if (attribute instanceof AttributeModifier)
@@ -265,7 +265,7 @@ public class WeaponSwapper extends ZyinHUDModBase
             return;
         }
 
-        mc.thePlayer.inventory.currentItem = slot;
+        mc.player.inventory.currentItem = slot;
     }
 
 
@@ -279,13 +279,13 @@ public class WeaponSwapper extends ZyinHUDModBase
      */
     protected static int GetItemSlot(List<Class> itemClasses, int minInventoryIndex, int maxInventoryIndex)
     {
-        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.player.inventory.mainInventory;
 
         for (int i = minInventoryIndex; i <= maxInventoryIndex; i++)
         {
             ItemStack itemStack = items.get(i);
 
-            if (!itemStack.func_190926_b())
+            if (!itemStack.isEmpty())
             {
                 Item item = itemStack.getItem();
 
@@ -334,8 +334,8 @@ public class WeaponSwapper extends ZyinHUDModBase
         EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
         Multimap multimap = item.getItem().getAttributeModifiers(EquipmentSlot, item);
 
-        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName())) {
-            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_SPEED.getAttributeUnlocalizedName());
+        if (multimap.containsKey(SharedMonsterAttributes.ATTACK_SPEED.getName())) {
+            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_SPEED.getName());
             if (attributes.size() > 0) {
                 Object attribute = attributes.iterator().next();
                 if (attribute instanceof AttributeModifier) {
@@ -358,13 +358,13 @@ public class WeaponSwapper extends ZyinHUDModBase
     }
 
     public static int GetBowSlotFromHotbar(List<Class> itemClasses) {
-        NonNullList<ItemStack> items = mc.thePlayer.inventory.mainInventory;
+        NonNullList<ItemStack> items = mc.player.inventory.mainInventory;
         double highestDamage = -1;
         int slot = -1;
         for (int i = 0; i <= 8; i++) {
             ItemStack itemStack = items.get(i);
 
-            if (!itemStack.func_190926_b()) {
+            if (!itemStack.isEmpty()) {
                 Item item = itemStack.getItem();
 
                 for (Class itemClass : itemClasses) {

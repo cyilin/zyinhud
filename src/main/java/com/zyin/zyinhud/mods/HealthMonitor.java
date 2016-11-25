@@ -174,9 +174,9 @@ public class HealthMonitor extends ZyinHUDModBase
 	 */
 	protected static void PlayLowHealthSoundIfHurt()
 	{
-		if(HealthMonitor.Enabled && mc.thePlayer != null)
+		if(HealthMonitor.Enabled && mc.player != null)
 		{
-			int playerHealth = (int)mc.thePlayer.getHealth();
+			int playerHealth = (int)mc.player.getHealth();
 			if(playerHealth < LowHealthSoundThreshold && playerHealth > 0)
 			{
 				//don't play the sound if the user is looking at a screen or in creative
@@ -239,7 +239,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	 * @param lowHealthSoundThreshold the low health sound threshold
 	 */
 	public static void SetLowHealthSoundThreshold(int lowHealthSoundThreshold) {
-		LowHealthSoundThreshold = MathHelper.clamp_int(lowHealthSoundThreshold, 1, 20);
+		LowHealthSoundThreshold = MathHelper.clamp(lowHealthSoundThreshold, 1, 20);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public class HealthMonitor extends ZyinHUDModBase
 	 * @param volume the volume
 	 */
 	public static void SetVolume(float volume) {
-		Volume = MathHelper.clamp_float(volume, 0, 1);
+		Volume = MathHelper.clamp(volume, 0, 1);
 	}
 
 	/**

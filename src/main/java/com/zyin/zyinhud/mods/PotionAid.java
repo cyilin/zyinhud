@@ -120,11 +120,11 @@ public class PotionAid extends ZyinHUDModBase
     	if(potionHotbarIndex < 36 | potionHotbarIndex > 44)
     		return;
     	
-    	currentItemHotbarIndex = mc.thePlayer.inventory.currentItem;
+    	currentItemHotbarIndex = mc.player.inventory.currentItem;
     	potionHotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(potionHotbarIndex);
     	
-    	int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
-    	mc.thePlayer.inventory.currentItem = potionHotbarIndex;
+    	int previouslySelectedHotbarSlotIndex = mc.player.inventory.currentItem;
+    	mc.player.inventory.currentItem = potionHotbarIndex;
 
         r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
         isCurrentlyDrinking = true;
@@ -182,7 +182,7 @@ public class PotionAid extends ZyinHUDModBase
     {
         r.mouseRelease(InputEvent.BUTTON3_MASK); //release right click
         drinkTimerTask.cancel();
-        mc.thePlayer.inventory.currentItem = currentItemHotbarIndex;
+        mc.player.inventory.currentItem = currentItemHotbarIndex;
         isCurrentlyDrinking = false;
     }
 
@@ -211,7 +211,7 @@ public class PotionAid extends ZyinHUDModBase
      */
     public int GetMostAppropriatePotionItemIndexFromInventory()
     {
-        List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
+        List inventorySlots = mc.player.inventoryContainer.inventorySlots;
         
         //indexes of potions in the player's inventory
         int fireResistancePotionIndex = -1;
@@ -228,7 +228,7 @@ public class PotionAid extends ZyinHUDModBase
             Slot slot = (Slot)inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
 
-            if (itemStack.func_190926_b())
+            if (itemStack.isEmpty())
             {
                 continue;
             }
@@ -282,7 +282,7 @@ public class PotionAid extends ZyinHUDModBase
     	boolean hasRegenerationPotionEffect = false;
     	boolean hasFireResistancePotionEffect = false;
     	
-    	Collection potionEffects = mc.thePlayer.getActivePotionEffects();	//key:potionId, value:potionEffect
+    	Collection potionEffects = mc.player.getActivePotionEffects();	//key:potionId, value:potionEffect
         Iterator it = potionEffects.iterator();
         while (it.hasNext())
         {
@@ -301,8 +301,8 @@ public class PotionAid extends ZyinHUDModBase
         		hasInvisibilityPotionEffect = true;
         }
         
-        boolean isOnFire = mc.thePlayer.isBurning();
-        boolean isInjured = mc.thePlayer.shouldHeal();
+        boolean isOnFire = mc.player.isBurning();
+        boolean isInjured = mc.player.shouldHeal();
     	
         
     	//we use potions in this order:
@@ -365,7 +365,7 @@ public class PotionAid extends ZyinHUDModBase
             
             if(hotbarIndexToBeSelected > -1)
             {
-            	mc.thePlayer.inventory.currentItem = hotbarIndexToBeSelected;
+            	mc.player.inventory.currentItem = hotbarIndexToBeSelected;
             }
         }
     }

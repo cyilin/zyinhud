@@ -125,15 +125,15 @@ public class DistanceMeasurer extends ZyinHUDModBase
      */
     protected static String CalculateDistanceString()
     {
-        RayTraceResult objectMouseOver = mc.thePlayer.rayTrace(300, 1);
+        RayTraceResult objectMouseOver = mc.player.rayTrace(300, 1);
 
         if (objectMouseOver != null && objectMouseOver.typeOfHit == RayTraceResult.Type.BLOCK)
         {
             if (Mode == Modes.SIMPLE)
             {
-            	double playerX = mc.thePlayer.posX;
-                double playerY = mc.thePlayer.posY + mc.thePlayer.getEyeHeight();
-                double playerZ = mc.thePlayer.posZ;
+            	double playerX = mc.player.posX;
+                double playerY = mc.player.posY + mc.player.getEyeHeight();
+                double playerZ = mc.player.posZ;
                 
                 double blockX = objectMouseOver.hitVec.xCoord;
                 double blockY = objectMouseOver.hitVec.yCoord;

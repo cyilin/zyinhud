@@ -189,8 +189,8 @@ public class ZyinHUDUtil
 	 * @return the block state
 	 */
 	public static IBlockState GetBlockState(BlockPos pos) {
-		if(mc.theWorld != null)
-			return mc.theWorld.getBlockState(pos);
+		if(mc.world != null)
+			return mc.world.getBlockState(pos);
 		else
     		return null;
     }

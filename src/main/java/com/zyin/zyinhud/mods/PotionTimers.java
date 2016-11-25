@@ -176,7 +176,7 @@ public class PotionTimers extends ZyinHUDModBase {
         if (PotionTimers.Enabled &&
                 (mc.inGameHasFocus || (mc.currentScreen != null && (mc.currentScreen instanceof GuiChat || TabIsSelectedInOptionsGui()))) &&
                 !mc.gameSettings.showDebugInfo) {
-            Collection potionEffects = mc.thePlayer.getActivePotionEffects();    //key:potionId, value:potionEffect
+            Collection potionEffects = mc.player.getActivePotionEffects();    //key:potionId, value:potionEffect
             Iterator it = potionEffects.iterator();
 
             int x = potionLocX;
@@ -374,7 +374,7 @@ public class PotionTimers extends ZyinHUDModBase {
      * @return the new x location
      */
     public static int SetHorizontalLocation(int x) {
-        potionLocX = MathHelper.clamp_int(x, 0, mc.displayWidth);
+        potionLocX = MathHelper.clamp(x, 0, mc.displayWidth);
         return potionLocX;
     }
 
@@ -394,7 +394,7 @@ public class PotionTimers extends ZyinHUDModBase {
      * @return the new y location
      */
     public static int SetVerticalLocation(int y) {
-        potionLocY = MathHelper.clamp_int(y, 0, mc.displayHeight);
+        potionLocY = MathHelper.clamp(y, 0, mc.displayHeight);
         return potionLocY;
     }
 

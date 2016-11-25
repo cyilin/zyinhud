@@ -233,13 +233,13 @@ public class SafeOverlay extends ZyinHUDModBase {
         //3) needs < 8 light level
         if (pos.CanMobsSpawnOnBlock(0, 0, 0) && pos.CanMobsSpawnInBlock(0, 1, 0) && pos.GetLightLevelWithoutSky() < 8) {
             //4) 2 blocks above needs to be air for bipeds
-            if (mc.thePlayer.dimension != 1) {
+            if (mc.player.dimension != 1) {
                 if (pos.IsAirBlock(0, 2, 0))
                     return true;
             }
 
             //4.5) 3 blocks above for Enderman (in the End)
-            else if (mc.thePlayer.dimension == 1) {
+            else if (mc.player.dimension == 1) {
                 if (pos.IsAirBlock(0, 2, 0) && pos.IsAirBlock(0, 3, 0))
                     return true;
                 else
@@ -278,14 +278,14 @@ public class SafeOverlay extends ZyinHUDModBase {
             return;
         }
 
-        if (!displayInNether && mc.thePlayer.dimension == -1)    //turn off in the nether, mobs can spawn no matter what
+        if (!displayInNether && mc.player.dimension == -1)    //turn off in the nether, mobs can spawn no matter what
         {
             return;
         }
 
-        double x = mc.thePlayer.lastTickPosX + (mc.thePlayer.posX - mc.thePlayer.lastTickPosX) * partialTickTime;
-        double y = mc.thePlayer.lastTickPosY + (mc.thePlayer.posY - mc.thePlayer.lastTickPosY) * partialTickTime;
-        double z = mc.thePlayer.lastTickPosZ + (mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ) * partialTickTime;
+        double x = mc.player.lastTickPosX + (mc.player.posX - mc.player.lastTickPosX) * partialTickTime;
+        double y = mc.player.lastTickPosY + (mc.player.posY - mc.player.lastTickPosY) * partialTickTime;
+        double z = mc.player.lastTickPosZ + (mc.player.posZ - mc.player.lastTickPosZ) * partialTickTime;
 
         playerPosition = new Position((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
 
@@ -455,7 +455,7 @@ public class SafeOverlay extends ZyinHUDModBase {
      * @return the updated draw distance
      */
     public int SetDrawDistance(int newDrawDistance) {
-        drawDistance = MathHelper.clamp_int(newDrawDistance, minDrawDistance, maxDrawDistance);
+        drawDistance = MathHelper.clamp(newDrawDistance, minDrawDistance, maxDrawDistance);
         return drawDistance;
     }
 
@@ -560,7 +560,7 @@ public class SafeOverlay extends ZyinHUDModBase {
      * @return the updated alpha value
      */
     public float SetUnsafeOverlayTransparency(float alpha) {
-        return unsafeOverlayTransparency = MathHelper.clamp_float(alpha, unsafeOverlayMinTransparency, unsafeOverlayMaxTransparency);
+        return unsafeOverlayTransparency = MathHelper.clamp(alpha, unsafeOverlayMinTransparency, unsafeOverlayMaxTransparency);
     }
 
     /**
@@ -691,12 +691,13 @@ public class SafeOverlay extends ZyinHUDModBase {
                     || block instanceof BlockStairs
                     || block instanceof BlockWall
                     || block instanceof BlockWeb
-                    || block instanceof BlockMagma) {
+                    || block instanceof BlockMagma
+                    || block instanceof BlockShulkerBox) {
                 return false;
             }
 
             if (block.getBlockState().getBaseState().isOpaqueCube()
-                    || mc.theWorld.isBlockFullCube(new BlockPos(x + dx, y + dy, z + dz))// FIXME: Temporary fix for former <>.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
+                    || mc.world.isBlockFullCube(new BlockPos(x + dx, y + dy, z + dz))// FIXME: Temporary fix for former <>.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
                     || block instanceof BlockFarmland)    //the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
             {
                 return true;
@@ -761,7 +762,8 @@ public class SafeOverlay extends ZyinHUDModBase {
                     || block instanceof BlockStairs
                     || block instanceof BlockTrapDoor
                     || block instanceof BlockWall
-                    || block instanceof BlockWeb);
+                    || block instanceof BlockWeb
+                    || block instanceof BlockShulkerBox);
         }
 
         /**
@@ -807,7 +809,7 @@ public class SafeOverlay extends ZyinHUDModBase {
          * @return 0 -15
          */
         public int GetLightLevelWithoutSky() {
-            return mc.theWorld.getLightFor(EnumSkyBlock.BLOCK, new BlockPos(x, y + 1, z));
+            return mc.world.getLightFor(EnumSkyBlock.BLOCK, new BlockPos(x, y + 1, z));
         }
 
         /**
@@ -816,7 +818,7 @@ public class SafeOverlay extends ZyinHUDModBase {
          * @return 0 -15
          */
         public int GetLightLevelWithSky() {
-            return mc.theWorld.getLightFor(EnumSkyBlock.SKY, new BlockPos(x, y + 1, z));
+            return mc.world.getLightFor(EnumSkyBlock.SKY, new BlockPos(x, y + 1, z));
         }
 
         @Override

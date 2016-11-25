@@ -66,7 +66,7 @@ public class ZyinHUD {
     
     public static final String updateJSON = "https://raw.githubusercontent.com/cyilin/zyinhud-update/master/update.json";
 
-    public static final String dependencies = "required-after:forge@[13.19.0.2141,);";
+    public static final String dependencies = "required-after:forge@[13.19.0.2160,);";
     
     /**
      * The constant proxy.

@@ -70,7 +70,7 @@ public class HUDEntityTrackerHelper {
         if (PlayerLocator.Enabled && PlayerLocator.Mode == PlayerLocator.Modes.ON
                 && mc.inGameHasFocus)
         {
-        	EntityPlayer me = mc.thePlayer;
+        	EntityPlayer me = mc.player;
             
             double meX = me.lastTickPosX + (me.posX - me.lastTickPosX) * partialTickTime;
             double meY = me.lastTickPosY + (me.posY - me.lastTickPosY) * partialTickTime;
@@ -96,9 +96,9 @@ public class HUDEntityTrackerHelper {
             GL11.glGetInteger(GL11.GL_VIEWPORT, viewport);
             
             //iterate over all the loaded Entity objects and find just the entities we are tracking
-            for (int i = 0; i < mc.theWorld.loadedEntityList.size(); i++)
+            for (int i = 0; i < mc.world.loadedEntityList.size(); i++)
             {
-            	Object object = mc.theWorld.loadedEntityList.get(i);
+            	Object object = mc.world.loadedEntityList.get(i);
             	
             	if(object == null)
             		continue;

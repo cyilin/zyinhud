@@ -19,13 +19,13 @@ public class CommandZyinHUDOptions extends CommandBase
 	private static Minecraft mc = Minecraft.getMinecraft();
 	
 	@Override
-	public String getCommandName()
+	public String getName()
 	{
 		return "zyinhud";
 	}
 	
 	@Override
-    public List getCommandAliases()
+    public List getAliases()
     {
 		List list = new ArrayList();
 		list.add("zh");
@@ -51,7 +51,7 @@ public class CommandZyinHUDOptions extends CommandBase
 	}
 
 	@Override
-	public String getCommandUsage(ICommandSender iCommandSender)
+	public String getUsage(ICommandSender iCommandSender)
 	{
 		return "commands.zyinhudoptions.usage";
 	}

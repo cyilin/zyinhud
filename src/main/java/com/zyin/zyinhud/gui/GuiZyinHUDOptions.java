@@ -248,7 +248,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         int width = event.getGui().width;
         int height = event.getGui().height;
 
-        if (event.getGui() instanceof GuiOptions && Minecraft.getMinecraft().theWorld != null) {
+        if (event.getGui() instanceof GuiOptions && Minecraft.getMinecraft().world != null) {
             zyinHudOptionsButton = new GuiButton(1337, width / 2 + 5, height / 6 + 24 - 6, 150, 20, Localization.get("gui.override.options.buttons.options"));
             event.getButtonList().add(zyinHudOptionsButton);
         }

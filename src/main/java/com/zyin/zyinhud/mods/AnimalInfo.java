@@ -207,9 +207,9 @@ public class AnimalInfo extends ZyinHUDModBase {
     public static void RenderOntoDebugMenu() {
         //if F3 is shown
         if (AnimalInfo.Enabled && ShowHorseStatsOnF3Menu && mc.gameSettings.showDebugInfo) {
-            if (mc.thePlayer.isRidingHorse() ||
-                    mc.thePlayer.isRiding() && mc.thePlayer.getRidingEntity() instanceof EntityLlama) {
-                AbstractHorse horse = (AbstractHorse) mc.thePlayer.getRidingEntity();
+            if (mc.player.isRidingHorse() ||
+                    mc.player.isRiding() && mc.player.getRidingEntity() instanceof EntityLlama) {
+                AbstractHorse horse = (AbstractHorse) mc.player.getRidingEntity();
                 String horseSpeedMessage = Localization.get("animalinfo.debug.speed") + " " + GetHorseSpeedText(horse) + " m/s";
                 String horseJumpMessage = Localization.get("animalinfo.debug.jump") + " " + GetHorseJumpText(horse) + " blocks";
                 String horseHPMessage = Localization.get("animalinfo.debug.hp") + " " + GetHorseHPText(horse);
@@ -271,7 +271,7 @@ public class AnimalInfo extends ZyinHUDModBase {
             }
 
             //only show entities that are close by
-            double distanceFromMe = mc.thePlayer.getDistanceToEntity(animal);
+            double distanceFromMe = mc.player.getDistanceToEntity(animal);
 
             if (distanceFromMe > maxViewDistanceCutoff
                     || distanceFromMe > viewDistanceCutoff) {
@@ -555,7 +555,7 @@ public class AnimalInfo extends ZyinHUDModBase {
     }
     
     private static int GetLlamaStrength(EntityLlama llama) {
-        int strength = llama.func_190707_dL();
+        int strength = llama.getStrength();
         return strength;
     }
 

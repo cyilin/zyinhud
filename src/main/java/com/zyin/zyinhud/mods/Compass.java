@@ -48,7 +48,7 @@ public class Compass extends ZyinHUDModBase
     {
         if (Compass.Enabled)
         {
-            int yaw = (int)mc.thePlayer.rotationYaw;
+            int yaw = (int)mc.player.rotationYaw;
             yaw += 22;	//+22 centers the compass (45degrees/2)
             yaw %= 360;
 

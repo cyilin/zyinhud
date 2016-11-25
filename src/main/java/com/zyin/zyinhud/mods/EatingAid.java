@@ -185,7 +185,7 @@ public class EatingAid extends ZyinHUDModBase
         else
         {
             //we need to eat something by first finding the best food to eat, then eat it
-            if(!mc.thePlayer.getFoodStats().needFood() && !UsePvPSoup)
+            if(!mc.player.getFoodStats().needFood() && !UsePvPSoup)
             {
                 //if we're not hungry then don't do anything
                 return;
@@ -219,32 +219,32 @@ public class EatingAid extends ZyinHUDModBase
     	if(foodHotbarIndex < 36 || foodHotbarIndex > 44)
     		return;
 
-		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(foodHotbarIndex);
+		Slot slotToUse = (Slot)mc.player.inventoryContainer.inventorySlots.get(foodHotbarIndex);
 		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
 		
     	if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) &&
-    			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))
+    			(mc.player.getHealth() < 20 || mc.player.getFoodStats().needFood()))
     	{
-    		int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
-    		mc.thePlayer.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
+    		int previouslySelectedHotbarSlotIndex = mc.player.inventory.currentItem;
+    		mc.player.inventory.currentItem = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
     		
     		InventoryUtil.SendUseItem();
     		
-    		mc.thePlayer.inventory.currentItem = previouslySelectedHotbarSlotIndex;
+    		mc.player.inventory.currentItem = previouslySelectedHotbarSlotIndex;
     	}
-    	else if(mc.thePlayer.getFoodStats().needFood())
+    	else if(mc.player.getFoodStats().needFood())
     	{
-        	currentItemHotbarIndex = mc.thePlayer.inventory.currentItem;
+        	currentItemHotbarIndex = mc.player.inventory.currentItem;
         	foodHotbarIndex = InventoryUtil.TranslateInventoryIndexToHotbarIndex(foodHotbarIndex);
         	
-        	int previouslySelectedHotbarSlotIndex = mc.thePlayer.inventory.currentItem;
-        	mc.thePlayer.inventory.currentItem = foodHotbarIndex;
+        	int previouslySelectedHotbarSlotIndex = mc.player.inventory.currentItem;
+        	mc.player.inventory.currentItem = foodHotbarIndex;
 
             r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
             isCurrentlyEating = true;
             previousEatFromHotbar = true;
 
-            ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
+            ItemStack currentItemStack = mc.player.getHeldItemMainhand();
             ItemFood currentFood = (ItemFood) currentItemStack.getItem();
 
             int eatingDurationInMilliseconds = 1000*currentFood.itemUseDuration / 20;
@@ -264,11 +264,11 @@ public class EatingAid extends ZyinHUDModBase
     	if(foodInventoryIndex < 9 || foodInventoryIndex > 35)
     		return;
 
-		Slot slotToUse = (Slot)mc.thePlayer.inventoryContainer.inventorySlots.get(foodInventoryIndex);
+		Slot slotToUse = (Slot)mc.player.inventoryContainer.inventorySlots.get(foodInventoryIndex);
 		ItemFood food = (ItemFood)(slotToUse.getStack().getItem());
 		
 		//if PvP Soup is on and we don't need eat it, then return
-    	if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) && mc.thePlayer.getHealth() >= 20 && !mc.thePlayer.getFoodStats().needFood())
+    	if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) && mc.player.getHealth() >= 20 && !mc.player.getFoodStats().needFood())
     		return;
     	
         currentItemInventoryIndex = InventoryUtil.GetCurrentlySelectedItemInventoryIndex();
@@ -277,13 +277,13 @@ public class EatingAid extends ZyinHUDModBase
         r.mousePress(InputEvent.BUTTON3_MASK); //perform a right click
         previousEatFromHotbar = false;
 
-        ItemStack currentItemStack = mc.thePlayer.getHeldItemMainhand();
+        ItemStack currentItemStack = mc.player.getHeldItemMainhand();
         ItemFood currentFood = (ItemFood)currentItemStack.getItem();
         
         int eatingDurationInMilliseconds = 1000 * currentFood.itemUseDuration / 17; //I think 17 is better, for 20 can only be reached by fast computers
         //Alternatively, may be we can introduce tps dectection in the future.
         if(UsePvPSoup && food.equals(Items.MUSHROOM_STEW) &&
-    			(mc.thePlayer.getHealth() < 20 || mc.thePlayer.getFoodStats().needFood()))	//for PvP Soup eating
+    			(mc.player.getHealth() < 20 || mc.player.getFoodStats().needFood()))	//for PvP Soup eating
         {
             isCurrentlyEating = false;
             r.mouseRelease(InputEvent.BUTTON3_MASK); //release right click
@@ -291,7 +291,7 @@ public class EatingAid extends ZyinHUDModBase
             
         	InventoryUtil.SendUseItem();
         }
-        else if(mc.thePlayer.getFoodStats().needFood())	//for normal eating
+        else if(mc.player.getFoodStats().needFood())	//for normal eating
         {
             isCurrentlyEating = true;
             
@@ -334,7 +334,7 @@ public class EatingAid extends ZyinHUDModBase
     {
         r.mouseRelease(InputEvent.BUTTON3_MASK); //release right click
         eatTimerTask.cancel();
-        mc.thePlayer.inventory.currentItem = currentItemHotbarIndex;
+        mc.player.inventory.currentItem = currentItemHotbarIndex;
         isCurrentlyEating = false;
     }
 
@@ -371,10 +371,10 @@ public class EatingAid extends ZyinHUDModBase
      */
     public int GetStrongestFoodItemIndexFromInventory()
     {
-    	List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
+    	List inventorySlots = mc.player.inventoryContainer.inventorySlots;
         int bestFoodMatchIndex = -1;
         float bestFoodMatchSaturation = 0;
-        int foodLevel = mc.thePlayer.getFoodStats().getFoodLevel();	//max 20
+        int foodLevel = mc.player.getFoodStats().getFoodLevel();	//max 20
         
         //iterate over the hotbar (36-44), then main inventory (9-35)
         for (int i = inventorySlots.size() - 1; i > 8; i--)
@@ -387,7 +387,7 @@ public class EatingAid extends ZyinHUDModBase
             Slot slot = (Slot)inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
 
-            if (itemStack.func_190926_b())
+            if (itemStack.isEmpty())
             {
                 continue;
             }
@@ -472,11 +472,11 @@ public class EatingAid extends ZyinHUDModBase
      */
     public int GetBestFoodItemIndexFromInventory()
     {
-        List inventorySlots = mc.thePlayer.inventoryContainer.inventorySlots;
+        List inventorySlots = mc.player.inventoryContainer.inventorySlots;
         int bestFoodMatchIndex = -1;
         int bestFoodMatchOvereat = 999;
         int bestFoodMatchHeal = -999;
-        int foodLevel = mc.thePlayer.getFoodStats().getFoodLevel();	//max 20
+        int foodLevel = mc.player.getFoodStats().getFoodLevel();	//max 20
         
         //iterate over the hotbar (36-44), then main inventory (9-35)
         for (int i = inventorySlots.size() - 1; i > 8; i--)
@@ -489,7 +489,7 @@ public class EatingAid extends ZyinHUDModBase
             Slot slot = (Slot)inventorySlots.get(i);
             ItemStack itemStack = slot.getStack();
 
-            if (itemStack.func_190926_b())
+            if (itemStack.isEmpty())
             {
                 continue;
             }
@@ -672,7 +672,7 @@ public class EatingAid extends ZyinHUDModBase
             
             if(hotbarIndexToBeSelected > -1)
             {
-            	mc.thePlayer.inventory.currentItem = hotbarIndexToBeSelected;
+            	mc.player.inventory.currentItem = hotbarIndexToBeSelected;
             }
         }
     }
