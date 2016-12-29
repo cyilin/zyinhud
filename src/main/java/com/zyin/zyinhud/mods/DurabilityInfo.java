@@ -1,5 +1,6 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.ZyinHUD;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.ZyinHUDSound;
 import com.zyin.zyinhud.gui.GuiZyinHUDOptions;
@@ -549,7 +550,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                        InventoryUtil.MoveArmorIntoPlayerInventory(i);
 	                   	ZyinHUDSound.PlayPlopSound();
 	                   	ZyinHUDRenderer.DisplayNotification(Localization.get("durabilityinfo.name") + Localization.get("durabilityinfo.unequippeditem") + itemStack.getDisplayName());
-	                   	System.out.println("Unequipped " + itemStack.getDisplayName() + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
+	                   	ZyinHUD.log("Unequipped " + itemStack.getDisplayName() + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
                     }
                 }
             }
@@ -584,7 +585,7 @@ public class DurabilityInfo extends ZyinHUDModBase
                     	InventoryUtil.MoveHeldItemIntoPlayerInventory();
                     	ZyinHUDSound.PlayPlopSound();
                     	ZyinHUDRenderer.DisplayNotification(Localization.get("durabilityinfo.name") + Localization.get("durabilityinfo.unequippeditem") + item.getItemStackDisplayName(itemStack));
-                    	System.out.println("Unequipped " + item.getItemStackDisplayName(itemStack) + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
+                    	ZyinHUD.log("Unequipped " + item.getItemStackDisplayName(itemStack) + " because it was at low durability (" + itemDamage + "/" + maxDamage + ")");
                     }
                 }
             }

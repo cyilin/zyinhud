@@ -137,7 +137,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 		{
 			//for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
 			//so use reflection to grab it
-			int buttonHeight = ZyinHUDUtil.GetFieldByReflection(GuiButton.class, button, "height","field_146121_g");
+			int buttonHeight = button.height;
 			if(mouseY <= button.yPosition + buttonHeight)
 				return true;
 		}

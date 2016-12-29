@@ -3,6 +3,7 @@ package com.zyin.zyinhud.mods;
 import com.zyin.zyinhud.util.Localization;
 import com.zyin.zyinhud.util.ZyinHUDUtil;
 import net.minecraft.block.*;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -13,10 +14,6 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-//import net.minecraft.block.BlockFluid;
-//import net.minecraft.block.BlockHalfSlab;
-//import net.minecraftforge.event.ForgeSubscribe;
 
 /**
  * The Safe Overlay renders an overlay onto the game world showing which areas
@@ -305,8 +302,8 @@ public class SafeOverlay extends ZyinHUDModBase {
 
         GL11.glPushMatrix();
         GL11.glTranslated(-x, -y, -z);        //go from cartesian x,y,z coordinates to in-world x,y,z coordinates
-        GL11.glDisable(GL11.GL_TEXTURE_2D);    //fixes color rendering bug (we aren't rendering textures)
-        GL11.glDisable(GL11.GL_LIGHTING);
+        GlStateManager.disableTexture2D();    //fixes color rendering bug (we aren't rendering textures)
+        GlStateManager.disableLighting();
 
         //BLEND and ALPHA allow for color transparency
         GL11.glEnable(GL11.GL_BLEND);
@@ -324,10 +321,10 @@ public class SafeOverlay extends ZyinHUDModBase {
         for (Position position : unsafePositions) {
             RenderUnsafeMarker(position);
         }
-        GL11.glColor4f(0, 0, 0, 1);    //change alpha back to 100% after we're done rendering
-
+        //GL11.glColor4f(0, 0, 0, 1);    //change alpha back to 100% after we're done rendering
         GL11.glEnd();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableLighting();
         //GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ZERO);    //puts blending back to normal, fixes bad HD texture rendering
         GL11.glDisable(GL11.GL_BLEND);    //fixes [Journeymap] beacons being x-rayed as well
         GL11.glPopMatrix();
@@ -417,7 +414,7 @@ public class SafeOverlay extends ZyinHUDModBase {
         //since we are using doubles it causes the marks to 'flicker' when very far from spawn (~5000 blocks)
         //if we use GL11.glVertex3i(int, int, int) it fixes the issue but then we can't render the marks
         //precisely where we want to
-        GL11.glColor4f(r, g, b, alpha);    //alpha must be > 0.1
+        GlStateManager.color(r, g, b, alpha);    //alpha must be > 0.1
         GL11.glVertex3d(maxX, maxY, maxZ);
         GL11.glVertex3d(minX, maxY, minZ);
         GL11.glVertex3d(maxX, maxY, minZ);

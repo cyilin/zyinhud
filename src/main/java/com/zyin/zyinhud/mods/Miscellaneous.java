@@ -1,7 +1,7 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.ZyinHUD;
 import net.minecraft.client.gui.GuiRepair;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiEditSign;
 import net.minecraft.inventory.ContainerRepair;
 import net.minecraft.inventory.IInventory;
@@ -81,8 +81,8 @@ public class Miscellaneous extends ZyinHUDModBase
 		ContainerRepair anvil = ZyinHUDUtil.GetFieldByReflection(GuiRepair.class, guiRepair, "anvil", "field_147092_v");
     	IInventory inputSlots = ZyinHUDUtil.GetFieldByReflection(ContainerRepair.class, anvil, "inputSlots", "field_82853_g");
 
-    	int xSize = ZyinHUDUtil.GetFieldByReflection(GuiContainer.class, guiRepair, "xSize", "field_146999_f");
-    	int ySize = ZyinHUDUtil.GetFieldByReflection(GuiContainer.class, guiRepair, "ySize", "field_147000_g");
+    	int xSize = guiRepair.getXSize();
+    	int ySize = guiRepair.getYSize();
 
     	int guiRepairXOrigin = guiRepair.width/2 - xSize/2;
     	int guiRepairYOrigin = guiRepair.height/2 - ySize/2;
@@ -181,9 +181,9 @@ public class Miscellaneous extends ZyinHUDModBase
             //Item blockItem = Item.getItemFromBlock(block);
             
     		//first, scan the hotbar to see if the mouseovered block already exists on the hotbar
-            System.out.println("checking hotbar...");
+            ZyinHUD.log("checking hotbar...");
             int itemIndexInHotbar = InventoryUtil.GetItemIndexFromHotbar(blockPos);
-            System.out.println("returned "+itemIndexInHotbar);
+            ZyinHUD.log("returned "+itemIndexInHotbar);
             if(itemIndexInHotbar > 0)
             {
             	//if it does then do nothing since Minecraft takes care of it already
@@ -191,9 +191,9 @@ public class Miscellaneous extends ZyinHUDModBase
             else
             {
             	//if it is not on the hotbar, check to see if it is in our inventory
-                System.out.println("checking inventory...");
+                ZyinHUD.log("checking inventory...");
             	int itemIndexInInventory = InventoryUtil.GetItemIndexFromInventory(blockPos);
-                System.out.println("returned "+itemIndexInInventory);
+                ZyinHUD.log("returned "+itemIndexInInventory);
             	if(itemIndexInInventory > 0)
             	{
             		//if it is in our inventory, swap it out to the hotbar

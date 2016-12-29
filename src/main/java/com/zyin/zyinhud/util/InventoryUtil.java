@@ -822,16 +822,16 @@ public class InventoryUtil {
         if (!handStack.isEmpty()) {
             if (!inputStack.isEmpty() && handStack.isItemEqual(inputStack)) {
                 LeftClickContainerSlot(3);
-            } else if (handStack.getItemDamage() == 0 && Items.POTIONITEM == handStack.getItem()) {
+            } else if (Items.POTIONITEM == handStack.getItem() && !handStack.hasEffect()) {
                 //if handStack is a "Water Bottle"
                 //then deposit the water bottle in an empty output slot
-                if (outputStack1 == null) {
+                if (outputStack1.isEmpty()) {
                     LeftClickContainerSlot(0);
                     outputStack1 = mc.player.openContainer.inventorySlots.get(0).getStack();
-                } else if (outputStack2 == null) {
+                } else if (outputStack2.isEmpty()) {
                     LeftClickContainerSlot(1);
                     outputStack2 = mc.player.openContainer.inventorySlots.get(1).getStack();
-                } else if (outputStack3 == null) {
+                } else if (outputStack3.isEmpty()) {
                     LeftClickContainerSlot(2);
                     outputStack3 = mc.player.openContainer.inventorySlots.get(2).getStack();
                 }
@@ -848,7 +848,7 @@ public class InventoryUtil {
             if (!itemStack.isEmpty()) {
                 if (!inputStack.isEmpty() && itemStack.isItemEqual(inputStack)) {
                     DepositItemInBrewingStand(i, 3);
-                } else if (itemStack.getItemDamage() == 0 && Items.POTIONITEM == itemStack.getItem()) {
+                } else if (Items.POTIONITEM == itemStack.getItem() && !itemStack.hasEffect()) {
                     //if itemStack is a "Water Bottle"
                     //then deposit the water bottle in an empty output slot
                     if (outputStack1.isEmpty()) {

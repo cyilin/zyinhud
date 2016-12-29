@@ -4,14 +4,14 @@ jdk:
 before_deploy:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
-  - git tag ZyinsHUD-1.11-1.5.3.${TRAVIS_BUILD_NUMBER}
+  - git tag ZyinsHUD-1.11.2-1.5.4.${TRAVIS_BUILD_NUMBER}
   - git push -q ${GITHUB_REPO} --tags
 deploy:
   provider: releases
   api_key:
     secure: HXomfzSScNHsqKBlgV4mLYrEoo/+19lIWoYtnngdq1S3kyKllbDrDGuw8jchpUD5PsFE42KMia6qOKWUXvcBNN6ZFH7WTlr+Tm9JvcmF/y5U1WmXyTTodmJggIG8SqCAt9hlwLapYY+b2X38U0BDDgv7886Kje4EhDr2jP4v9voSHLEJjI+U5SmtkRsehTJ73P3X2L3K12b6MDr/zGZ6QlWoS6gcBqC62Bm4Uyr+XcxSSU/Z1Wgh/qnQRBbz+sFfXWuzJhJig1jqFws7nJFBxDpai6I+5kOrZ0efZMDgR/tQVw6erZ58J4rxozfdCX9a05PFOeX5ddaeNmUqtm3r97+49I4fzZMHoDwX8gXrxO6k5LYixYYIUZfkLV/kvFll8aSL9UBVtEr3geVpicQ7J7lb2NLhNBdf3kmU9KT6XYDvzQjYrNd8F0e39YbW4pAhi7zVjbNbwcSkkxrDkE5vM9gFYX8VoAwHbRISXGBEVowNkokumSvv29QUyp1+Tcvxz5D+jDoo9QvTTHuJ4eWEaKxGlZi61FQQptqvTx2DqV6PiNsl7r/HPpPtjWofWVdYbxfZ8V0uGLI4h7sCg4GU2axKKp84wLXyosQHpEm2KGE61fSLfATLDLmnnfxLo40D21R5lzxTPNdJUyUMzA6+vgRvF709YXeu1cA5TRqekCg=
   file:
-  - build/libs/ZyinsHUD-1.11-1.5.3.${TRAVIS_BUILD_NUMBER}.jar
+  - build/libs/ZyinsHUD-1.11.2-1.5.4.${TRAVIS_BUILD_NUMBER}.jar
   on:
     repo: cyilin/zyinhud
     tags: false

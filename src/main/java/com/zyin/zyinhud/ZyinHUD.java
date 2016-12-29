@@ -37,6 +37,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 
 import java.io.File;
 
@@ -54,7 +56,7 @@ public class ZyinHUD {
      * </ol>
      * If incrementing the Minecraft version, also update "curseFilenameParser" in AddVersionChecker()
      */
-    public static final String VERSION = "1.5.3.0";
+    public static final String VERSION = "@VERSION@";
     /**
      * The constant MODID.
      */
@@ -66,7 +68,9 @@ public class ZyinHUD {
     
     public static final String updateJSON = "https://raw.githubusercontent.com/cyilin/zyinhud-update/master/update.json";
 
-    public static final String dependencies = "required-after:forge@[13.19.0.2160,);";
+    public static final String dependencies = "required-after:forge@[13.20.0.2201,);";
+    
+    public static final String buildTime = "@BUILD_TIME@";
     
     /**
      * The constant proxy.
@@ -109,6 +113,7 @@ public class ZyinHUD {
      */
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        log(String.format("version: %s (%s)", VERSION, buildTime));
         //load all our Key Handlers
         //FMLCommonHandler.instance().bus().register(ZyinHUDKeyHandlers.instance);
         MinecraftForge.EVENT_BUS.register(ZyinHUDKeyHandlers.instance);
@@ -160,6 +165,10 @@ public class ZyinHUD {
         compound.setString("curseProjectName", "59953-zyins-hud");    //http://minecraft.curseforge.com/mc-mods/59953-zyins-hud
         compound.setString("curseFilenameParser", "ZyinsHUD-(1.9)-v.[].jar");
         FMLInterModComms.sendRuntimeMessage(ZyinHUD.MODID, "VersionChecker", "addCurseCheck", compound);
+    }
+
+    public static void log(String msg) {
+        LogManager.getLogger(MODID).log(Level.INFO, msg);
     }
 
 }

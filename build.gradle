@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat
 
 // For those who want the bleeding edge
 buildscript {
@@ -23,9 +24,9 @@ plugins {
     id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 */
-version = "1.5.3.%s"
+version = "1.5.4.%s"
 group= "com.zyin.zyinhud" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "ZyinsHUD-1.11"
+archivesBaseName = "ZyinsHUD-1.11.2"
 
 if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
     version = String.format(version, System.getenv("TRAVIS_BUILD_NUMBER"))
@@ -34,7 +35,7 @@ if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
 }
 
 minecraft {
-    version = "1.11-13.19.0.2160"
+    version = "1.11.2-13.20.0.2201"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -42,22 +43,11 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20161124"
+    mappings = "snapshot_20161228"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-}
-
-// https://github.com/MinecraftForge/MinecraftForge/blob/1.10.x/build.gradle#L219
-if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
-    def file = file("src/main/java/com/zyin/zyinhud/ZyinHUD.java");
-    def outfile = "";
-    file.eachLine { String s ->
-        if (s.matches('^    public static final String VERSION = "[^\\"]+";\$')){
-            s = "    public static final String VERSION = \"${version}\";";
-        }
-        outfile += s;
-        outfile += "\n";
-    }
-    file.write(outfile);
+    replaceIn "com/zyin/zyinhud/ZyinHUD.java"
+    replace "@VERSION@", project.version
+    replace "@BUILD_TIME@", buildTime
 }
 
 dependencies {
@@ -102,4 +92,10 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+def getBuildTime() {
+    def date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z")
+    date.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return date.format(new Date())
 }

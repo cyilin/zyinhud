@@ -1,6 +1,5 @@
 package com.zyin.zyinhud.mods;
 
-import com.zyin.zyinhud.util.ZyinHUDUtil;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -18,8 +17,6 @@ import org.lwjgl.opengl.GL11;
 import com.zyin.zyinhud.ZyinHUDRenderer;
 import com.zyin.zyinhud.util.InventoryUtil;
 import com.zyin.zyinhud.util.Localization;
-
-import java.util.ArrayList;
 
 /**
  * Item Selector allows the player to conveniently swap their currently selected
@@ -367,7 +364,7 @@ public class ItemSelector extends ZyinHUDModBase
 
 				if (!itemStack.isEmpty())
 				{
-					float anim = (int) ZyinHUDUtil.GetFieldByReflection(ItemStack.class, itemStack, "animationsToGo", "field_77992_b") - partialTicks;
+					float anim = itemStack.getAnimationsToGo() - partialTicks;
 					int dimX = originX + (x * 20) + 3;
 					int dimZ = originZ + (z * 22) + 3;
 					

@@ -984,9 +984,9 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                     button.displayString = GetButtonLabel_Boolean("potiontimers.options.showpotionicons", PotionTimers.ShowPotionIcons);
                     break;
                 case 1005:    //Toggle text mode
-                    System.out.println("MODE:" + PotionTimers.TextMode);
+                    ZyinHUD.log("MODE:" + PotionTimers.TextMode);
                     PotionTimers.TextMode.ToggleMode(mouseButton == 0);
-                    System.out.println("MODE:" + PotionTimers.TextMode);
+                    ZyinHUD.log("MODE:" + PotionTimers.TextMode);
                     button.displayString = GetButtonLabel_String("potiontimers.options.textmode", PotionTimers.TextMode.GetFriendlyName());
                     break;
                 case 1007:    //Hide default potion effects in inventory
