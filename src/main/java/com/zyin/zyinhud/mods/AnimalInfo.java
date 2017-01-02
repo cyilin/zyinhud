@@ -330,7 +330,7 @@ public class AnimalInfo extends ZyinHUDModBase {
         }
 
         if (ShowBreedingIcons &&
-                animalGrowingAge == 0 &&            //animal is an adult that is ready to breed
+                !animal.isChild() &&            //animal is an adult that is ready to breed
                 animal instanceof EntityAnimal &&    //animal is not a villager
                 !((EntityAnimal) animal).isInLove())    //animal is not currently breeding
         {
