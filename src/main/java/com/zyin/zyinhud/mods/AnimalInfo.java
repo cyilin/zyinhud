@@ -10,7 +10,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -330,14 +332,18 @@ public class AnimalInfo extends ZyinHUDModBase {
         }
 
         if (ShowBreedingIcons &&
-                animalGrowingAge == 0 &&            //animal is an adult that is ready to breed
+                !animal.isChild() &&            //animal is an adult that is ready to breed
                 animal instanceof EntityAnimal &&    //animal is not a villager
                 !((EntityAnimal) animal).isInLove())    //animal is not currently breeding
         {
             //render the overlay icon
-            if (animal instanceof AbstractHorse && ((AbstractHorse) animal).isTame())
-                ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.GOLDEN_CARROT, partialTickTime);
-            else if (animal instanceof EntityCow)
+            if (animal instanceof AbstractHorse && ((AbstractHorse) animal).isTame()) {
+                if (animal instanceof EntityLlama) {
+                    ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Item.getItemFromBlock(Blocks.HAY_BLOCK), partialTickTime);
+                } else {
+                    ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.GOLDEN_CARROT, partialTickTime);
+                }
+            } else if (animal instanceof EntityCow)
                 ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);
             else if (animal instanceof EntitySheep)
                 ZyinHUDRenderer.RenderFloatingItemIcon(x, y + animal.height, z, Items.WHEAT, partialTickTime);

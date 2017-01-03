@@ -219,7 +219,7 @@ public class ZyinHUDRenderer
         VertexBuffer worldrenderer = tessellator.getBuffer();
         
         //worldrenderer.startDrawingQuads();
-        worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);    //I have no clue what the DefaultVertexFormats are, but field_181707_g works
+        worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);    //I have no clue what the DefaultVertexFormats are, but field_181707_g works
 
         worldrenderer.pos((double) (x), (double) (y + height), (double) zLevel).tex((double) textureAtlasSprite.getMaxU(), (double) textureAtlasSprite.getMaxV()).endVertex();
         worldrenderer.pos((double) (x + width), (double) (y + height), (double) zLevel).tex((double) textureAtlasSprite.getMinU(), (double) textureAtlasSprite.getMaxV()).endVertex();
@@ -307,7 +307,7 @@ public class ZyinHUDRenderer
         
         int lineHeight = 10;
         
-        if(renderBlackBackground)
+        if(renderBlackBackground && text.length > 0)
         {
             int stringMiddle = textWidth / 2;
             
@@ -330,11 +330,10 @@ public class ZyinHUDRenderer
             
             //This code taken from 1.8.8 net.minecraft.client.renderer.entity.Render.renderLivingLabel()
             worldrenderer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-            worldrenderer.pos((double) (-stringMiddle - 1), (double) (-1 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double) (-stringMiddle - 1), (double) (8 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double) (stringMiddle + 1), (double) (8 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-            worldrenderer.pos((double) (stringMiddle + 1), (double) (-1 + lineHeight), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
-
+            worldrenderer.pos((double) (-stringMiddle - 1), (double) -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (-stringMiddle - 1), (double) (8 + lineHeight * (text.length - 1)), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (stringMiddle + 1), (double) (8 + lineHeight * (text.length - 1)), 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
+            worldrenderer.pos((double) (stringMiddle + 1), (double) -1, 0.0D).color(0.0F, 0.0F, 0.0F, 0.25F).endVertex();
             tessellator.draw();
             //GL11.glEnable(GL11.GL_TEXTURE_2D);
             GlStateManager.enableTexture2D();
