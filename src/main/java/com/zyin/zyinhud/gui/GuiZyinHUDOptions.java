@@ -261,7 +261,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
      */
     public static void ActionPerformedEventPost(ActionPerformedEvent.Post event) {
         if (event.getGui() instanceof GuiOptions) {
-            if (event.getButton().id == zyinHudOptionsButton.id) {
+            if (zyinHudOptionsButton != null && event.getButton().id == zyinHudOptionsButton.id) {
                 Minecraft.getMinecraft().displayGuiScreen(new GuiZyinHUDOptions(event.getGui()));
             }
         }
