@@ -498,7 +498,7 @@ public class InventoryUtil {
         else// if(srcStack != null && destStack != null)
         {
             //if the 2 items are of different item types
-            if (srcStack.getItem() != destStack.getItem()) {
+            if (!areItemStacksEqualIgnoreAmount(srcStack, destStack)) {
                 return false;
             }
             //if the 2 items are the same, stack as much as we can into the spot then place the leftovers in a new slot
@@ -606,9 +606,9 @@ public class InventoryUtil {
         //check if we have an item in our cursor
         ItemStack handStack = mc.player.inventory.getItemStack();
         if (!handStack.isEmpty()) {
-            if (!buyingItemStack1.isEmpty() && handStack.isItemEqual(buyingItemStack1)) {
+            if (!buyingItemStack1.isEmpty() && areItemStacksEqualIgnoreAmount(handStack, buyingItemStack1)) {
                 LeftClickContainerSlot(0);
-            } else if (!buyingItemStack2.isEmpty() && handStack.isItemEqual(buyingItemStack2)) {
+            } else if (!buyingItemStack2.isEmpty() && areItemStacksEqualIgnoreAmount(handStack, buyingItemStack2)) {
                 LeftClickContainerSlot(1);
             }
         }
@@ -623,9 +623,9 @@ public class InventoryUtil {
             Slot slot = (Slot) merchantSlots.get(i);
             ItemStack itemStack = slot.getStack();
             if (!itemStack.isEmpty()) {
-                if (!buyingItemStack1.isEmpty() && itemStack.isItemEqual(buyingItemStack1)) {
+                if (!buyingItemStack1.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, buyingItemStack1)) {
                     DepositItemInMerchant(i, 0);
-                } else if (!buyingItemStack2.isEmpty() && itemStack.isItemEqual(buyingItemStack2)) {
+                } else if (!buyingItemStack2.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, buyingItemStack2)) {
                     DepositItemInMerchant(i, 1);
                 }
             }
@@ -661,7 +661,7 @@ public class InventoryUtil {
         //4: src = item, dest = item
         else// if(srcStack != null && destStack != null)
         {
-            if (destStack.isItemEqual(srcStack)) {
+            if (areItemStacksEqualIgnoreAmount(destStack, srcStack)) {
                 LeftClickContainerSlot(srcIndex);
                 LeftClickContainerSlot(destIndex);
 
@@ -704,9 +704,9 @@ public class InventoryUtil {
         //check to see if we have an item in our cursor
         ItemStack handStack = mc.player.inventory.getItemStack();
         if (!handStack.isEmpty()) {
-            if (!inputStack.isEmpty() && handStack.isItemEqual(inputStack)) {
+            if (!inputStack.isEmpty() && areItemStacksEqualIgnoreAmount(handStack, inputStack)) {
                 LeftClickContainerSlot(0);
-            } else if (!fuelStack.isEmpty() && handStack.isItemEqual(fuelStack)) {
+            } else if (!fuelStack.isEmpty() && areItemStacksEqualIgnoreAmount(handStack, fuelStack)) {
                 LeftClickContainerSlot(1);
             }
         }
@@ -719,9 +719,9 @@ public class InventoryUtil {
             Slot slot = (Slot) furanceSlots.get(i);
             ItemStack itemStack = slot.getStack();
             if (!itemStack.isEmpty()) {
-                if (!inputStack.isEmpty() && itemStack.isItemEqual(inputStack)) {
+                if (!inputStack.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, inputStack)) {
                     DepositItemInFurance(i, 0);
-                } else if (!fuelStack.isEmpty() && itemStack.isItemEqual(fuelStack)) {
+                } else if (!fuelStack.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, fuelStack)) {
                     DepositItemInFurance(i, 1);
                 }
             }
@@ -820,7 +820,7 @@ public class InventoryUtil {
         //check to see if we have an item in our cursor
         ItemStack handStack = mc.player.inventory.getItemStack();
         if (!handStack.isEmpty()) {
-            if (!inputStack.isEmpty() && handStack.isItemEqual(inputStack)) {
+            if (!inputStack.isEmpty() && areItemStacksEqualIgnoreAmount(handStack, inputStack)) {
                 LeftClickContainerSlot(3);
             } else if (Items.POTIONITEM == handStack.getItem() && !handStack.hasEffect()) {
                 //if handStack is a "Water Bottle"
@@ -846,7 +846,7 @@ public class InventoryUtil {
             Slot slot = (Slot) brewingStandSlots.get(i);
             ItemStack itemStack = slot.getStack();
             if (!itemStack.isEmpty()) {
-                if (!inputStack.isEmpty() && itemStack.isItemEqual(inputStack)) {
+                if (!inputStack.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, inputStack)) {
                     DepositItemInBrewingStand(i, 3);
                 } else if (Items.POTIONITEM == itemStack.getItem() && !itemStack.hasEffect()) {
                     //if itemStack is a "Water Bottle"
@@ -899,7 +899,7 @@ public class InventoryUtil {
         //4: src = item, dest = item
         else// if(srcStack != null && destStack != null)
         {
-            if (destStack.isItemEqual(srcStack)) {
+            if (areItemStacksEqualIgnoreAmount(destStack, srcStack)) {
                 LeftClickContainerSlot(srcIndex);
                 LeftClickContainerSlot(destIndex);
 
@@ -1003,7 +1003,7 @@ public class InventoryUtil {
      * @return 27, 54-63,90, -1 if no empty spot
      */
     private static int GetFirstEmptyIndexInContainerInventory() {
-        return GetFirstEmptyIndexInContainerInventory(null);
+        return GetFirstEmptyIndexInContainerInventory(ItemStack.EMPTY);
     }
 
     /**
@@ -1033,8 +1033,8 @@ public class InventoryUtil {
             ItemStack itemStack = slot.getStack();
             if (itemStack.isEmpty() && firstEmptyIndex == -1) {
                 firstEmptyIndex = i;
-            } else if (!itemStack.isEmpty() && itemStackToMatch != null && !itemStackToMatch.isEmpty()
-                    && itemStack.isItemEqual(itemStackToMatch)
+            } else if (!itemStack.isEmpty() && !itemStackToMatch.isEmpty()
+                    && areItemStacksEqualIgnoreAmount(itemStack, itemStackToMatch)
                     && itemStack.getCount() < itemStack.getMaxStackSize()
                     && firstEmptyMatchingItemStackIndex == -1) {
                 firstEmptyMatchingItemStackIndex = i;
@@ -1087,8 +1087,8 @@ public class InventoryUtil {
             ItemStack itemStack = slot.getStack();
             if (itemStack.isEmpty() && firstEmptyIndex == -1) {
                 firstEmptyIndex = i;
-            } else if (!itemStack.isEmpty() && itemStackToMatch != null
-                    && itemStack.isItemEqual(itemStackToMatch)
+            } else if (!itemStack.isEmpty() && !itemStackToMatch.isEmpty()
+                    && areItemStacksEqualIgnoreAmount(itemStack, itemStackToMatch)
                     && itemStack.getCount() < itemStack.getMaxStackSize()
                     && firstEmptyMatchingItemStackIndex == -1) {
                 firstEmptyMatchingItemStackIndex = i;
@@ -1126,7 +1126,7 @@ public class InventoryUtil {
         for (int i = iStart; i <= iEnd - 1; i++) {
             Slot slot = (Slot) chestSlots.get(i);
             ItemStack itemStack = slot.getStack();
-            if (!itemStack.isEmpty() && itemStack.isItemEqual(itemStackToMatch)) {
+            if (!itemStack.isEmpty() && areItemStacksEqualIgnoreAmount(itemStack, itemStackToMatch)) {
                 return i;
             }
         }
@@ -1270,6 +1270,16 @@ public class InventoryUtil {
         }
     }
 
+    public static boolean areItemStacksEqualIgnoreAmount(ItemStack itemStack1, ItemStack itemStack2) {
+        if (!itemStack1.isEmpty() && !itemStack2.isEmpty() && itemStack1.getItem() == itemStack2.getItem()) {
+            ItemStack itemA = itemStack1.copy();
+            itemA.setCount(1);
+            ItemStack itemB = itemStack2.copy();
+            itemB.setCount(1);
+            return ItemStack.areItemStacksEqual(itemA, itemB);
+        }
+        return false;
+    }
 
     /**
      * Helper class whose purpose is to release right click and reselect the player's last selected item.
