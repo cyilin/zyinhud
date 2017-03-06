@@ -323,7 +323,7 @@ public class DurabilityInfo extends ZyinHUDModBase
 		itemRenderer.renderItemAndEffectIntoGUI(itemStack, x, y);
 
 		//render the item's durability bar
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, itemStack, x, y, null);
+		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, x, y, null);
 		
 		GL11.glDisable(GL11.GL_LIGHTING);	//the itemRenderer.renderItem() method enables lighting
 		
@@ -336,8 +336,8 @@ public class DurabilityInfo extends ZyinHUDModBase
 			//render the number of durability it has left
 			if(itemStack.getItemDamage() != 0)
 			{
-				boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
-				mc.fontRendererObj.setUnicodeFlag(true);
+				boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
+				mc.fontRenderer.setUnicodeFlag(true);
 				
 				String damageStringText;
 				int itemDamage = itemStack.getItemDamage();
@@ -368,16 +368,16 @@ public class DurabilityInfo extends ZyinHUDModBase
 					damageStringText = "";
 				}
 				
-				int damageStringX = x + toolX - mc.fontRendererObj.getStringWidth(damageStringText);
-				int damageStringY = y + toolY - mc.fontRendererObj.FONT_HEIGHT - 2;
+				int damageStringX = x + toolX - mc.fontRenderer.getStringWidth(damageStringText);
+				int damageStringY = y + toolY - mc.fontRenderer.FONT_HEIGHT - 2;
 				int damageStringColor = 0xffffff;
 				
 				if(UseColoredNumbers)
 					damageStringColor = GetDamageColor(itemStack.getItemDamage(), itemStack.getMaxDamage());
 
 				GL11.glDisable(GL11.GL_DEPTH_TEST);	//so the text renders above the item
-				mc.fontRendererObj.drawStringWithShadow(damageStringText, damageStringX, damageStringY, damageStringColor);
-				mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
+				mc.fontRenderer.drawStringWithShadow(damageStringText, damageStringX, damageStringY, damageStringColor);
+				mc.fontRenderer.setUnicodeFlag(unicodeFlag);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 			}
 		}

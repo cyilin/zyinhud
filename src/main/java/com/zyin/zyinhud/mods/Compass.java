@@ -82,11 +82,11 @@ public class Compass extends ZyinHUDModBase
             	int x_padding;
 
         		//the font spacing is different if we are rendering in Unicode
-            	if(mc.fontRendererObj.getUnicodeFlag())
+            	if(mc.fontRenderer.getUnicodeFlag())
             	{
             		brackets = "[  ]";
-                	x = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
-                	x_padding = mc.fontRendererObj.getStringWidth(brackets)/2 - 4;
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 4;
                 	if(facing % 2 == 0)	//s,w,n,e
                 		x_padding += 2;
             		
@@ -94,14 +94,14 @@ public class Compass extends ZyinHUDModBase
             	else
             	{
             		brackets = "[   ]";
-                	x = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
-                	x_padding = mc.fontRendererObj.getStringWidth(brackets)/2 - 6;
+                	x = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
+                	x_padding = mc.fontRenderer.getStringWidth(brackets)/2 - 6;
                 	if(facing % 2 == 0)	//s,w,n,e
                 		x_padding += 3;
             	}
 
 
-                mc.fontRendererObj.drawStringWithShadow(TextFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
+                mc.fontRenderer.drawStringWithShadow(TextFormatting.RED + compassDirection, InfoLine.infoLineLocX + x + x_padding, InfoLine.infoLineLocY, 0xffffff);
 
                 return TextFormatting.GRAY + brackets;
             }

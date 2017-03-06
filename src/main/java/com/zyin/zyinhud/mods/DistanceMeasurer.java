@@ -111,9 +111,9 @@ public class DistanceMeasurer extends ZyinHUDModBase
             ScaledResolution res = new ScaledResolution(mc);
             int width = res.getScaledWidth();
             int height = res.getScaledHeight();
-            int distanceStringWidth = mc.fontRendererObj.getStringWidth(distanceString);
+            int distanceStringWidth = mc.fontRenderer.getStringWidth(distanceString);
             
-            mc.fontRendererObj.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
+            mc.fontRenderer.drawStringWithShadow(distanceString, width/2 - distanceStringWidth/2, height/2 - 10, 0xffffff);
         }
     }
 

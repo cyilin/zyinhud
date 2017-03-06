@@ -261,7 +261,7 @@ public class PlayerLocator extends ZyinHUDModBase {
             if (entity.getRidingEntity() != null)
                 overlayMessage = "    " + overlayMessage;    //make room for any icons we render
 
-            int overlayMessageWidth = mc.fontRendererObj.getStringWidth(overlayMessage);    //the width in pixels of the message
+            int overlayMessageWidth = mc.fontRenderer.getStringWidth(overlayMessage);    //the width in pixels of the message
             ScaledResolution res = new ScaledResolution(mc);
             int width = res.getScaledWidth();        //~427
             int height = res.getScaledHeight();        //~240
@@ -275,7 +275,7 @@ public class PlayerLocator extends ZyinHUDModBase {
             y = (y > height - 10 && !ShowPlayerHealth) ? height - 10 : y;
             y = (y > height - 20 && ShowPlayerHealth) ? height - 20 : y;
             if (y < 10 && InfoLine.infoLineLocY <= 1 &&
-                    (x > InfoLine.infoLineLocX + mc.fontRendererObj.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
+                    (x > InfoLine.infoLineLocX + mc.fontRenderer.getStringWidth(InfoLine.infoLineMessage) || x < InfoLine.infoLineLocX - overlayMessageWidth))
                 y = (y < 0) ? 0 : y;    //if the text is to the right or left of the info line then allow it to render in that open space
             else
                 y = (y < 10) ? 10 : y;    //use 10 instead of 0 so that we don't write text onto the top left InfoLine message area
@@ -287,7 +287,7 @@ public class PlayerLocator extends ZyinHUDModBase {
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             int color = (alpha << 24) + rgb;    //alpha:r:g:b, (alpha << 24) turns it into the format: 0x##000000
-            mc.fontRendererObj.drawStringWithShadow(overlayMessage, x, y, color);
+            mc.fontRenderer.drawStringWithShadow(overlayMessage, x, y, color);
 
             //also render whatever the player is currently riding on
             if (entity.getRidingEntity() instanceof EntityHorse) {
@@ -320,10 +320,10 @@ public class PlayerLocator extends ZyinHUDModBase {
                 int numHearts = (int) ((((EntityLivingBase) entity).getHealth() + 1) / 2);
                 String hpOverlayMessage = numHearts + "";
 
-                int hpOverlayMessageWidth = mc.fontRendererObj.getStringWidth(hpOverlayMessage);
+                int hpOverlayMessageWidth = mc.fontRenderer.getStringWidth(hpOverlayMessage);
                 int offsetX = (overlayMessageWidth - hpOverlayMessageWidth - 9) / 2;
 
-                mc.fontRendererObj.drawStringWithShadow(hpOverlayMessage, x + offsetX, y + 10, (alpha << 24) + 0xFFFFFF);
+                mc.fontRenderer.drawStringWithShadow(hpOverlayMessage, x + offsetX, y + 10, (alpha << 24) + 0xFFFFFF);
 
                 GL11.glColor4f(1f, 1f, 1f, ((float) alpha) / 0xFF);
                 ZyinHUDRenderer.RenderCustomTexture(x + offsetX + hpOverlayMessageWidth + 1, y + 9, 16, 0, 9, 9, iconsResourceLocation, 1f);    //black outline of the heart icon

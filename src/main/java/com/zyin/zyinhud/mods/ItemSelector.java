@@ -327,8 +327,8 @@ public class ItemSelector extends ZyinHUDModBase
 		{
 			String labelText = currentInventory.get(targetInvSlot).getDisplayName();
 			//String labelText = currentInventory[targetInvSlot].getChatComponent().getFormattedText();
-			int labelWidth = mc.fontRendererObj.getStringWidth(labelText);
-			mc.fontRendererObj.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRendererObj.FONT_HEIGHT - 2, 0xFFFFFFFF);
+			int labelWidth = mc.fontRenderer.getStringWidth(labelText);
+			mc.fontRenderer.drawStringWithShadow(labelText, (screenWidth / 2) - (labelWidth / 2), originZ - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFFFFF);
 		}
 		
 		GL11.glEnable(EXTRescaleNormal.GL_RESCALE_NORMAL_EXT);
@@ -382,7 +382,7 @@ public class ItemSelector extends ZyinHUDModBase
 					if (anim > 0.0F)
 						GL11.glPopMatrix();
 
-					itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, itemStack, dimX, dimZ, null);
+					itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, itemStack, dimX, dimZ, null);
 				}
 
 				idx++;

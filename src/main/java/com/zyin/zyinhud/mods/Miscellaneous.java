@@ -101,7 +101,7 @@ public class Miscellaneous extends ZyinHUDModBase
 			else
 				leftItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
 
-			mc.fontRendererObj.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
+			mc.fontRenderer.drawString(leftItemRepairCost, guiRepairXOrigin + 26, guiRepairYOrigin + 37, 0xffffff);
 		}
         if(!rightItemStack.isEmpty())
         {
@@ -113,7 +113,7 @@ public class Miscellaneous extends ZyinHUDModBase
 			else
 				rightItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
 
-			mc.fontRendererObj.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
+			mc.fontRenderer.drawString(rightItemRepairCost, guiRepairXOrigin + 76, guiRepairYOrigin + 37, 0xffffff);
 		}
         if(!leftItemStack.isEmpty() && !rightItemStack.isEmpty())
         {
@@ -121,7 +121,7 @@ public class Miscellaneous extends ZyinHUDModBase
 			String finalItemRepairCost = TextFormatting.DARK_GRAY.toString() + timesRepaired + "/" + maxRepairTimes;
 
 			if(timesRepaired <= maxRepairTimes) {
-        		mc.fontRendererObj.drawString(finalItemRepairCost, guiRepairXOrigin + 133, guiRepairYOrigin + 37, 0xffffff);
+        		mc.fontRenderer.drawString(finalItemRepairCost, guiRepairXOrigin + 133, guiRepairYOrigin + 37, 0xffffff);
 			}
 		}
 	}

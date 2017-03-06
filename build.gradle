@@ -35,7 +35,7 @@ if (System.getenv("TRAVIS_BUILD_NUMBER") != null) {
 }
 
 minecraft {
-    version = "1.11.2-13.20.0.2201"
+    version = "1.11.2-13.20.0.2252"
     runDir = "run"
 
     // the mappings can be changed at any time, and must be in the following format.
@@ -43,7 +43,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20161228"
+    mappings = "snapshot_20170304"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     replaceIn "com/zyin/zyinhud/ZyinHUD.java"
     replace "@VERSION@", project.version

@@ -35,6 +35,6 @@ public class GuiLabeledButton extends GuiButton
 		super.drawButton(mc, mouseX, mouseY);
 		
 		if(buttonLabel != null)
-			mc.fontRendererObj.drawStringWithShadow(buttonLabel, this.xPosition + 3, this.yPosition + (height-mc.fontRendererObj.FONT_HEIGHT)/2 + 1, 0x55ffffff);	//func_175063_a() is drawStringWithShadow()
+			mc.fontRenderer.drawStringWithShadow(buttonLabel, this.xPosition + 3, this.yPosition + (height-mc.fontRenderer.FONT_HEIGHT)/2 + 1, 0x55ffffff);	//func_175063_a() is drawStringWithShadow()
 	}
 }

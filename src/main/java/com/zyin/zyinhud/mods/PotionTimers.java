@@ -241,20 +241,20 @@ public class PotionTimers extends ZyinHUDModBase {
             colorInt = 0xFFFFFF;
 
 
-        boolean unicodeFlag = mc.fontRendererObj.getUnicodeFlag();
-        mc.fontRendererObj.setUnicodeFlag(true);
+        boolean unicodeFlag = mc.fontRenderer.getUnicodeFlag();
+        mc.fontRenderer.setUnicodeFlag(true);
 
         //render the potion duration text onto the screen
         if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])    //if the text is not blinking then render it normally
         {
-            mc.fontRendererObj.drawStringWithShadow(potionText, x, y, colorInt);
+            mc.fontRenderer.drawStringWithShadow(potionText, x, y, colorInt);
         } else //else if the text is blinking, have a chance to not render it based on the blinking variables
         {
             //logic to determine if the text should be displayed, checks the blinking text settings
             for (int j = 0; j < blinkingThresholds.length; j++) {
                 if (potionDuration < blinkingThresholds[j]) {
                     if (potionDuration % blinkingSpeed[j] > blinkingDuration[j]) {
-                        mc.fontRendererObj.drawStringWithShadow(potionText, x, y, colorInt);
+                        mc.fontRenderer.drawStringWithShadow(potionText, x, y, colorInt);
                     }
 
                     break;
@@ -262,7 +262,7 @@ public class PotionTimers extends ZyinHUDModBase {
             }
         }
 
-        mc.fontRendererObj.setUnicodeFlag(unicodeFlag);
+        mc.fontRenderer.setUnicodeFlag(unicodeFlag);
     }
 
     /**

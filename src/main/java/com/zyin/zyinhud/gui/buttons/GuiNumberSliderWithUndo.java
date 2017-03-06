@@ -72,7 +72,7 @@ public class GuiNumberSliderWithUndo extends GuiNumberSlider
 			undoSymbolColor = 0x55ffff;	//0x55ffff is the same as EnumChatFormatting.AQUA
 		}
 		
-		mc.fontRendererObj.drawStringWithShadow(undoSymbol, undoSymbolX, undoSymbolY, undoSymbolColor);	//func_175063_a() is drawStringWithShadow()
+		mc.fontRenderer.drawStringWithShadow(undoSymbol, undoSymbolX, undoSymbolY, undoSymbolColor);	//func_175063_a() is drawStringWithShadow()
 	}
 
 	/**

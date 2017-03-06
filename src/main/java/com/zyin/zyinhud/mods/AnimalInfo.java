@@ -232,11 +232,11 @@ public class AnimalInfo extends ZyinHUDModBase {
                 for (int i = 0; i < list.size(); ++i) {
                     String s = (String) list.get(i);
 
-                    int height = mc.fontRendererObj.FONT_HEIGHT;
-                    int width = mc.fontRendererObj.getStringWidth(s);
+                    int height = mc.fontRenderer.FONT_HEIGHT;
+                    int width = mc.fontRenderer.getStringWidth(s);
                     int y = 2 + height * i + 144 + height + height;
                     Gui.drawRect(1, y - 1, 2 + width + 1, y + height - 1, -0xa9AFAFB0);
-                    mc.fontRendererObj.drawString(s, 2, y, 0xE0E0E0);
+                    mc.fontRenderer.drawString(s, 2, y, 0xE0E0E0);
                 }
             }
         }

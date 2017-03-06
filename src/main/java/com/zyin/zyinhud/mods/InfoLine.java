@@ -142,7 +142,7 @@ public class InfoLine extends ZyinHUDModBase
             	animals += SPACER;
             infoLineMessage += animals;
 
-            mc.fontRendererObj.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
+            mc.fontRenderer.drawStringWithShadow(infoLineMessage, infoLineLocX, infoLineLocY, 0xffffff);
         }
     }
 
@@ -167,7 +167,7 @@ public class InfoLine extends ZyinHUDModBase
     		float scaler = 0.66f;
     		GL11.glScalef(scaler, scaler, scaler);
     		
-    		int x = (int)(mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
+    		int x = (int)(mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint) / scaler);
     		int y = (int)(-1);
     		
     		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.SNOWBALL), x, y);

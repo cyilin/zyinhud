@@ -333,22 +333,22 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
             };
 
             for (int i = 0; i < text.length; i++) {
-                int strWidth = fontRendererObj.getStringWidth(text[i]);
+                int strWidth = fontRenderer.getStringWidth(text[i]);
                 int xOffset = -strWidth;
                 int yOffset = -(lineHeight * (text.length - i));
 
                 GL11.glEnable(GL11.GL_BLEND);    //for transparent text
-                fontRendererObj.drawString(text[i], x + xOffset, y + yOffset, 0x22ffffff);
+                fontRenderer.drawString(text[i], x + xOffset, y + yOffset, 0x22ffffff);
                 GL11.glDisable(GL11.GL_BLEND);
             }
         } else if (currentlySelectedTabButton.id == 1600)    //Quick Deposit
         {
             String text = TextFormatting.UNDERLINE + Localization.get("quickdeposit.options.blacklist");
 
-            int x = tabbedButtonWidth + tabbedButtonX + buttonSpacing * 2 + buttonWidth + buttonSpacing * 2 + buttonWidth / 2 - fontRendererObj.getStringWidth(text) / 2;
-            int y = buttonY - buttonHeight / 2 - fontRendererObj.FONT_HEIGHT / 2 + 3;
+            int x = tabbedButtonWidth + tabbedButtonX + buttonSpacing * 2 + buttonWidth + buttonSpacing * 2 + buttonWidth / 2 - fontRenderer.getStringWidth(text) / 2;
+            int y = buttonY - buttonHeight / 2 - fontRenderer.FONT_HEIGHT / 2 + 3;
 
-            fontRendererObj.drawString(text, x, y, 0xffffff);
+            fontRenderer.drawString(text, x, y, 0xffffff);
         }
     }
 
@@ -1546,7 +1546,7 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
      */
     public void drawScreen(int par1, int par2, float par3) {
         drawDefaultBackground();
-        drawCenteredString(fontRendererObj, screenTitle, width / 2, 15, 0xFFFFFF);
+        drawCenteredString(fontRenderer, screenTitle, width / 2, 15, 0xFFFFFF);
 
         DrawMiscText();
 

@@ -189,7 +189,7 @@ public class Clock extends ZyinHUDModBase
         	}
         	else if(Clock.Mode == Modes.GRAPHIC)
         	{
-        		int infoLineWidth = mc.fontRendererObj.getStringWidth(infoLineMessageUpToThisPoint);
+        		int infoLineWidth = mc.fontRenderer.getStringWidth(infoLineMessageUpToThisPoint);
         		
         		itemRenderer.renderItemAndEffectIntoGUI(new ItemStack(Items.CLOCK), infoLineWidth + InfoLine.infoLineLocX, InfoLine.infoLineLocY);
         		

@@ -299,7 +299,7 @@ public class ZyinHUDRenderer
         int textWidth = 0;
         for (String thisMessage : text)
         {
-            int thisMessageWidth = mc.fontRendererObj.getStringWidth(thisMessage);
+            int thisMessageWidth = mc.fontRenderer.getStringWidth(thisMessage);
 
             if (thisMessageWidth > textWidth)
             	textWidth = thisMessageWidth;
@@ -342,7 +342,7 @@ public class ZyinHUDRenderer
         int i = 0;
         for(String message : text)
         {
-        	mc.fontRendererObj.drawString(message, -textWidth / 2, i*lineHeight, color);
+        	mc.fontRenderer.drawString(message, -textWidth / 2, i*lineHeight, color);
         	i++;
         }
         GlStateManager.enableDepth();
