@@ -549,14 +549,9 @@ public class AnimalInfo extends ZyinHUDModBase {
      * @return e.x. 1.2?-5.5?
      */
     private static double GetHorseMaxJump(AbstractHorse horse) {
-        //simulate gravity and air resistance to determine the jump height
-        double yVelocity = horse.getHorseJumpStrength();    //horses's jump strength attribute
-        double jumpHeight = 0;
-        while (yVelocity > 0) {
-            jumpHeight += yVelocity;
-            yVelocity -= 0.08;
-            yVelocity *= 0.98;
-        }
+        double jumpPower = 1.0D; //see AbstractHorse.setJumpPower()
+        double maxJumpStrength = horse.getHorseJumpStrength() * jumpPower;
+        double jumpHeight = (-0.1817584952 * Math.pow(maxJumpStrength, 3)) + (3.689713992 * Math.pow(maxJumpStrength, 2)) + (2.128599134 * maxJumpStrength) - 0.343930367;
         return jumpHeight;
     }
     
