@@ -504,6 +504,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
         AddButtonAt(1, 0, new GuiButton(1009, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showvanillastatuseffecthud", PotionTimers.ShowVanillaStatusEffectHUD)));
         AddButtonAt(1, 1, new GuiButton(1010, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showeffectname", PotionTimers.ShowEffectName)));
         AddButtonAt(1, 2, new GuiButton(1011, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.showeffectlevel", PotionTimers.ShowEffectLevel)));
+        AddButtonAt(1, 3, new GuiButton(1012, 0, 0, buttonWidth, buttonHeight, GetButtonLabel_Boolean("potiontimers.options.dontblinkbeaconpotioneffects", PotionTimers.DontBlinkBeaconPotionEffects)));
+
     }
 
     private void DrawDurabilityInfoButtons() {
@@ -1018,7 +1020,10 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
                     PotionTimers.ToggleShowEffectLevel();
                     button.displayString = GetButtonLabel_Boolean("potiontimers.options.showeffectlevel", PotionTimers.ShowEffectLevel);
                     break;
-
+                case 1012:    //Don't blink beacon potion effects
+                    PotionTimers.ToggleNotBlinkingBeaconPotionEffects();
+                    button.displayString = GetButtonLabel_Boolean("potiontimers.options.dontblinkbeaconpotioneffects", PotionTimers.DontBlinkBeaconPotionEffects);
+                    break;
                 /////////////////////////////////////////////////////////////////////////
                 // Durability Info
                 /////////////////////////////////////////////////////////////////////////

@@ -492,6 +492,12 @@ public class ZyinHUDConfig {
         else
             p.set(PotionTimers.HideBeaconPotionEffects);
 
+        p = config.get(CATEGORY_POTIONTIMERS, "NotBlinkingBeaconPotionEffects", false);
+        if (loadSettings)
+            PotionTimers.DontBlinkBeaconPotionEffects = p.getBoolean(false);
+        else
+            p.set(PotionTimers.DontBlinkBeaconPotionEffects);
+
         p = config.get(CATEGORY_POTIONTIMERS, "ShowVanillaStatusEffectHUD", true);
         if (loadSettings)
             PotionTimers.ShowVanillaStatusEffectHUD = p.getBoolean(true);

@@ -224,7 +224,8 @@ potiontimers.options.hidebeaconpotioneffects=隐藏信标药水效果:
 potiontimers.options.showvanillastatuseffecthud=原版状态效果HUD:
 potiontimers.options.showvanillastatuseffecthud.tooltip=显示/隐藏原版状态效果HUD:
 potiontimers.options.showeffectname=显示效果名称: 
-potiontimers.options.showeffectlevel=显示效果级别: 
+potiontimers.options.showeffectlevel=显示效果级别:
+potiontimers.options.dontblinkbeaconpotioneffects=不闪烁信标药水效果:
 
 safeoverlay.name=安全覆盖
 safeoverlay.mode.off=关

@@ -227,6 +227,7 @@ potiontimers.options.showvanillastatuseffecthud=Vanilla potion HUD:
 potiontimers.options.showvanillastatuseffecthud.tooltip=Enable/disable the vanilla status effects HUD
 potiontimers.options.showeffectname=Show effect name: 
 potiontimers.options.showeffectlevel=Show effect level: 
+potiontimers.options.hidebeaconpotioneffects=Don't blink beacon effect:
 
 safeoverlay.name=Safe Overlay
 safeoverlay.mode.off=Off
