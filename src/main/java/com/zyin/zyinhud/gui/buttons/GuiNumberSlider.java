@@ -166,7 +166,7 @@ public class GuiNumberSlider extends GuiButton
         {
             if (dragging)
             {
-                sliderValue = (float)(x - (xPosition + 4)) / (float)(width - 8);
+                sliderValue = (float)(x - (this.x + 4)) / (float)(width - 8);
 
                 if (sliderValue < 0.0F)
                 {
@@ -182,8 +182,8 @@ public class GuiNumberSlider extends GuiButton
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)), yPosition, 0, 66, 4, 20);
-            this.drawTexturedModalRect(xPosition + (int)(sliderValue * (float)(width - 8)) + 4, yPosition, 196, 66, 4, 20);
+            this.drawTexturedModalRect(this.x + (int)(sliderValue * (float)(width - 8)), this.y, 0, 66, 4, 20);
+            this.drawTexturedModalRect(this.x + (int)(sliderValue * (float)(width - 8)) + 4, this.y, 196, 66, 4, 20);
         }
     }
 
@@ -195,7 +195,7 @@ public class GuiNumberSlider extends GuiButton
     {
         if (super.mousePressed(mc, x, y))
         {
-            sliderValue = (float)(x - (xPosition + 4)) / (float)(width - 8);
+            sliderValue = (float)(x - (this.x + 4)) / (float)(width - 8);
 
             if (sliderValue < 0.0F)
             {

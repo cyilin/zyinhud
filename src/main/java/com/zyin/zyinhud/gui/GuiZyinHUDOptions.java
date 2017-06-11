@@ -399,8 +399,8 @@ public class GuiZyinHUDOptions extends GuiTooltipScreen {
      * @param button
      */
     private void AddButtonAt(int column, int row, GuiButton button) {
-        button.xPosition = tabbedButtonWidth + tabbedButtonX + buttonSpacing * 2 + (buttonWidth + buttonSpacing * 2) * column;
-        button.yPosition = buttonY + (buttonHeight + buttonSpacing) * row;
+        button.x = tabbedButtonWidth + tabbedButtonX + buttonSpacing * 2 + (buttonWidth + buttonSpacing * 2) * column;
+        button.y = buttonY + (buttonHeight + buttonSpacing) * row;
 
         buttonList.add(button);
     }

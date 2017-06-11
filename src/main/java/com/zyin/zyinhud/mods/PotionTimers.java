@@ -299,13 +299,13 @@ public class PotionTimers extends ZyinHUDModBase {
     public static void DisableInventoryPotionEffects(InventoryEffectRenderer guiScreen) {
         if (PotionTimers.Enabled && HidePotionEffectsInInventory) {
             //Note for future Forge versions: field "field_147045_u" will probably be renamed to something like "playerHasPotionEffects"
-            boolean playerHasPotionEffects = ObfuscationReflectionHelper.getPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, "field_147045_u");
+            boolean playerHasPotionEffects = ObfuscationReflectionHelper.getPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, "field_147045_u", "hasActivePotionEffects");
 
             if (playerHasPotionEffects) {
                 int guiLeftPx = (guiScreen.width - 176) / 2;
 
                 ObfuscationReflectionHelper.setPrivateValue(GuiContainer.class, (GuiContainer) guiScreen, guiLeftPx, "field_147003_i", "guiLeft");
-                ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, false, "field_147045_u");
+                ObfuscationReflectionHelper.setPrivateValue(InventoryEffectRenderer.class, (InventoryEffectRenderer) guiScreen, false, "field_147045_u", "hasActivePotionEffects");
             }
         }
     }

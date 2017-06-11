@@ -58,13 +58,14 @@ public class GuiNumberSliderWithUndo extends GuiNumberSlider
 		this.defaultValue = defaultValue;
 	}
 	
-	public void drawButton(Minecraft mc, int mouseX, int mouseY)
+	@Override
+	public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float partialTicks)
 	{
-		super.drawButton(mc, mouseX, mouseY);
+		super.func_191745_a(mc, mouseX, mouseY, partialTicks);
 
 		int undoSymbolColor = 0xffffff;
-    	undoSymbolX = xPosition + width - (undoSymbolWidth+1);
-    	undoSymbolY =  yPosition + height - (undoSymbolHeight+1);
+    	undoSymbolX = this.x + width - (undoSymbolWidth+1);
+    	undoSymbolY =  this.y + height - (undoSymbolHeight+1);
 		
 		//if mouseovered the undo symbol
 		if(IsUndoMouseovered(mouseX, mouseY))

@@ -85,7 +85,7 @@ public class HUDEntityTrackerHelper {
             if (mc.gameSettings.thirdPersonView == 2)
             {
                 // reversed 3rd-person view; flip the look direction
-                lookDir = new Vec3d(lookDir.xCoord * -1, lookDir.yCoord * -1, lookDir.zCoord * -1);
+                lookDir = new Vec3d(lookDir.x * -1, lookDir.y * -1, lookDir.z * -1);
             }
             
             ScaledResolution res = new ScaledResolution(mc);
@@ -118,9 +118,9 @@ public class HUDEntityTrackerHelper {
                 // direction to target entity
                 Vec3d toEntity = new Vec3d(entityX - meX, entityY - meY, entityZ - meZ);
                 
-                float x = (float)toEntity.xCoord;
-                float y = (float)toEntity.yCoord;
-                float z = (float)toEntity.zCoord;
+                float x = (float)toEntity.x;
+                float y = (float)toEntity.y;
+                float z = (float)toEntity.z;
                 
                 double dist = toEntity.lengthVector();
                 toEntity = toEntity.normalize();
@@ -136,9 +136,9 @@ public class HUDEntityTrackerHelper {
                     final double cos = Math.cos(angle);
 
                     Vec3d ortho = lookDir.crossProduct(toEntity); // vector orthogonal to look direction and direction to target entity
-                    double ox = ortho.xCoord;
-                    double oy = ortho.yCoord;
-                    double oz = ortho.zCoord;
+                    double ox = ortho.x;
+                    double oy = ortho.y;
+                    double oz = ortho.z;
                     
                     // build a rotation matrix to rotate around a vector (ortho) by an angle (89 degrees)
                     // from http://en.wikipedia.org/wiki/Rotation_matrix#Rotation_matrix_from_axis_and_angle
@@ -154,9 +154,9 @@ public class HUDEntityTrackerHelper {
                     
                     // transform (multiply) look direction vector with rotation matrix and scale by distance to target entity;
                     // this produces the coordinates for the dummy target
-                    x = (float)(dist * (m00*lookDir.xCoord + m01*lookDir.yCoord + m02*lookDir.zCoord));
-                    y = (float)(dist * (m10*lookDir.xCoord + m11*lookDir.yCoord + m12*lookDir.zCoord));
-                    z = (float)(dist * (m20*lookDir.xCoord + m21*lookDir.yCoord + m22*lookDir.zCoord));
+                    x = (float)(dist * (m00*lookDir.x + m01*lookDir.y + m02*lookDir.z));
+                    y = (float)(dist * (m10*lookDir.x + m11*lookDir.y + m12*lookDir.z));
+                    z = (float)(dist * (m20*lookDir.x + m21*lookDir.y + m22*lookDir.z));
                 }
                 
                 FloatBuffer screenCoords = BufferUtils.createFloatBuffer(3);

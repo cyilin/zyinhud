@@ -235,11 +235,11 @@ public class InventoryUtil {
         //boolean
         EnumActionResult sendUseBlock_result = mc.playerController.processRightClickBlock(mc.player,
                 mc.world,
-                new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord),
+                new BlockPos(mc.objectMouseOver.hitVec.x, mc.objectMouseOver.hitVec.y, mc.objectMouseOver.hitVec.z),
                 mc.objectMouseOver.sideHit,
                 mc.objectMouseOver.hitVec,
                 EnumHand.MAIN_HAND);
-        BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.xCoord, mc.objectMouseOver.hitVec.yCoord, mc.objectMouseOver.hitVec.zCoord);
+        BlockPos pos = new BlockPos(mc.objectMouseOver.hitVec.x, mc.objectMouseOver.hitVec.y, mc.objectMouseOver.hitVec.z);
         boolean sendUseBlock = (sendUseBlock_result == EnumActionResult.SUCCESS);
         return sendUseBlock;
     }
