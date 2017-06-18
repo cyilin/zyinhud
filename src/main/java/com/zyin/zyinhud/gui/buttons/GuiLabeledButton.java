@@ -31,9 +31,9 @@ public class GuiLabeledButton extends GuiButton
 	}
 	
 	@Override
-	public void func_191745_a(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+	public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
 	{
-		super.func_191745_a(mc, mouseX, mouseY, partialTicks);
+		super.drawButton(mc, mouseX, mouseY, partialTicks);
 		
 		if(buttonLabel != null)
 			mc.fontRenderer.drawStringWithShadow(buttonLabel, this.x + 3, this.y + (height-mc.fontRenderer.FONT_HEIGHT)/2 + 1, 0x55ffffff);	//func_175063_a() is drawStringWithShadow()
