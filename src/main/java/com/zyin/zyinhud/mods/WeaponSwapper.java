@@ -193,14 +193,14 @@ public class WeaponSwapper extends ZyinHUDModBase
     public static double GetItemWeaponDamage(ItemStack itemStack)
     {
         EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
-        Multimap multimap = itemStack.getItem().getAttributeModifiers(EquipmentSlot, itemStack);
+        Multimap<String, AttributeModifier> multimap = itemStack.getItem().getAttributeModifiers(EquipmentSlot, itemStack);
         double enchantDamage=GetEnchantDamage(itemStack);
         
         if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getName())) {
-            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
-            if (attributes.size() > 0) {
+            Collection<AttributeModifier> attributes = multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getName());
+            if (!attributes.isEmpty()) {
 				Object attribute = attributes.iterator().next();
-				if (attribute instanceof AttributeModifier)
+				if (attribute != null)
 				{
 					AttributeModifier weaponModifier = (AttributeModifier)attribute;
                     return weaponModifier.getAmount() + enchantDamage;
@@ -332,13 +332,13 @@ public class WeaponSwapper extends ZyinHUDModBase
 
     public static double GetAttackSpeed(ItemStack item) {
         EntityEquipmentSlot EquipmentSlot = EntityEquipmentSlot.MAINHAND;
-        Multimap multimap = item.getItem().getAttributeModifiers(EquipmentSlot, item);
+        Multimap<String, AttributeModifier> multimap = item.getItem().getAttributeModifiers(EquipmentSlot, item);
 
         if (multimap.containsKey(SharedMonsterAttributes.ATTACK_SPEED.getName())) {
-            Collection attributes = multimap.get(SharedMonsterAttributes.ATTACK_SPEED.getName());
-            if (attributes.size() > 0) {
+            Collection<AttributeModifier> attributes = multimap.get(SharedMonsterAttributes.ATTACK_SPEED.getName());
+            if (!attributes.isEmpty()) {
                 Object attribute = attributes.iterator().next();
-                if (attribute instanceof AttributeModifier) {
+                if (attribute != null) {
                     return (4.0D)+(((AttributeModifier) attribute).getAmount());
                 }
             }

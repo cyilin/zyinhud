@@ -300,7 +300,7 @@ public class AnimalInfo extends ZyinHUDModBase {
         //a positive value means the horse has bred recently
         int animalGrowingAge = animal.getGrowingAge();
 
-        ArrayList<String> multilineOverlayArrayList = new ArrayList();
+        ArrayList<String> multilineOverlayArrayList = new ArrayList<>();
 
         if (ShowHorseStatsOverlay && animal instanceof AbstractHorse) {
             AbstractHorse horse = (AbstractHorse) animal;
@@ -324,7 +324,7 @@ public class AnimalInfo extends ZyinHUDModBase {
         */
 
         String[] multilineOverlayMessage = new String[1];
-        multilineOverlayMessage = (String[]) multilineOverlayArrayList.toArray(multilineOverlayMessage);
+        multilineOverlayMessage = multilineOverlayArrayList.toArray(multilineOverlayMessage);
 
         if (multilineOverlayMessage[0] != null) {
             //render the overlay message
@@ -551,13 +551,11 @@ public class AnimalInfo extends ZyinHUDModBase {
     private static double GetHorseMaxJump(AbstractHorse horse) {
         double jumpPower = 1.0D; //see AbstractHorse.setJumpPower()
         double maxJumpStrength = horse.getHorseJumpStrength() * jumpPower;
-        double jumpHeight = (-0.1817584952 * Math.pow(maxJumpStrength, 3)) + (3.689713992 * Math.pow(maxJumpStrength, 2)) + (2.128599134 * maxJumpStrength) - 0.343930367;
-        return jumpHeight;
+        return (-0.1817584952 * Math.pow(maxJumpStrength, 3)) + (3.689713992 * Math.pow(maxJumpStrength, 2)) + (2.128599134 * maxJumpStrength) - 0.343930367;
     }
     
     private static int GetLlamaStrength(EntityLlama llama) {
-        int strength = llama.getStrength();
-        return strength;
+        return llama.getStrength();
     }
 
     /**

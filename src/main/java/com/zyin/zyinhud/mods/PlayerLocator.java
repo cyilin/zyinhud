@@ -1,5 +1,7 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.ZyinHUDRenderer;
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
@@ -20,13 +22,9 @@ import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
-
-import com.zyin.zyinhud.ZyinHUDRenderer;
-import com.zyin.zyinhud.util.Localization;
 
 /**
  * The Player Locator checks for nearby players and displays their name on screen wherever they are.
@@ -127,8 +125,7 @@ public class PlayerLocator extends ZyinHUDModBase {
     private static final ResourceLocation iconsResourceLocation = new ResourceLocation("textures/gui/icons.png");
 
     private static final double pi = Math.PI;
-
-    private static final String wolfName = Localization.get("entity.Wolf.name");
+    
     private static final String sprintingMessagePrefix = "";
     private static final String sneakingMessagePrefix = TextFormatting.ITALIC.toString();
     private static final String ridingMessagePrefix = "    ";    //space for the saddle/minecart/boat/horse armor icon
@@ -309,7 +306,7 @@ public class PlayerLocator extends ZyinHUDModBase {
             } else if (entity.getRidingEntity() instanceof EntityMinecart) {
                 RenderMinecartIcon(x, y);
             } else if (entity.getRidingEntity() instanceof EntityBoat) {
-                RenderBoatIcon(x, y);
+                RenderBoatIcon(x, y, ((EntityBoat) entity.getRidingEntity()).getItemBoat());
             } else if (entity instanceof EntityPlayer && ((EntityPlayer) entity).isElytraFlying()) {
                 RenderElytraIcon(x, y);
             }
@@ -342,8 +339,7 @@ public class PlayerLocator extends ZyinHUDModBase {
 
 
     private static String GetOverlayMessageForWitherSkeleton(EntityWitherSkeleton witherSkeleton, float distanceFromMe) {
-        //String overlayMessage = "Wither " + witherSkeleton.getCommandSenderEntity().getName();
-        String overlayMessage = "";
+        String overlayMessage;
         if (witherSkeleton.hasCustomName()) {
             overlayMessage = witherSkeleton.getName();
             overlayMessage += "(";
@@ -364,10 +360,10 @@ public class PlayerLocator extends ZyinHUDModBase {
     private static String GetOverlayMessageForWolf(EntityWolf wolf, float distanceFromMe) {
         String overlayMessage;
 
-        if (wolf.getCustomNameTag().isEmpty()) {
-            overlayMessage = wolfName;
+        if (wolf.hasCustomName()) {
+            overlayMessage = wolf.getCustomNameTag() + "(" + Localization.get("entity.Wolf.name") + ")";
         } else {
-            overlayMessage = wolf.getCustomNameTag();
+            overlayMessage = Localization.get("entity.Wolf.name");
         }
 
         //add distance to this wolf into the message
@@ -403,8 +399,8 @@ public class PlayerLocator extends ZyinHUDModBase {
         return overlayMessage;
     }
 
-    private static void RenderBoatIcon(int x, int y) {
-        itemRenderer.renderItemIntoGUI(new ItemStack(Items.BOAT), x, y - 4);
+    private static void RenderBoatIcon(int x, int y, Item boat) {
+        itemRenderer.renderItemIntoGUI(new ItemStack(boat), x, y - 4);
         GL11.glDisable(GL11.GL_LIGHTING);
     }
 

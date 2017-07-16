@@ -25,9 +25,9 @@ public class CommandZyinHUDOptions extends CommandBase
 	}
 	
 	@Override
-    public List getAliases()
+    public List<String> getAliases()
     {
-		List list = new ArrayList();
+		List<String> list = new ArrayList<>();
 		list.add("zh");
 		list.add("zyin");
 		list.add("zyinshud");
@@ -56,18 +56,4 @@ public class CommandZyinHUDOptions extends CommandBase
 		return "commands.zyinhudoptions.usage";
 	}
 
-
-	/**
-	 * Process command.
-	 *
-	 * @param iCommandSender the command sender
-	 * @param parameters     the parameters
-	 */
-	/*
-	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] parameters)
-	{
-		mc.displayGuiScreen(new GuiZyinHUDOptions(null));
-	}
-	*/
 }
