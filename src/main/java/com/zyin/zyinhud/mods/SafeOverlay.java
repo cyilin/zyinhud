@@ -1,14 +1,20 @@
 package com.zyin.zyinhud.mods;
 
 import com.zyin.zyinhud.util.Localization;
-import com.zyin.zyinhud.util.ZyinHUDUtil;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
+import net.minecraft.block.BlockMagma;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldEntitySpawner;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -33,7 +39,9 @@ public class SafeOverlay extends ZyinHUDModBase {
     public static boolean ToggleEnabled() {
         return Enabled = !Enabled;
     }
-
+    
+    public static EntityLiving zombie = null;
+    
     /**
      * The current mode for this mod
      */
@@ -127,13 +135,13 @@ public class SafeOverlay extends ZyinHUDModBase {
     private float unsafeOverlayMinTransparency = 0.11f;
     private float unsafeOverlayMaxTransparency = 1f;
 
-    private boolean displayInNether = false;
+    private static boolean displayInNether = false;
     private boolean renderUnsafePositionsThroughWalls = false;
 
-    private Position playerPosition;
+    private BlockPos playerPosition;
 
-    private static List<Position> unsafePositionCache = new ArrayList<Position>();    //used during threaded calculations
-    private static List<Position> unsafePositions = new ArrayList<Position>();        //used during renderinig
+    private static List<BlockPos> unsafePositionCache = new ArrayList<>();    //used during threaded calculations
+    private static List<BlockPos> unsafePositions = new ArrayList<>();        //used during renderinig
 
     private Thread safeCalculatorThread = null;
 
@@ -147,10 +155,10 @@ public class SafeOverlay extends ZyinHUDModBase {
      * Instantiates a new Safe overlay.
      */
     protected SafeOverlay() {
-        playerPosition = new Position();
+        playerPosition = new BlockPos(0, 0, 0);
 
         //Don't let multiple threads access this list at the same time by making it a Synchronized List
-        unsafePositionCache = Collections.synchronizedList(new ArrayList<Position>());
+        unsafePositionCache = Collections.synchronizedList(new ArrayList<BlockPos>());
     }
 
     /**
@@ -171,17 +179,17 @@ public class SafeOverlay extends ZyinHUDModBase {
         /**
          * The Cached player position.
          */
-        Position cachedPlayerPosition;
+        BlockPos cachedPlayerPosition;
 
         /**
          * Instantiates a new Safe calculator thread.
          *
          * @param playerPosition the player position
          */
-        SafeCalculatorThread(Position playerPosition) {
+        SafeCalculatorThread(BlockPos playerPosition) {
             super("Safe Overlay Calculator Thread");
             this.cachedPlayerPosition = playerPosition;
-
+            SafeOverlay.zombie = new EntityZombie(mc.player.world);
             //Start the thread
             start();
         }
@@ -189,20 +197,17 @@ public class SafeOverlay extends ZyinHUDModBase {
         //This is the entry point for the thread after start() is called.
         public void run() {
             unsafePositionCache.clear();
-
-            Position pos = new Position();
-
             try {
 
                 for (int x = -drawDistance; x < drawDistance; x++) {
                     for (int y = -drawDistance; y < drawDistance; y++) {
                         for (int z = -drawDistance; z < drawDistance; z++) {
-                            pos.x = cachedPlayerPosition.x + x;
-                            pos.y = cachedPlayerPosition.y + y;
-                            pos.z = cachedPlayerPosition.z + z;
+                            BlockPos pos = new BlockPos(cachedPlayerPosition.getX() + x,
+                                    cachedPlayerPosition.getY() + y,
+                                    cachedPlayerPosition.getZ() + z);
 
                             if (CanMobsSpawnAtPosition(pos)) {
-                                unsafePositionCache.add(new Position(pos));
+                                unsafePositionCache.add(pos);
                             }
                         }
                     }
@@ -222,45 +227,26 @@ public class SafeOverlay extends ZyinHUDModBase {
      * @param pos Position of the block whos surface gets checked
      * @return boolean
      */
-    public static boolean CanMobsSpawnAtPosition(Position pos) {
+    public static boolean CanMobsSpawnAtPosition(BlockPos pos) {
         //if a mob can spawn here, add it to the unsafe positions cache so it can be rendered as unsafe
         //4 things must be true for a mob to be able to spawn here:
         //1) mobs need to be able to spawn on top of this block (block with a solid top surface)
         //2) mobs need to be able to spawn inside of the block above (air, button, lever, etc)
         //3) needs < 8 light level
-        if (pos.CanMobsSpawnOnBlock(0, 0, 0) && pos.CanMobsSpawnInBlock(0, 1, 0) && pos.GetLightLevelWithoutSky() < 8) {
-            //4) 2 blocks above needs to be air for bipeds
-            if (mc.player.dimension != 1) {
-                if (pos.IsAirBlock(0, 2, 0))
-                    return true;
-            }
-
-            //4.5) 3 blocks above for Enderman (in the End)
-            else if (mc.player.dimension == 1) {
-                if (pos.IsAirBlock(0, 2, 0) && pos.IsAirBlock(0, 3, 0))
-                    return true;
-                else
-                    return false;
-            }
-
-
-            //5) 2 blocks above needs to be transparent (air, glass, stairs, etc) for spiders
-            if (!pos.IsOpaqueBlock(0, 2, 0))    //block is not solid (like air, glass, stairs, etc)
-            {
-                //check to see if a spider can spawn here by checking the 8 neighboring blocks
-                if (pos.CanMobsSpawnInBlock(-1, 1, 1) &&
-                        pos.CanMobsSpawnInBlock(-1, 1, 0) &&
-                        pos.CanMobsSpawnInBlock(-1, 1, -1) &&
-                        pos.CanMobsSpawnInBlock(0, 1, -1) &&
-                        pos.CanMobsSpawnInBlock(0, 1, 1) &&
-                        pos.CanMobsSpawnInBlock(1, 1, 1) &&
-                        pos.CanMobsSpawnInBlock(1, 1, 0) &&
-                        pos.CanMobsSpawnInBlock(1, 1, -1))
-                    return true;
+        if (mc.player == null || mc.player.world == null) {
+            return false;
+        }
+        World world = mc.player.world;
+        boolean canSpawn = false;
+        canSpawn = WorldEntitySpawner.canCreatureTypeSpawnAtLocation(EntityLiving.SpawnPlacementType.ON_GROUND, world, pos);
+        if (canSpawn) {
+            zombie.setLocationAndAngles(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D, 0.0F, 0.0F);
+            canSpawn = zombie.isNotColliding();
+            if (!SafeOverlay.displayInNether && world.getBlockState(pos).getBlock() instanceof BlockMagma) {
+                canSpawn = false;
             }
         }
-
-        return false;
+        return canSpawn && mc.world.getLightFor(EnumSkyBlock.BLOCK, pos) < 8;
     }
 
 
@@ -284,14 +270,14 @@ public class SafeOverlay extends ZyinHUDModBase {
         double y = mc.player.lastTickPosY + (mc.player.posY - mc.player.lastTickPosY) * partialTickTime;
         double z = mc.player.lastTickPosZ + (mc.player.posZ - mc.player.lastTickPosZ) * partialTickTime;
 
-        playerPosition = new Position((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
+        playerPosition = new BlockPos((int) Math.floor(x), (int) Math.floor(y), (int) Math.floor(z));
 
         if (safeCalculatorThread == null || !safeCalculatorThread.isAlive()) {
             if (unsafePositions != null)
                 unsafePositions.clear();
 
             if (unsafePositionCache != null && unsafePositions != null)
-                unsafePositions = new ArrayList<Position>(unsafePositionCache);
+                unsafePositions = new ArrayList<>(unsafePositionCache);
 
             safeCalculatorThread = new SafeCalculatorThread(playerPosition);
         }
@@ -318,7 +304,7 @@ public class SafeOverlay extends ZyinHUDModBase {
         GL11.glBegin(GL11.GL_LINES);    //begin drawing lines defined by 2 vertices
 
         //render unsafe areas
-        for (Position position : unsafePositions) {
+        for (BlockPos position : unsafePositions) {
             RenderUnsafeMarker(position);
         }
         //GL11.glColor4f(0, 0, 0, 1);    //change alpha back to 100% after we're done rendering
@@ -336,25 +322,30 @@ public class SafeOverlay extends ZyinHUDModBase {
      *
      * @param position A position defined by (x,y,z) coordinates
      */
-    protected void RenderUnsafeMarker(Position position) {
-        Block block = position.GetBlock(0, 0, 0);
-        Block blockAbove = position.GetBlock(0, 1, 0);
-
-        //block is null when attempting to render on an Air block
-        //we don't like null references so treat Air like an ordinary Stone block
-        block = (block == null) ? Blocks.STONE : block;
-
+    protected void RenderUnsafeMarker(BlockPos position) {
+        IBlockState state = mc.player.world.getBlockState(position);
+        Block block = state.getBlock();
         //get bounding box data for this block
         //don't bother for horizontal (X and Z) bounds because every hostile mob spawns on a 1.0 wide block
         //some blocks, like farmland, have a different vertical (Y) bound
-        double boundingBoxMinX = 0.0;
-        double boundingBoxMaxX = 1.0;
-        double boundingBoxMaxY = block.FULL_BLOCK_AABB.maxY;//Former <>.getBlockBoundsMaxY();	//almost always 1, but farmland is 0.9375
-        double boundingBoxMinZ = 0.0;
-        double boundingBoxMaxZ = 1.0;
+        AxisAlignedBB boundingBox = state.getBoundingBox(mc.player.world, position);
+        double boundingBoxMinX = 0.0D;
+        double boundingBoxMaxX = 1.0D;
+        double boundingBoxMaxY = 0.0D;
+        if (block instanceof BlockAir) {
+            boundingBoxMaxY = 0.0D;
+        } else if (boundingBox.maxY < 1.0 &&
+                ((boundingBox.maxX - boundingBox.minX) < 1.0 || (boundingBox.maxZ - boundingBox.minZ) < 1.0)) {
+            boundingBoxMaxY = 0.0D;
+        } else {
+            boundingBoxMaxY = boundingBox.maxY == 1.0D ? 0.0 : boundingBox.maxY;
+        }
+        double boundingBoxMinZ = 0.0D;
+        double boundingBoxMaxZ = 1.0D;
+
         float r, g, b, alpha;
-        int lightLevelWithSky = position.GetLightLevelWithSky();
-        int lightLevelWithoutSky = position.GetLightLevelWithoutSky();
+        int lightLevelWithSky = mc.world.getLightFor(EnumSkyBlock.SKY, position);
+        int lightLevelWithoutSky = mc.world.getLightFor(EnumSkyBlock.BLOCK, position);
 
         if (lightLevelWithSky > lightLevelWithoutSky && lightLevelWithSky > 7) {
             //yellow, but decrease the brightness of the "X" marks if the surrounding area is dark
@@ -376,39 +367,11 @@ public class SafeOverlay extends ZyinHUDModBase {
             alpha = unsafeOverlayTransparency;
         }
 
-        //Minecraft bug: the Y-bounds for half slabs and snow layers change if the user is aimed at them, so set them manually
-        if (block instanceof BlockSlab || block instanceof BlockSnow) {
-            boundingBoxMaxY = 1.0;
-        }
-
-        if (blockAbove != null)    //if block above is not an Air block
-        {
-
-            if (blockAbove instanceof BlockRailBase
-                    || blockAbove instanceof BlockBasePressurePlate
-                    || blockAbove instanceof BlockCarpet) {
-                //is there a spawnable block on top of this one?
-                //if so, then render the mark higher up to match its height
-                boundingBoxMaxY = 1 + blockAbove.FULL_BLOCK_AABB.maxY; //Former <>.getBlockBoundsMaxY();
-            } else if (blockAbove instanceof BlockSnow) {
-                //mobs only spawn on snow blocks that are stacked 1 high (when metadata = 0)
-                //Minecraft bug: the Y-bounds for stacked snow blocks is bugged and changes based on the last one you looked at
-
-                int snowMetadata = blockAbove.getMetaFromState(ZyinHUDUtil.GetBlockState(position.x, position.y + 1, position.z));
-
-                if (snowMetadata == 0)
-                    boundingBoxMaxY = 1 + 0.125;
-                else
-                    return;
-            }
-        }
-
-
-        double minX = position.x + boundingBoxMinX + 0.02;
-        double maxX = position.x + boundingBoxMaxX - 0.02;
-        double maxY = position.y + boundingBoxMaxY + 0.02;
-        double minZ = position.z + boundingBoxMinZ + 0.02;
-        double maxZ = position.z + boundingBoxMaxZ - 0.02;
+        double minX = position.getX() + boundingBoxMinX + 0.02;
+        double maxX = position.getX() + boundingBoxMaxX - 0.02;
+        double maxY = position.getY() + boundingBoxMaxY + 0.02;
+        double minZ = position.getZ() + boundingBoxMinZ + 0.02;
+        double maxZ = position.getZ() + boundingBoxMaxZ - 0.02;
 
         //render the "X" mark
         //since we are using doubles it causes the marks to 'flicker' when very far from spawn (~5000 blocks)
@@ -585,272 +548,5 @@ public class SafeOverlay extends ZyinHUDModBase {
      */
     public float GetUnsafeOverlayMaxTransparency() {
         return unsafeOverlayMaxTransparency;
-    }
-
-
-    /**
-     * Helper class to storing information about a location in the world.
-     * <p>
-     * It uses (x,y,z) coordinates to determine things like mob spawning, and helper methods
-     * to find blocks nearby.
-     */
-    class Position {
-        /**
-         * The X.
-         */
-        public int x;
-        /**
-         * The Y.
-         */
-        public int y;
-        /**
-         * The Z.
-         */
-        public int z;
-
-        /**
-         * Instantiates a new Position.
-         */
-        public Position() {
-        }
-
-        /**
-         * Instantiates a new Position.
-         *
-         * @param x the x
-         * @param y the y
-         * @param z the z
-         */
-        public Position(int x, int y, int z) {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-
-        /**
-         * Instantiates a new Position.
-         *
-         * @param o the o
-         */
-        public Position(Position o) {
-            this(o.x, o.y, o.z);
-        }
-
-        /**
-         * Instantiates a new Position.
-         *
-         * @param o  the o
-         * @param dx the dx
-         * @param dy the dy
-         * @param dz the dz
-         */
-        public Position(Position o, int dx, int dy, int dz) {
-            this(o.x + dx, o.y + dy, o.z + dz);
-        }
-
-        /**
-         * Gets the ID of a block relative to this block.
-         *
-         * @param dx x location relative to this block
-         * @param dy y location relative to this block
-         * @param dz z location relative to this block
-         * @return block
-         */
-        public Block GetBlock(int dx, int dy, int dz) {
-            return ZyinHUDUtil.GetBlock(x + dx, y + dy, z + dz);
-        }
-
-        /**
-         * Checks if mobs can spawn ON the block at a location.
-         *
-         * @param dx x location relative to this block
-         * @param dy y location relative to this block
-         * @param dz z location relative to this block
-         * @return true if mobs can spawn ON this block
-         */
-        public boolean CanMobsSpawnOnBlock(int dx, int dy, int dz) {
-            Block block = GetBlock(dx, dy, dz);
-
-            if (block == null
-                    || block == Blocks.AIR
-                    || block == Blocks.BEDROCK
-                    || block == Blocks.TNT
-                    || block instanceof BlockBarrier
-                    || block instanceof BlockCactus
-                    || block instanceof BlockFarmland
-                    || block instanceof BlockGlass
-                    || block instanceof BlockIce
-                    || block instanceof BlockLeaves
-                    || block instanceof BlockLever
-                    || block instanceof BlockLiquid
-                    || block instanceof BlockPane
-                    || block instanceof BlockStainedGlass
-                    || block instanceof BlockStairs
-                    || block instanceof BlockWall
-                    || block instanceof BlockWeb
-                    || block instanceof BlockMagma
-                    || block instanceof BlockShulkerBox) {
-                return false;
-            }
-
-            if (block.getBlockState().getBaseState().isOpaqueCube()
-                    || mc.world.isBlockFullCube(new BlockPos(x + dx, y + dy, z + dz))// FIXME: Temporary fix for former <>.doesBlockHaveSolidTopSurface(mc.theWorld, new BlockPos(x + dx, y + dy, z + dz))
-                    || block instanceof BlockFarmland)    //the one exception to the isOpaqueCube and doesBlockHaveSolidTopSurface rules
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Checks if mobs can spawn IN the block at a location.
-         *
-         * @param dx x location relative to this block
-         * @param dy y location relative to this block
-         * @param dz z location relative to this block
-         * @return true if mobs can spawn ON this block
-         */
-        public boolean CanMobsSpawnInBlock(int dx, int dy, int dz) {
-            Block block = GetBlock(dx, dy, dz);
-
-            if (block == null)    //air block
-            {
-                return true;
-            }
-
-            if (block.getBlockState().getBaseState().isOpaqueCube()) //majority of blocks: dirt, stone, etc.
-            {
-                return false;
-            }
-
-            //list of transparent blocks mobs can NOT spawn inside of.
-            //for example, they cannot spawn inside of leaves even though they are transparent.
-            //  (I wonder if the list shorter for blocks that mobs CAN spawn in?
-            //   lever, button, redstone  torches, reeds, rail, plants, crops, etc.)
-            return !(block instanceof BlockAnvil
-                    || block instanceof BlockBarrier
-                    || block instanceof BlockBed
-                    || block instanceof BlockButton
-                    || block instanceof BlockCactus
-                    || block instanceof BlockCake
-                    || block instanceof BlockCarpet
-                    || block instanceof BlockDaylightDetector
-                    || block instanceof BlockChest
-                    || block instanceof BlockFence
-                    || block instanceof BlockFenceGate
-                    || block instanceof BlockFlowerPot
-                    || block instanceof BlockGlass
-                    || block instanceof BlockIce
-                    || block instanceof BlockLeaves
-                    || block instanceof BlockLever
-                    || block instanceof BlockLiquid
-                    || block instanceof BlockPane
-                    || block instanceof BlockBasePressurePlate
-                    || block instanceof BlockRailBase
-                    || block instanceof BlockRedstoneDiode
-                    || block instanceof BlockRedstoneTorch
-                    || block instanceof BlockRedstoneWire
-                    || block instanceof BlockSkull
-                    || block instanceof BlockSlab
-                    || block instanceof BlockSlime
-                    || (block instanceof BlockSnow && block.getMetaFromState(ZyinHUDUtil.GetBlockState(x + dx, y + dy, z + dz)) > 0)    //has 1 out of 8 snow layers
-                    || block instanceof BlockStainedGlass
-                    || block instanceof BlockStairs
-                    || block instanceof BlockTrapDoor
-                    || block instanceof BlockWall
-                    || block instanceof BlockWeb
-                    || block instanceof BlockShulkerBox);
-        }
-
-        /**
-         * Checks if a block is an opqaue cube.
-         *
-         * @param dx x location relative to this block
-         * @param dy y location relative to this block
-         * @param dz z location relative to this block
-         * @return true if the block is opaque (like dirt, stone, etc.)
-         */
-        public boolean IsOpaqueBlock(int dx, int dy, int dz) {
-            Block block = GetBlock(dx, dy, dz);
-
-            if (block == null)    //air block
-            {
-                return false;
-            }
-
-            return block.getBlockState().getBaseState().isOpaqueCube();
-        }
-
-        /**
-         * Checks if a block is air.
-         *
-         * @param dx x location relative to this block
-         * @param dy y location relative to this block
-         * @param dz z location relative to this block
-         * @return true if the block is opaque (like dirt, stone, etc.)
-         */
-        public boolean IsAirBlock(int dx, int dy, int dz) {
-            Block block = GetBlock(dx, dy, dz);
-
-            if (block == Blocks.AIR) {
-                return true;
-            }
-
-            return false;
-        }
-
-        /**
-         * Gets the light level of the spot above this block. Does not take into account sunlight.
-         *
-         * @return 0 -15
-         */
-        public int GetLightLevelWithoutSky() {
-            return mc.world.getLightFor(EnumSkyBlock.BLOCK, new BlockPos(x, y + 1, z));
-        }
-
-        /**
-         * Gets the light level of the spot above this block. Take into account sunlight.
-         *
-         * @return 0 -15
-         */
-        public int GetLightLevelWithSky() {
-            return mc.world.getLightFor(EnumSkyBlock.SKY, new BlockPos(x, y + 1, z));
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            Position that = (Position) o;
-
-            if (x != that.x) {
-                return false;
-            }
-
-            if (y != that.y) {
-                return false;
-            }
-
-            if (z != that.z) {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int result = (x ^ (x >>> 16));
-            result = 31 * result + (y ^ (y >>> 16));
-            result = 31 * result + (z ^ (z >>> 16));
-            return result;
-        }
     }
 }
