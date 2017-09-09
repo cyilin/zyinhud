@@ -68,7 +68,7 @@ public class ZyinHUD {
     
     public static final String updateJSON = "https://raw.githubusercontent.com/cyilin/zyinhud-update/master/update.json";
 
-    public static final String dependencies = "required-after:forge@[13.20.0.2201,);";
+    public static final String dependencies = "required-after:forge@[14.21.1.2387,);";
     
     public static final String buildTime = "@BUILD_TIME@";
     

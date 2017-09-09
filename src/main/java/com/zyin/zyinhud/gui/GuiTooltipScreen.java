@@ -132,13 +132,13 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	 */
 	protected boolean IsButtonMouseovered(int mouseX, int mouseY, GuiButton button)
 	{
-		if(mouseX >= button.xPosition && mouseX <= button.xPosition + button.getButtonWidth() &&
-			mouseY >= button.yPosition)
+		if(mouseX >= button.x && mouseX <= button.x + button.getButtonWidth() &&
+			mouseY >= button.y)
 		{
 			//for some god-forsaken reason they made GuiButton.getButtonWidth() public but not height,
 			//so use reflection to grab it
 			int buttonHeight = button.height;
-			if(mouseY <= button.yPosition + buttonHeight)
+			if(mouseY <= button.y + buttonHeight)
 				return true;
 		}
 		return false;
@@ -154,7 +154,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 			if (GetButtonTooltip(button.id) != null) {
 				boolean flag = mc.fontRenderer.getUnicodeFlag();
 				mc.fontRenderer.setUnicodeFlag(true);
-				mc.fontRenderer.drawString("?", button.xPosition + button.getButtonWidth() - 5, button.yPosition, 0x99FFFFFF);
+				mc.fontRenderer.drawString("?", button.x + button.getButtonWidth() - 5, button.y, 0x99FFFFFF);
 				mc.fontRenderer.setUnicodeFlag(flag);
 			}
 		}
@@ -169,7 +169,7 @@ public abstract class GuiTooltipScreen extends GuiScreen
 	{
 		boolean flag = mc.fontRenderer.getUnicodeFlag();
 		mc.fontRenderer.setUnicodeFlag(true);
-		mc.fontRenderer.drawString(TextFormatting.AQUA + "?", button.xPosition + button.getButtonWidth() - 5, button.yPosition, 0xFFFFFF);
+		mc.fontRenderer.drawString(TextFormatting.AQUA + "?", button.x + button.getButtonWidth() - 5, button.y, 0xFFFFFF);
 		mc.fontRenderer.setUnicodeFlag(flag);
 	}
 

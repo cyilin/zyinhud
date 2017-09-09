@@ -135,9 +135,9 @@ public class DistanceMeasurer extends ZyinHUDModBase
                 double playerY = mc.player.posY + mc.player.getEyeHeight();
                 double playerZ = mc.player.posZ;
                 
-                double blockX = objectMouseOver.hitVec.xCoord;
-                double blockY = objectMouseOver.hitVec.yCoord;
-                double blockZ = objectMouseOver.hitVec.zCoord;
+                double blockX = objectMouseOver.hitVec.x;
+                double blockY = objectMouseOver.hitVec.y;
+                double blockZ = objectMouseOver.hitVec.z;
                 
                 double deltaX;
                 double deltaY;

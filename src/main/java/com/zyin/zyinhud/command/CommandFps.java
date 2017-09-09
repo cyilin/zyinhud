@@ -22,9 +22,9 @@ public class CommandFps extends CommandBase
 	}
 	
 	@Override
-    public List getAliases()
+    public List<String> getAliases()
     {
-		List list = new ArrayList();
+		List<String> list = new ArrayList<>();
 		list.add("f");
         return list;
     }
@@ -47,17 +47,4 @@ public class CommandFps extends CommandBase
 		return "commands.zyinhudfps.usage";
 	}
 
-	/**
-	 * Process command.
-	 *
-	 * @param iCommandSender the command sender
-	 * @param parameters     the parameters
-	 */
-	/*
-	@Override
-	public void processCommand(ICommandSender iCommandSender, String[] parameters)
-	{
-		Fps.ToggleEnabled();
-	}
-	*/
 }

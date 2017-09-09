@@ -1,10 +1,10 @@
 package com.zyin.zyinhud;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -216,7 +216,7 @@ public class ZyinHUDRenderer
 	private static void RenderTexture(int x, int y, TextureAtlasSprite textureAtlasSprite, int width, int height, double zLevel)
 	{
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer worldrenderer = tessellator.getBuffer();
+        BufferBuilder worldrenderer = tessellator.getBuffer();
         
         //worldrenderer.startDrawingQuads();
         worldrenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);    //I have no clue what the DefaultVertexFormats are, but field_181707_g works
@@ -312,7 +312,7 @@ public class ZyinHUDRenderer
             int stringMiddle = textWidth / 2;
             
             Tessellator tessellator = Tessellator.getInstance();
-            VertexBuffer worldrenderer = tessellator.getBuffer();
+            BufferBuilder worldrenderer = tessellator.getBuffer();
 
             //GL11.glDisable(GL11.GL_TEXTURE_2D);
             GlStateManager.disableTexture2D();

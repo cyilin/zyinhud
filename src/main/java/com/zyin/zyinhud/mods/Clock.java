@@ -1,12 +1,10 @@
 package com.zyin.zyinhud.mods;
 
+import com.zyin.zyinhud.util.Localization;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-
 import org.lwjgl.opengl.GL11;
-
-import com.zyin.zyinhud.util.Localization;
 
 /**
  * Calculates time.
@@ -121,23 +119,20 @@ public class Clock extends ZyinHUDModBase
 	public static String CalculateMessageForInfoLine(String infoLineMessageUpToThisPoint) {
 		if (Clock.Enabled)
         {
-        	if(Clock.Mode == Modes.STANDARD)
-        	{
-                long time = (mc.world.getWorldTime()) % 24000;
+			if (Clock.Mode == Modes.STANDARD) {
+				long time = (mc.world.getWorldTime()) % 24000;
 
-            	//0 game time is 6am, so add 6000
-                long hours = (time + 6000) / 1000;
-				if(hours>=24){
-					hours=hours-24;
+				//0 game time is 6am, so add 6000
+				long hours = (time + 6000) / 1000;
+				if (hours >= 24) {
+					hours = hours - 24;
 				}
 				long seconds = (long) (((time + 6000) % 1000) * (60.0 / 1000.0));
 
 				if (IsNight()) {
 					//night time
-					String nighttimeClockString = TextFormatting.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
-					return nighttimeClockString;
-				}
-                else
+					return TextFormatting.GRAY + String.format("%02d", hours) + ":" + String.format("%02d", seconds);
+				} else
         		{
         			//day time
                     String daytimeClockString = String.format("%02d", hours) + ":" + String.format("%02d", seconds);
