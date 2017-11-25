@@ -204,7 +204,7 @@ public class PlayerLocator extends ZyinHUDModBase {
                 && !mc.gameSettings.showDebugInfo) {
 
             //only show entities that are close by
-            float distanceFromMe = mc.player.getDistanceToEntity(entity);
+            float distanceFromMe = mc.player.getDistance(entity);
 
             if (distanceFromMe > maxViewDistanceCutoff
                     || distanceFromMe < viewDistanceCutoff

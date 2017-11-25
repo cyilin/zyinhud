@@ -273,7 +273,7 @@ public class AnimalInfo extends ZyinHUDModBase {
             }
 
             //only show entities that are close by
-            double distanceFromMe = mc.player.getDistanceToEntity(animal);
+            double distanceFromMe = mc.player.getDistance(animal);
 
             if (distanceFromMe > maxViewDistanceCutoff
                     || distanceFromMe > viewDistanceCutoff) {
