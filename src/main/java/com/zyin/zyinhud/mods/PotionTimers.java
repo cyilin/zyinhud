@@ -140,6 +140,10 @@ public class PotionTimers extends ZyinHUDModBase {
      */
     public static boolean HideBeaconPotionEffects;
     /**
+     * The constant DontBlinkBeaconPotionEffects.
+     */
+    public static boolean DontBlinkBeaconPotionEffects;
+    /**
      * The constant ShowVanillaStatusEffectHUD.
      */
     public static boolean ShowVanillaStatusEffectHUD;
@@ -245,7 +249,7 @@ public class PotionTimers extends ZyinHUDModBase {
         mc.fontRenderer.setUnicodeFlag(true);
 
         //render the potion duration text onto the screen
-        if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1])    //if the text is not blinking then render it normally
+        if (potionDuration >= blinkingThresholds[blinkingThresholds.length - 1] || (DontBlinkBeaconPotionEffects && potionEffect.getIsAmbient()))    //if the text is not blinking then render it normally
         {
             mc.fontRenderer.drawStringWithShadow(potionText, x, y, colorInt);
         } else //else if the text is blinking, have a chance to not render it based on the blinking variables
@@ -404,6 +408,10 @@ public class PotionTimers extends ZyinHUDModBase {
 
     public static boolean ToggleShowVanillaStatusEffectHUD() {
         return ShowVanillaStatusEffectHUD = !ShowVanillaStatusEffectHUD;
+    }
+
+    public static boolean ToggleNotBlinkingBeaconPotionEffects() {
+        return DontBlinkBeaconPotionEffects = !DontBlinkBeaconPotionEffects;
     }
 
 }
